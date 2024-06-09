@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'dark-grey' : '#1D1D20'
-      }
+        "dark-grey": "#1D1D20",
+      },
     },
   },
   plugins: [],

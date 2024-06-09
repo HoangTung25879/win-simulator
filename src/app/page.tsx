@@ -1,6 +1,5 @@
 import Desktop from "./ui/desktop";
-import Taskbar from "./ui/taskbar";
-
+import Taskbar from "./ui/Taskbar";
 
 export default function Page() {
   return (
