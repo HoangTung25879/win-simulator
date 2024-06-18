@@ -9,7 +9,7 @@ const StartButton = () => {
     <button
       onMouseOver={(e) => setIsHover(true)}
       onMouseOut={(e) => setIsHover(false)}
-      className="p-3 w-10 cursor-default"
+      className="p-3 w-10 cursor-default hover:bg-dark-grey-hover"
     >
       <StartButtonIcon isHover={isHover} />
     </button>

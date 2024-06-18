@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         "dark-grey": "#1D1D20",
+        "dark-grey-hover": "#323232",
       },
     },
   },
