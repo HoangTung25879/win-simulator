@@ -5,10 +5,14 @@ import useWorker from "@/app/hooks/useWorker";
 import { CLOCK_CANVAS_BASE_WIDTH, TASKBAR_HEIGHT } from "@/app/lib/constants";
 import { createOffscreenCanvas } from "@/app/lib/utils";
 import clsx from "clsx";
+import dayjs from "dayjs";
 
 type ClockProps = {};
 
+const formatDate = "dddd, MMMM D, YYYY";
+
 const Clock = ({}: ClockProps) => {
+  const [date, setDate] = useState<string>(dayjs().format(formatDate));
   const [clockRendered, setClockRendered] = useState(false);
   const offScreenClockCanvas = useRef<OffscreenCanvas>();
   const clockContainer = useRef<HTMLDivElement>(null);
@@ -57,8 +61,14 @@ const Clock = ({}: ClockProps) => {
   return (
     <div
       ref={clockContainer}
+      onMouseOver={() => {
+        if (clockRendered) {
+          setDate(dayjs().format(formatDate));
+        }
+      }}
+      title={clockRendered ? date : undefined}
       className={clsx(
-        "text-sm text-white h-full text-center flex items-center justify-center ml-auto p-2",
+        "text-sm text-white h-full text-center flex items-center justify-center ml-auto p-2 hover:bg-taskbar-hover",
         `w-[${CLOCK_CANVAS_BASE_WIDTH}px]`,
       )}
       suppressHydrationWarning

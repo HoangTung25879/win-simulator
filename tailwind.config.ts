@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        "dark-grey": "#1D1D20",
-        "dark-grey-hover": "#323232",
+        taskbar: "rgba(25, 25, 25, 1)",
+        "taskbar-hover": "rgba(63, 63, 63, 0.7)",
       },
     },
   },

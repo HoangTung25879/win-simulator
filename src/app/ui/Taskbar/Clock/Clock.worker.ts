@@ -42,7 +42,6 @@ const styleClock = (): void => {
   );
   datePosition.y = timePosition.y + fontSize + 6;
   datePosition.x = timePosition.x;
-  console.log("ZODAY", timePosition, datePosition);
 };
 
 const drawClockText = (time: Dayjs): void => {
@@ -69,7 +68,6 @@ const updateTick = (): void => {
 };
 
 globalThis.onmessage = ({ data }: { data: OffscreenRenderProps | "init" }) => {
-  console.log("WORKER", data);
   if (!initialized) {
     if (data === "init") {
       initialized = true;
