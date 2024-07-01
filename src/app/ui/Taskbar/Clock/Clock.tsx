@@ -25,7 +25,7 @@ const Clock = ({}: ClockProps) => {
   }, []);
   const clockHandler = useCallback(
     ({ data }) => {
-      console.log("MAIN", data, clockContainer.current);
+      // console.log("MAIN", data, clockContainer.current);
       if (data === "create clock") {
         if (
           supportOffScreenCanvas &&
@@ -68,7 +68,8 @@ const Clock = ({}: ClockProps) => {
       }}
       title={clockRendered ? date : undefined}
       className={clsx(
-        "text-sm text-white h-full text-center flex items-center justify-center ml-auto p-2 hover:bg-taskbar-hover",
+        `ml-auto flex h-full items-center justify-center p-2 text-center text-sm
+        text-white hover:bg-taskbar-hover`,
         `w-[${CLOCK_CANVAS_BASE_WIDTH}px]`,
       )}
       suppressHydrationWarning

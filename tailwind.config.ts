@@ -8,9 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      spacing: {
+        "taskbar-height": "40px",
+      },
       colors: {
         taskbar: "rgba(25, 25, 25, 1)",
         "taskbar-hover": "rgba(63, 63, 63, 0.7)",
+        "windows-border": "hsla(0, 0%, 50%, 50%)",
       },
     },
   },
