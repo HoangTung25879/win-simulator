@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./ui/globals.css";
+import "./ui/globals.scss";
 // import dayjs from "dayjs";
 // import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 

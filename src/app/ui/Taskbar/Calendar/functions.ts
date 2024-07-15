@@ -1,5 +1,5 @@
 type DayType = "curr" | "next" | "prev" | "today";
-type Day = [number, DayType];
+type Day = [number, DayType, Date?];
 
 export type Calendar = Day[][];
 
@@ -36,11 +36,15 @@ export const createCalendar = (date: Date): any => {
   const rows = [...firstRow, ...remainingDays].reduce<Calendar>(
     (acc, value, index) => {
       if (index % DAYS_IN_WEEK === 0) acc.push([]);
-
       const [vDay, vType] = value;
-
       acc[acc.length - 1].push(
-        vType === "curr" && vDay === day ? [vDay, "today"] : value,
+        vType === "curr" && vDay === day
+          ? [vDay, "today", new Date(year, month, vDay)]
+          : [
+              vDay,
+              vType,
+              new Date(year, vType === "prev" ? month - 1 : month, vDay),
+            ],
       );
 
       return acc;
@@ -53,24 +57,48 @@ export const createCalendar = (date: Date): any => {
   }).map<Day>((_, index) => [
     new Date(year, month + 1, index + 1).getDate(),
     "next",
+    new Date(year, month + 1, index + 1),
   ]);
   lastRow.push(...lastRowDays);
-
   if (rows.length < GRID_ROW_COUNT) {
     const [lastNumber] = lastRow[lastRow.length - 1];
-
     return [
       ...rows,
       lastNumber > DAYS_IN_WEEK - 1
-        ? FIRST_WEEK.map(([value]) => [value, "next"])
+        ? FIRST_WEEK.map(([value]) => [
+            value,
+            "next",
+            new Date(year, month + 1, value),
+          ])
         : Array.from({ length: DAYS_IN_WEEK }).map<Day>((_, index) => [
             index + 1 + lastNumber,
             "next",
+            new Date(year, month + 1, index + 1 + lastNumber),
           ]),
       ...(rows.length === 4
-        ? [FIRST_WEEK.map(([value]) => [value + DAYS_IN_WEEK, "next"])]
+        ? [
+            FIRST_WEEK.map(([value]) => [
+              value + DAYS_IN_WEEK,
+              "next",
+              new Date(year, month + 1, value + DAYS_IN_WEEK),
+            ]),
+          ]
         : []),
     ] as Calendar;
   }
   return rows;
+};
+
+export const isSameDate = (
+  d1: Date | undefined,
+  d2: Date | undefined,
+): Boolean => {
+  if (d1 instanceof Date && d2 instanceof Date) {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  }
+  return false;
 };

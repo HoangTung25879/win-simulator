@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+  }
+}
+
+body {
+  font-family: "Segoe UI";
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer components {
+  .calendar {
+    font-size: 0.875rem;
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1rem;
+      padding: 12px 24px;
+      header {
+        color: rgb(223, 223, 223);
+        &:hover {
+          color: #fff;
+        }
+        &:active {
+          color: rgb(165, 156, 156);
+        }
+      }
+      nav {
+        display: flex;
+        flex-direction: row;
+        gap: 34px;
+        padding-top: 2px;
+        button {
+          fill: rgb(223, 223, 223);
+          &:hover {
+            fill: #fff;
+          }
+          &:active {
+            fill: rgb(165, 156, 156);
+          }
+          svg {
+            width: 16px;
+          }
+        }
+      }
+    }
+    .calendar-weekday {
+      display: flex;
+      text-align: center;
+      padding: 0px 10px;
+      font-size: 0.75rem;
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 32px;
+        width: 48px;
+      }
+    }
+    .grid-calendar {
+      display: grid;
+      grid-template-columns: 10px auto 10px;
+      grid-template-areas:
+        "left content right"
+        "bottom bottom bottom";
+      grid-template-rows: auto 42px;
+      .calendar-date {
+        text-align: center;
+        z-index: 5;
+        position: relative;
+        &:hover {
+          .spotlight {
+            opacity: 1;
+          }
+        }
+        .spotlight {
+          position: absolute;
+          width: 100px;
+          height: 100px;
+          border-radius: 50%;
+          background: radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.8) 0%,
+            rgba(255, 255, 255, 0) 70%
+          );
+          transform: translate(-50%, -50%);
+          pointer-events: none;
+          z-index: 2;
+          opacity: 0;
+        }
+        .calendar-row {
+          display: flex;
+        }
+        .date {
+          user-select: none;
+          position: relative;
+          z-index: 9;
+          border: 2px solid #363636;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 42px;
+          width: 48px;
+          &:focus {
+            outline: none;
+          }
+          &:after {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            background-color: #363636;
+            top: 2px;
+            bottom: 2px;
+            right: 2px;
+            left: 2px;
+          }
+          &:hover {
+            background-color: #b4b4b4;
+          }
+          &.prev,
+          &.next {
+            color: rgb(125, 125, 125);
+          }
+          &.--selected {
+            color: white;
+            background-color: rgb(0, 120, 215) !important;
+            &:hover {
+              background-color: rgb(0, 95, 172) !important;
+            }
+          }
+        }
+        &.curr {
+          .today {
+            background-color: rgb(0, 120, 215);
+            &::after {
+              background-color: rgb(0, 120, 215);
+            }
+            &:hover {
+              background-color: rgb(102, 174, 231);
+            }
+            &.--selected::after {
+              border: 2px solid #000;
+            }
+          }
+        }
+      }
+    }
+  }
+}
