@@ -5,7 +5,7 @@ let initialized: boolean;
 const MILLISECONDS_IN_SECOND = 1000;
 
 const fontSize = 12;
-const textColor = "rgb(255, 255, 255)";
+const textColor = "#ffffff";
 const systemFont =
   "'Segoe UI', system-ui, Roboto, 'Helvetica Neue', sans-serif";
 

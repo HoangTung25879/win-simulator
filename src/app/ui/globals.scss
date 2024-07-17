@@ -27,15 +27,16 @@ body {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 1rem;
+      font-size: 0.875rem;
       padding: 12px 24px;
-      header {
-        color: rgb(223, 223, 223);
+      div {
+        color: #dfdfdf;
+        user-select: none;
         &:hover {
           color: #fff;
         }
         &:active {
-          color: rgb(165, 156, 156);
+          color: #a59c9c;
         }
       }
       nav {
@@ -44,12 +45,12 @@ body {
         gap: 34px;
         padding-top: 2px;
         button {
-          fill: rgb(223, 223, 223);
+          fill: #dfdfdf;
           &:hover {
             fill: #fff;
           }
           &:active {
-            fill: rgb(165, 156, 156);
+            fill: #a59c9c;
           }
           svg {
             width: 16px;
@@ -108,7 +109,7 @@ body {
           user-select: none;
           position: relative;
           z-index: 9;
-          border: 2px solid #363636;
+          border: 2px solid #393939;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -121,7 +122,7 @@ body {
             content: "";
             position: absolute;
             z-index: -1;
-            background-color: #363636;
+            background-color: #393939;
             top: 2px;
             bottom: 2px;
             right: 2px;
@@ -132,24 +133,24 @@ body {
           }
           &.prev,
           &.next {
-            color: rgb(125, 125, 125);
+            color: #7d7d7d;
           }
-          &.--selected {
+          &.--selected:not(.today) {
             color: white;
-            background-color: rgb(0, 120, 215) !important;
+            background-color: #0078d7 !important;
             &:hover {
-              background-color: rgb(0, 95, 172) !important;
+              background-color: #005fac !important;
             }
           }
         }
         &.curr {
           .today {
-            background-color: rgb(0, 120, 215);
+            background-color: #0078d7;
             &::after {
-              background-color: rgb(0, 120, 215);
+              background-color: #0078d7;
             }
             &:hover {
-              background-color: rgb(102, 174, 231);
+              background-color: #66aee7;
             }
             &.--selected::after {
               border: 2px solid #000;

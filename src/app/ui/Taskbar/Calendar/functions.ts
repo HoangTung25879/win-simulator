@@ -1,7 +1,7 @@
 type DayType = "curr" | "next" | "prev" | "today";
 type Day = [number, DayType, Date?];
 
-export type Calendar = Day[][];
+export type WeekCalendar = Day[][];
 
 const DAYS_IN_WEEK = 7;
 const GRID_ROW_COUNT = 6;
@@ -16,7 +16,7 @@ const FIRST_WEEK: Day[] = [
   [7, "curr"],
 ];
 
-export const createCalendar = (date: Date): any => {
+export const createWeekCalendar = (date: Date): any => {
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
@@ -33,7 +33,7 @@ export const createCalendar = (date: Date): any => {
     .map((_, index) => new Date(year, month, index + 1).getDate())
     .slice(firstRow[firstRow.length - 1][0])
     .map<Day>((d) => [d, "curr"]);
-  const rows = [...firstRow, ...remainingDays].reduce<Calendar>(
+  const rows = [...firstRow, ...remainingDays].reduce<WeekCalendar>(
     (acc, value, index) => {
       if (index % DAYS_IN_WEEK === 0) acc.push([]);
       const [vDay, vType] = value;
@@ -84,7 +84,7 @@ export const createCalendar = (date: Date): any => {
             ]),
           ]
         : []),
-    ] as Calendar;
+    ] as WeekCalendar;
   }
   return rows;
 };
