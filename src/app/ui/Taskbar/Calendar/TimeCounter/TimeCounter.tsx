@@ -24,7 +24,7 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
     meridiem: "AM",
   });
   useEffect(() => {
-    const timerId = setInterval(() => {
+    const timerCount = () => {
       const date = new Date();
       let hours = date.getHours();
       let meridiem: Meridiem = "AM";
@@ -41,13 +41,15 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
         seconds: date.getSeconds(),
         meridiem,
       });
-    }, 1000);
+    };
+    timerCount();
+    const timerId = setInterval(timerCount, 1000);
     return () => {
       clearInterval(timerId);
     };
   }, []);
   return (
-    <div className="relative z-[100] bg-[#393939] p-5">
+    <div className="relative z-[100] border-b border-windows-border bg-[#393939] p-5">
       <div className="flex gap-2">
         <div className="text-5xl font-thin leading-10">
           {timeObj.hours}:

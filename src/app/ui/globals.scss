@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  cursor: default;
+  font-variant-numeric: tabular-nums;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
 :root {
 }
 
@@ -22,6 +36,8 @@ body {
 
 @layer components {
   .calendar {
+    width: 356px;
+    height: 372px;
     font-size: 0.875rem;
     .calendar-header {
       display: flex;
@@ -31,7 +47,6 @@ body {
       padding: 12px 24px;
       div {
         color: #dfdfdf;
-        user-select: none;
         &:hover {
           color: #fff;
         }
@@ -57,6 +72,11 @@ body {
           }
         }
       }
+      &:hover ~ .grid-calendar {
+        #spotlight {
+          opacity: 1;
+        }
+      }
     }
     .calendar-weekday {
       display: flex;
@@ -69,6 +89,11 @@ body {
         align-items: center;
         height: 32px;
         width: 48px;
+      }
+      &:hover ~ .grid-calendar {
+        #spotlight {
+          opacity: 1;
+        }
       }
     }
     .grid-calendar {
@@ -83,11 +108,11 @@ body {
         z-index: 5;
         position: relative;
         &:hover {
-          .spotlight {
+          #spotlight {
             opacity: 1;
           }
         }
-        .spotlight {
+        #spotlight {
           position: absolute;
           width: 100px;
           height: 100px;
@@ -106,7 +131,6 @@ body {
           display: flex;
         }
         .date {
-          user-select: none;
           position: relative;
           z-index: 9;
           border: 2px solid #393939;
@@ -134,6 +158,10 @@ body {
           &.prev,
           &.next {
             color: #7d7d7d;
+          }
+          &.--large {
+            height: 71px;
+            width: 84px;
           }
           &.--selected:not(.today) {
             color: white;

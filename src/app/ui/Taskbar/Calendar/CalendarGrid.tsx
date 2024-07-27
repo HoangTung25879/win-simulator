@@ -1,38 +1,70 @@
 "use client";
-
-import dayjs from "dayjs";
 import { useEffect, useMemo, useRef } from "react";
-import { Down, Up } from "./Icons";
-import { WeekCalendar as IWeekCalendar, isSameDate } from "./functions";
+import {
+  CalendarMode,
+  getDecadeRange,
+  Calendar as ICalendar,
+  isSameDate,
+} from "./functions";
 import clsx from "clsx";
+import useCalendarGridTransition from "@/app/hooks/useCalendarGridTransition";
 
-type WeekCalendarProps = {
+type CalendarGridProps = {
   date: Date;
-  selectedDate: Date | undefined;
-  calendar: IWeekCalendar;
-  changeMonth: (direction: number) => void;
-  handleClickDate: (clickedDate: Date | undefined) => void;
+  selectedDate: Date;
+  calendar: ICalendar;
+  mode: CalendarMode;
+  handleClickDate: (clickedDate: Date) => void;
 };
 
 const DAY_NAMES = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const MONTH_NAMES = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
-const WeekCalendar = ({
+const CalendarGrid = ({
   date,
   selectedDate,
   calendar,
-  changeMonth,
+  mode,
   handleClickDate,
-}: WeekCalendarProps) => {
+}: CalendarGridProps) => {
   const calendarRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
 
+  const calendarGridTransition = useCalendarGridTransition();
+
   const isCurrentDate = useMemo(() => {
     const today = new Date();
+    if (mode === "month") {
+      return date.getFullYear() === today.getFullYear();
+    }
+    if (mode === "year") {
+      const range = getDecadeRange(date.getFullYear());
+      const currentYear = today.getFullYear();
+      return currentYear >= range[0] && currentYear <= range[1];
+    }
     return (
       date.getMonth() === today.getMonth() &&
       date.getFullYear() === today.getFullYear()
     );
-  }, [date]);
+  }, [date, mode]);
+
+  const formatCell = (value: number) => {
+    if (mode === "week" || mode === "year") return value;
+    return MONTH_NAMES[value];
+  };
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -49,29 +81,14 @@ const WeekCalendar = ({
   }, []);
 
   return (
-    <div className="calendar border-t border-windows-border">
-      <div className="calendar-header relative z-[100] bg-[#393939]">
-        <div>{dayjs(date).format("MMMM YYYY")}</div>
-        <nav>
-          <button
-            className="w-full bg-transparent"
-            onClick={() => changeMonth(-1)}
-          >
-            <Up />
-          </button>
-          <button
-            className="w-full bg-transparent"
-            onClick={() => changeMonth(1)}
-          >
-            <Down />
-          </button>
-        </nav>
-      </div>
-      <div className="calendar-weekday relative z-[100] bg-[#393939]">
-        {DAY_NAMES.map((dayName) => (
-          <div key={dayName}>{dayName}</div>
-        ))}
-      </div>
+    <>
+      {mode === "week" && (
+        <div className="calendar-weekday relative z-[100] bg-[#393939]">
+          {DAY_NAMES.map((dayName) => (
+            <div key={dayName}>{dayName}</div>
+          ))}
+        </div>
+      )}
       <div className="grid-calendar">
         <div className="z-[100] bg-[#393939] [grid-area:left]" />
         <div
@@ -81,8 +98,8 @@ const WeekCalendar = ({
           )}
           ref={calendarRef}
         >
-          <div ref={spotlightRef} className="spotlight"></div>
-          {calendar.map((week) => (
+          <div ref={spotlightRef} id="spotlight"></div>
+          {calendar?.map((week) => (
             <div className="calendar-row" key={week.toString()}>
               {week.map(([vDay, vType, vDate]) => (
                 <div
@@ -92,10 +109,13 @@ const WeekCalendar = ({
                   className={clsx(
                     "date",
                     vType,
-                    isSameDate(vDate, selectedDate) ? "--selected" : "",
+                    mode !== "week" && "--large",
+                    mode === "week" && isSameDate(vDate, selectedDate)
+                      ? "--selected"
+                      : "",
                   )}
                 >
-                  {vDay}
+                  {formatCell(vDay)}
                 </div>
               ))}
             </div>
@@ -104,8 +124,8 @@ const WeekCalendar = ({
         <div className="z-[100] bg-[#393939] [grid-area:right]" />
         <div className="z-[100] bg-[#393939] [grid-area:bottom]" />
       </div>
-    </div>
+    </>
   );
 };
 
-export default WeekCalendar;
+export default CalendarGrid;

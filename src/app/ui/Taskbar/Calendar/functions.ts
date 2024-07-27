@@ -2,6 +2,8 @@ type DayType = "curr" | "next" | "prev" | "today";
 type Day = [number, DayType, Date?];
 
 export type WeekCalendar = Day[][];
+export type Calendar = WeekCalendar;
+export type CalendarMode = "week" | "month" | "year";
 
 const DAYS_IN_WEEK = 7;
 const GRID_ROW_COUNT = 6;
@@ -16,7 +18,85 @@ const FIRST_WEEK: Day[] = [
   [7, "curr"],
 ];
 
-export const createWeekCalendar = (date: Date): any => {
+export const createCalendar = (
+  date: Date,
+  mode: CalendarMode = "week",
+): Calendar => {
+  const mapping = {
+    week: createWeekCalendar(date),
+    month: createMonthCalendar(date),
+    year: createYearCalendar(date),
+  };
+  return mapping[mode];
+};
+
+export const getDecadeRange = (year: number): [number, number] => {
+  const startYear = Math.floor(year / 10) * 10;
+  const endYear = startYear + 9;
+  return [startYear, endYear];
+};
+
+export const createYearCalendar = (date: Date): Calendar => {
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const yearRange = getDecadeRange(year);
+  const rows: Calendar = [[], [], [], []];
+  const isOddRange = (yearRange[0] / 2) % 10 === 5; //* get last digit number
+  let accYear = yearRange[0] - (isOddRange ? 2 : 0);
+  rows.map((value) => {
+    for (let i = 0; i < 4; i++) {
+      const isInRange = accYear >= yearRange[0] && accYear <= yearRange[1];
+      if (isInRange) {
+        value.push([
+          accYear,
+          accYear === year ? "today" : "curr",
+          new Date(accYear, month, day),
+        ]);
+      } else {
+        value.push([
+          accYear,
+          accYear < yearRange[0] ? "prev" : "next",
+          new Date(accYear, month, day),
+        ]);
+      }
+      accYear += 1;
+    }
+    return value;
+  });
+  return rows;
+};
+
+export const createMonthCalendar = (date: Date): Calendar => {
+  const day = date.getDate();
+  const month = date.getMonth();
+  const year = date.getFullYear();
+  const rows: Calendar = [[], [], [], []];
+  let accMonth = 0;
+  let monthType: DayType = "curr";
+  rows.map((value) => {
+    if (accMonth > 11) {
+      accMonth = 0;
+      monthType = "next";
+    }
+    for (let i = 0; i < 4; i++) {
+      if (accMonth === month && monthType === "curr") {
+        value.push([accMonth, "today", new Date(year, accMonth, day)]);
+      } else {
+        value.push([
+          accMonth,
+          monthType,
+          new Date(year + (monthType === "next" ? 1 : 0), accMonth, day),
+        ]);
+      }
+      accMonth += 1;
+    }
+    return value;
+  });
+  return rows;
+};
+
+export const createWeekCalendar = (date: Date): WeekCalendar => {
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
@@ -89,16 +169,10 @@ export const createWeekCalendar = (date: Date): any => {
   return rows;
 };
 
-export const isSameDate = (
-  d1: Date | undefined,
-  d2: Date | undefined,
-): Boolean => {
-  if (d1 instanceof Date && d2 instanceof Date) {
-    return (
-      d1.getFullYear() === d2.getFullYear() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getDate() === d2.getDate()
-    );
-  }
-  return false;
+export const isSameDate = (d1: Date, d2: Date): Boolean => {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
 };
