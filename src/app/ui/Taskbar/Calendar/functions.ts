@@ -40,6 +40,7 @@ export const createYearCalendar = (date: Date): Calendar => {
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
+  const currentYear = new Date().getFullYear();
   const yearRange = getDecadeRange(year);
   const rows: Calendar = [[], [], [], []];
   const isOddRange = (yearRange[0] / 2) % 10 === 5; //* get last digit number
@@ -50,7 +51,7 @@ export const createYearCalendar = (date: Date): Calendar => {
       if (isInRange) {
         value.push([
           accYear,
-          accYear === year ? "today" : "curr",
+          accYear === currentYear ? "today" : "curr",
           new Date(accYear, month, day),
         ]);
       } else {
@@ -69,7 +70,7 @@ export const createYearCalendar = (date: Date): Calendar => {
 
 export const createMonthCalendar = (date: Date): Calendar => {
   const day = date.getDate();
-  const month = date.getMonth();
+  const currentMonth = new Date().getMonth();
   const year = date.getFullYear();
   const rows: Calendar = [[], [], [], []];
   let accMonth = 0;
@@ -80,7 +81,7 @@ export const createMonthCalendar = (date: Date): Calendar => {
       monthType = "next";
     }
     for (let i = 0; i < 4; i++) {
-      if (accMonth === month && monthType === "curr") {
+      if (accMonth === currentMonth && monthType === "curr") {
         value.push([accMonth, "today", new Date(year, accMonth, day)]);
       } else {
         value.push([
@@ -97,6 +98,7 @@ export const createMonthCalendar = (date: Date): Calendar => {
 };
 
 export const createWeekCalendar = (date: Date): WeekCalendar => {
+  const currentDay = new Date().getDate();
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
@@ -118,7 +120,7 @@ export const createWeekCalendar = (date: Date): WeekCalendar => {
       if (index % DAYS_IN_WEEK === 0) acc.push([]);
       const [vDay, vType] = value;
       acc[acc.length - 1].push(
-        vType === "curr" && vDay === day
+        vType === "curr" && vDay === currentDay
           ? [vDay, "today", new Date(year, month, vDay)]
           : [
               vDay,

@@ -103,7 +103,20 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
   };
 
   useEffect(() => {
-    const handleBlurCalendar = (event: FocusEvent) => {
+    const handleBlurCalendar = ({ relatedTarget }: FocusEvent) => {
+      if (relatedTarget instanceof HTMLElement) {
+        if (calendarContainerRef.current?.contains(relatedTarget)) {
+          calendarContainerRef.current?.focus(PREVENT_SCROLL);
+          return;
+        }
+        const clockElement = document.getElementById("clock");
+        if (
+          clockElement instanceof HTMLDivElement &&
+          clockElement === relatedTarget
+        ) {
+          return;
+        }
+      }
       // toggleCalendar(false);
     };
     calendarContainerRef.current?.addEventListener("blur", handleBlurCalendar);
@@ -116,16 +129,12 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     };
   }, [toggleCalendar]);
 
-  useEffect(() => {
-    console.log("COMPARE", { date, selectedDate });
-  }, [date, selectedDate]);
-
   return (
     <motion.div
       ref={calendarContainerRef}
       className={clsx(
-        `absolute bottom-taskbar-height right-0 z-[99999] border-b-0 border-r-0
-        border-solid border-windows-border bg-[#393939] text-white`,
+        `fixed bottom-taskbar-height right-0 z-[999] border-b-0 border-r-0 border-solid
+        border-windows-border bg-[#393939] text-white`,
       )}
       {...calendarTransition}
       {...FOCUSABLE_ELEMENT}

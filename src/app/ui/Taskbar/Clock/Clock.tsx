@@ -2,7 +2,11 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import useWorker from "@/app/hooks/useWorker";
-import { CLOCK_CANVAS_BASE_WIDTH, TASKBAR_HEIGHT } from "@/app/lib/constants";
+import {
+  CLOCK_CANVAS_BASE_WIDTH,
+  FOCUSABLE_ELEMENT,
+  TASKBAR_HEIGHT,
+} from "@/app/lib/constants";
 import { createOffscreenCanvas } from "@/app/lib/utils";
 import clsx from "clsx";
 import dayjs, { Dayjs } from "dayjs";
@@ -98,12 +102,16 @@ const Clock = ({ toggleCalendar }: ClockProps) => {
 
   return (
     <div
+      id="clock"
       title={date.format(formatDate)}
       className="ml-auto flex h-full flex-col items-center justify-center p-2 text-center text-xs
         text-white hover:bg-taskbar-hover"
       suppressHydrationWarning
       role="timer"
-      onClick={toggleCalendar}
+      onClick={() => {
+        toggleCalendar();
+      }}
+      {...FOCUSABLE_ELEMENT}
     >
       <div>{date.format("h:mm A")}</div>
       <div>{date.format("M/D/YYYY")}</div>
