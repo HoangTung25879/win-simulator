@@ -12,6 +12,7 @@ const config: Config = {
         "taskbar-height": "40px",
       },
       colors: {
+        "hover-item-menu": "hsla(0, 0%, 35%, 70%)",
         taskbar: "rgba(25, 25, 25, 1)",
         "taskbar-hover": "rgba(63, 63, 63, 0.7)",
         "windows-border": "hsla(0, 0%, 50%, 50%)",

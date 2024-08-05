@@ -1,7 +1,7 @@
 import { MotionProps } from "framer-motion";
 import { TRANSITIONS_IN_SECONDS } from "../lib/constants";
 
-const useCalendarTransition = (): MotionProps => {
+const useTaskbarMenuTransition = (): MotionProps => {
   //* transition from initial -> active
   return {
     initial: "initial",
@@ -19,10 +19,10 @@ const useCalendarTransition = (): MotionProps => {
       },
       initial: {
         pointerEvents: "none",
-        transform: "translateY(50%)",
+        transform: "translateY(100%)",
       },
     },
   };
 };
 
-export default useCalendarTransition;
+export default useTaskbarMenuTransition;

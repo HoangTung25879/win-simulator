@@ -20,3 +20,6 @@ export const createOffscreenCanvas = (
 
   return canvas.transferControlToOffscreen();
 };
+
+export const hasFinePointer = (): boolean =>
+  window.matchMedia("(pointer: fine)").matches;

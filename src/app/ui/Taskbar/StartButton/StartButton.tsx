@@ -2,18 +2,37 @@
 
 import React, { useState } from "react";
 import StartButtonIcon from "./StartButtonIcon";
+import clsx from "clsx";
+import { FOCUSABLE_ELEMENT } from "@/app/lib/constants";
 
-const StartButton = () => {
+type StartButtonProps = {
+  toggleStartMenu: (showMenu?: boolean) => void;
+  startMenuVisible: boolean;
+};
+
+const StartButton = ({
+  toggleStartMenu,
+  startMenuVisible,
+}: StartButtonProps) => {
   const [isHover, setIsHover] = useState(false);
   return (
-    <button
+    <div
+      role="button"
+      id="startButton"
       title="Start"
+      className={clsx(
+        "h-full w-10 cursor-default p-3 hover:bg-taskbar-hover",
+        startMenuVisible && "bg-taskbar-hover",
+      )}
       onMouseOver={(e) => setIsHover(true)}
       onMouseOut={(e) => setIsHover(false)}
-      className="h-full w-10 cursor-default p-3 hover:bg-taskbar-hover"
+      onClick={() => {
+        toggleStartMenu();
+      }}
+      {...FOCUSABLE_ELEMENT}
     >
       <StartButtonIcon isHover={isHover} />
-    </button>
+    </div>
   );
 };
 

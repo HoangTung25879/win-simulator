@@ -1,0 +1,33 @@
+$expanded-width: 228px;
+
+.side-bar {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  height: 100%;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  overflow: hidden;
+  width: 3rem;
+  padding-top: 4px;
+  padding-bottom: 2px;
+
+  transition:
+    all 300ms ease,
+    backdrop-filter 600ms;
+
+  .side-bar-item {
+    display: flex;
+    align-items: center;
+    padding-right: 1rem;
+  }
+  &.expanded {
+    width: 14.25rem;
+    backdrop-filter: blur(12px);
+    background-color: hsla(0, 0%, 10%, 75%);
+    box-shadow: 8px 0 5px -5px hsla(0, 0%, 10%, 50%);
+    transition:
+      all 300ms ease,
+      backdrop-filter 1ms;
+  }
+}

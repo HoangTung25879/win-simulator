@@ -14,7 +14,8 @@ import CalendarGrid from "./CalendarGrid";
 import { Down, Up } from "./Icons";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/app/lib/constants";
 import { motion } from "framer-motion";
-import useCalendarTransition from "@/app/hooks/useCalendarTransition";
+import useTaskbarMenuTransition from "@/app/hooks/useTaskbarMenuTransition";
+import "./Calendar.scss";
 
 type CalendarProps = {
   toggleCalendar: (showCalendar?: boolean) => void;
@@ -29,7 +30,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     [date, mode],
   );
 
-  const calendarTransition = useCalendarTransition();
+  const menuTransition = useTaskbarMenuTransition();
 
   const calendarContainerRef = useRef<HTMLDivElement>(null);
 
@@ -117,7 +118,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
           return;
         }
       }
-      // toggleCalendar(false);
+      toggleCalendar(false);
     };
     calendarContainerRef.current?.addEventListener("blur", handleBlurCalendar);
     calendarContainerRef.current?.focus(PREVENT_SCROLL);
@@ -136,7 +137,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
         `fixed bottom-taskbar-height right-0 z-[999] border-b-0 border-r-0 border-solid
         border-windows-border bg-[#393939] text-white`,
       )}
-      {...calendarTransition}
+      {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >
       <TimeCounter onClickToday={onClickToday} />
