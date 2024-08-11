@@ -1,0 +1,17 @@
+.desktop {
+  background-color: transparent;
+  height: 100%;
+  width: 100vw;
+  overflow: hidden;
+  position: fixed;
+  > canvas {
+    background-color: inherit;
+    height: 100%;
+    left: 0;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -1;
+  }
+}

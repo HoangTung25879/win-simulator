@@ -1,14 +1,19 @@
 "use client";
+import { useRef } from "react";
 import "./Desktop.scss";
+import useWallpaper from "@/app/hooks/useWallpaper";
 
 type DesktopProps = {
   children: React.ReactNode;
 };
 
 const Desktop = ({ children }: DesktopProps) => {
-  const a = 0;
+  const desktopRef = useRef<HTMLDivElement | null>(null);
+  useWallpaper(desktopRef);
   return (
-    <div className="h-[calc(100vh-40px)] w-full bg-red-300">{children}</div>
+    <div ref={desktopRef} className="desktop">
+      {children}
+    </div>
   );
 };
 
