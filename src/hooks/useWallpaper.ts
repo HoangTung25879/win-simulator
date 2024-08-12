@@ -5,12 +5,12 @@ import {
   useRef,
   useState,
 } from "react";
-import { WALLPAPER_PATHS } from "../ui/Wallpaper/constants";
-import { WallpaperConfig } from "../ui/Wallpaper/types";
+import { WALLPAPER_PATHS } from "@/app/components/Wallpaper/constants";
+import { WallpaperConfig } from "@/app/components/Wallpaper/types";
 import {
   vantaCloudsConfig,
   vantaWavesConfig,
-} from "../ui/Wallpaper/vanta/config";
+} from "@/app/components/Wallpaper/vanta/config";
 
 export const BASE_CANVAS_SELECTOR = ":scope > canvas";
 export const BASE_VIDEO_SELECTOR = ":scope > video";

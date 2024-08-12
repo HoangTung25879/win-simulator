@@ -1,4 +1,4 @@
-import { OffscreenRenderProps } from "@/app/lib/types";
+import { OffscreenRenderProps } from "@/lib/types";
 
 type VantaCycleColor = {
   colorCycleSpeed?: number;

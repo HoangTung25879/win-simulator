@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import useWorker from "@/app/hooks/useWorker";
+import useWorker from "@/hooks/useWorker";
 import {
   CLOCK_CANVAS_BASE_WIDTH,
   FOCUSABLE_ELEMENT,
   TASKBAR_HEIGHT,
-} from "@/app/lib/constants";
-import { createOffscreenCanvas } from "@/app/lib/utils";
+} from "@/lib/constants";
+import { createOffscreenCanvas } from "@/lib/utils";
 import clsx from "clsx";
 import dayjs, { Dayjs } from "dayjs";
 import { clearInterval, setInterval } from "worker-timers";

@@ -5,7 +5,7 @@ import StartButton from "./StartButton/StartButton";
 import Clock from "./Clock/Clock";
 import Calendar from "./Calendar/Calendar";
 import { AnimatePresence } from "framer-motion";
-import { FOCUSABLE_ELEMENT } from "@/app/lib/constants";
+import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import StartMenu from "./StartMenu/StartMenu";
 
 const Taskbar = () => {

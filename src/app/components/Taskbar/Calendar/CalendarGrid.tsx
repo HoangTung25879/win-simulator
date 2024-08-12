@@ -7,7 +7,7 @@ import {
   isSameDate,
 } from "./functions";
 import clsx from "clsx";
-import useCalendarGridTransition from "@/app/hooks/useCalendarGridTransition";
+import useCalendarGridTransition from "@/hooks/useCalendarGridTransition";
 
 type CalendarGridProps = {
   date: Date;
@@ -43,7 +43,7 @@ const CalendarGrid = ({
   const calendarRef = useRef<HTMLDivElement>(null);
   const spotlightRef = useRef<HTMLDivElement>(null);
 
-  const calendarGridTransition = useCalendarGridTransition();
+  // const calendarGridTransition = useCalendarGridTransition();
 
   const isCurrentDate = useMemo(() => {
     const today = new Date();

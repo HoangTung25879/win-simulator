@@ -1,4 +1,4 @@
-import { SVGComponentProps } from "@/app/lib/types";
+import { SVGComponentProps } from "@/lib/types";
 
 export const AllApps = ({ width, height }: SVGComponentProps) => (
   <svg

@@ -11,8 +11,8 @@ import {
 } from "./SidebarIcons";
 import clsx from "clsx";
 import "./Sidebar.scss";
-import { hasFinePointer } from "@/app/lib/utils";
-import { spotlightEffect } from "@/app/lib/spotlightEffect";
+import { hasFinePointer } from "@/lib/utils";
+import { spotlightEffect } from "@/lib/spotlightEffect";
 
 type SidebarProps = {};
 

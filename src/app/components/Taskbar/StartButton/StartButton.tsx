@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import StartButtonIcon from "./StartButtonIcon";
 import clsx from "clsx";
-import { FOCUSABLE_ELEMENT } from "@/app/lib/constants";
+import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 
 type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;

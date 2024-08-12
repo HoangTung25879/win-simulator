@@ -1,6 +1,6 @@
-import { loadFiles } from "@/app/lib/utils";
-import { WallpaperConfig } from "../types";
+import { loadFiles } from "@/lib/utils";
 import { disableControls, libs } from "./config";
+import { WallpaperConfig } from "../types";
 import { VantaConfig } from "./types";
 
 const vanta = (

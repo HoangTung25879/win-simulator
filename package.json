@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fluentui/react-components": "^9.53.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
     "framer-motion": "^11.3.8",
@@ -20,7 +19,7 @@
     "react-dom": "^18",
     "sass": "^1.77.8",
     "worker-timers": "^8.0.2",
-    "zustand": "^4.5.2"
+    "zustand": "^4.5.4"
   },
   "devDependencies": {
     "@types/node": "^20",

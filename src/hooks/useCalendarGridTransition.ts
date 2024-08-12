@@ -1,5 +1,5 @@
 import { MotionProps } from "framer-motion";
-import { TRANSITIONS_IN_SECONDS } from "../lib/constants";
+import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 
 const useCalendarGridTransition = (): MotionProps => {
   //* transition from initial -> active

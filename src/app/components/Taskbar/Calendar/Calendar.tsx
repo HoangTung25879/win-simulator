@@ -12,9 +12,9 @@ import dayjs from "dayjs";
 import TimeCounter from "./TimeCounter/TimeCounter";
 import CalendarGrid from "./CalendarGrid";
 import { Down, Up } from "./Icons";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/app/lib/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
 import { motion } from "framer-motion";
-import useTaskbarMenuTransition from "@/app/hooks/useTaskbarMenuTransition";
+import useTaskbarMenuTransition from "@/hooks/useTaskbarMenuTransition";
 import "./Calendar.scss";
 
 type CalendarProps = {

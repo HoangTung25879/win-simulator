@@ -1,4 +1,4 @@
-import { OffscreenRenderProps } from "@/app/lib/types";
+import { OffscreenRenderProps } from "@/lib/types";
 import dayjs, { Dayjs } from "dayjs";
 
 let initialized: boolean;

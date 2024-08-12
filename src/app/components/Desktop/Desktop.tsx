@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import "./Desktop.scss";
-import useWallpaper from "@/app/hooks/useWallpaper";
+import useWallpaper from "@/hooks/useWallpaper";
 
 type DesktopProps = {
   children: React.ReactNode;

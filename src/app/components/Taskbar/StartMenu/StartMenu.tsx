@@ -1,12 +1,12 @@
 "use client";
 
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/app/lib/constants";
+import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
 import clsx from "clsx";
 import Sidebar from "./Sidebar/Sidebar";
 import "./StartMenu.scss";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import useTaskbarMenuTransition from "@/app/hooks/useTaskbarMenuTransition";
+import useTaskbarMenuTransition from "@/hooks/useTaskbarMenuTransition";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;

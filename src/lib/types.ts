@@ -1,4 +1,4 @@
-import { VantaConfig } from "../ui/Wallpaper/vanta/types";
+import { VantaConfig } from "@/app/components/Wallpaper/vanta/types";
 
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;

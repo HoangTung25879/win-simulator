@@ -1,5 +1,5 @@
+import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 import { MotionProps } from "framer-motion";
-import { TRANSITIONS_IN_SECONDS } from "../lib/constants";
 
 const useTaskbarMenuTransition = (): MotionProps => {
   //* transition from initial -> active
