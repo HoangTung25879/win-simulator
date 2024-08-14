@@ -1,5 +1,5 @@
 "use client";
-
+import React from "react";
 import { useCallback, useRef, useState } from "react";
 import {
   AllApps,
@@ -18,7 +18,7 @@ type SidebarProps = {};
 
 type SidebarButton = {
   name: string;
-  icon: JSX.Element;
+  icon: React.JSX.Element;
 };
 
 const buttons: SidebarButton[] = [

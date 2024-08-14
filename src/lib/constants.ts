@@ -11,6 +11,14 @@ export const PREVENT_SCROLL = { preventScroll: true };
 
 export const FOCUSABLE_ELEMENT = { tabIndex: -1 };
 
+export const TRANSITIONS_IN_MS = {
+  DOUBLE_CLICK: 500,
+  LONG_PRESS: 500,
+  MOUSE_IN_OUT: 300,
+  TASKBAR_ITEM: 400,
+  WINDOW: 250,
+};
+
 export const TRANSITIONS_IN_SECONDS = {
   TASKBAR_ITEM: 0.1,
   WINDOW: 0.25,

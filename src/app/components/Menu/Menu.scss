@@ -1,0 +1,63 @@
+.context-menu {
+  background-color: #eeeeee;
+  border: 1px solid rgb(160, 160, 160);
+  box-shadow:
+    1px 1px 1px hsla(0, 0%, 20%, 70%),
+    2px 2px 2px hsla(0, 0%, 10%, 70%);
+  color: #0d0d0d;
+
+  height: fit-content;
+  width: fit-content;
+  padding: 4px 2px;
+  position: fixed;
+  font-size: 0.75rem;
+  .menu-item {
+    &.disabled {
+      color: rgb(109, 109, 109);
+      pointer-events: none;
+    }
+    hr {
+      background-color: rgb(145, 145, 145);
+      height: 1px;
+      margin: 3px 8px;
+    }
+    .item-button {
+      display: flex;
+      padding: 3px 0;
+      cursor: default;
+
+      &:hover,
+      &.active {
+        background-color: #fff;
+      }
+      .item-label {
+        display: flex;
+        height: 16px;
+        line-height: 16px;
+        margin-left: 32px;
+        margin-right: 64px;
+        place-items: center;
+        white-space: nowrap;
+        width: max-content;
+      }
+      img {
+        margin: 0 -24px 0 8px;
+      }
+      span {
+        margin: -1px -24px 0 8px;
+      }
+      svg {
+        fill: #fff;
+        height: 13px;
+        margin-top: 1px;
+        position: absolute;
+        width: 13px;
+      }
+      .icon > svg {
+        height: 15px;
+        left: 10px;
+        width: 15px;
+      }
+    }
+  }
+}

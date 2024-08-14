@@ -97,3 +97,21 @@ export const loadFiles = async (
           ? loadStyle(encodeURI(file))
           : loadScript(encodeURI(file), defer, force, asModule));
       }, Promise.resolve());
+
+export const haltEvent = (
+  event:
+    | Event
+    | React.DragEvent
+    | React.FocusEvent
+    | React.KeyboardEvent
+    | React.MouseEvent,
+): void => {
+  try {
+    if (event.cancelable) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  } catch {
+    // Ignore failured to halt event
+  }
+};

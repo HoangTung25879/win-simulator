@@ -10,9 +10,6 @@ export const baseConfig: VantaConfig = {
   forceAnimate: true,
   hh: 50,
   ww: 50,
-  hue: 225,
-  saturation: 40,
-  lightness: 20,
   material: {
     options: {
       fog: false,
@@ -22,7 +19,12 @@ export const baseConfig: VantaConfig = {
   shininess: 35,
   waveHeight: 20,
   waveSpeed: 0.25,
-  color: "hsl(225, 40%, 20%)",
+  //
+  color: "hsl(141, 40%, 20%)",
+  hue: 141,
+  saturation: 40,
+  lightness: 20,
+  //
   type: "WAVES",
 };
 
