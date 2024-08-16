@@ -1,9 +1,9 @@
 "use client";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import "./Desktop.scss";
 import useWallpaper from "@/hooks/useWallpaper";
-import { useMenu } from "@/contexts/menu";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
+import { useFileSystem } from "@/contexts/fileSystem";
 
 type DesktopProps = {
   children: React.ReactNode;
@@ -12,6 +12,8 @@ type DesktopProps = {
 const Desktop = ({ children }: DesktopProps) => {
   const desktopRef = useRef<HTMLDivElement | null>(null);
   useWallpaper(desktopRef);
+  const {} = useFileSystem();
+
   return (
     <div ref={desktopRef} className="desktop" {...FOCUSABLE_ELEMENT}>
       {children}

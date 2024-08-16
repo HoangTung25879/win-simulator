@@ -18,7 +18,7 @@ export const BASE_VIDEO_SELECTOR = ":scope > video";
 const useWallpaper = (desktopRef: MutableRefObject<HTMLElement | null>) => {
   const [wallpaperName, setWallpaperName] = useState<
     "VANTA WAVES" | "VANTA CLOUDS"
-  >("VANTA WAVES");
+  >("VANTA CLOUDS");
   const wallpaperTimerRef = useRef<number>();
 
   const resetWallpaper = useCallback(() => {

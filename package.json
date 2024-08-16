@@ -5,13 +5,17 @@
   "scripts": {
     "dev": "next dev -p 3002",
     "build": "next build",
+    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/wicg-file-system-access": "^2023.10.5",
+    "browserfs": "^1.4.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
     "framer-motion": "^11.3.8",
+    "idb": "^8.0.0",
     "next": "14.2.3",
     "prettier-plugin-classnames": "^0.7.0",
     "prettier-plugin-merge": "^0.7.0",

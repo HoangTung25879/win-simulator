@@ -2,6 +2,7 @@
 import { MenuProvider } from "@/contexts/menu";
 import Desktop from "./components/Desktop/Desktop";
 import Taskbar from "./components/Taskbar";
+import { FileSystemProvider } from "@/contexts/fileSystem";
 
 export default function Page() {
   const ChildrenComponent = () => (
@@ -11,9 +12,11 @@ export default function Page() {
   );
   return (
     <>
-      <MenuProvider>
-        <ChildrenComponent />
-      </MenuProvider>
+      <FileSystemProvider>
+        <MenuProvider>
+          <ChildrenComponent />
+        </MenuProvider>
+      </FileSystemProvider>
     </>
   );
 }

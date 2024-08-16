@@ -115,3 +115,6 @@ export const haltEvent = (
     // Ignore failured to halt event
   }
 };
+
+export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
+  new Blob([buffer], type ? { type } : undefined);
