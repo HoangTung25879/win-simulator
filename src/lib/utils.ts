@@ -118,3 +118,23 @@ export const haltEvent = (
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
+
+export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
+  mimeType
+    ? `data:${mimeType};base64,${buffer.toString("base64")}`
+    : URL.createObjectURL(bufferToBlob(buffer));
+
+export const toSorted = <T>(
+  array: T[],
+  compareFn?: (a: T, b: T) => number,
+): T[] => [...array].sort(compareFn);
+
+export const imageToBufferUrl = (
+  extension: string,
+  buffer: Buffer | string,
+): string =>
+  extension === ".svg"
+    ? `data:image/svg+xml;base64,${window.btoa(buffer.toString())}`
+    : `data:image/${
+        extension === ".ani" || extension === ".gif" ? "gif" : "png"
+      };base64,${buffer.toString("base64")}`;

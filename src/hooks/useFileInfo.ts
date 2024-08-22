@@ -1,5 +1,12 @@
+import {
+  getInfoWithExtension,
+  getInfoWithoutExtension,
+} from "@/app/components/Files/FileManager/functions";
 import { useFileSystem } from "@/contexts/fileSystem";
-import { useRef, useState } from "react";
+import { isMountedFolder } from "@/contexts/fileSystem/utils";
+import { MOUNTABLE_EXTENSIONS } from "@/lib/constants";
+import { getExtension } from "@/lib/utils";
+import { useEffect, useRef, useState } from "react";
 
 export type FileInfo = {
   comment?: string;
@@ -29,6 +36,41 @@ const useFileInfo = (
     setInfo(newInfo);
     updatingInfo.current = false;
   };
-  const {} = useFileSystem();
+  const { fs, rootFs } = useFileSystem();
+
+  useEffect(() => {
+    if (
+      fs &&
+      rootFs &&
+      !updatingInfo.current &&
+      isVisible &&
+      info === INITIAL_FILE_INFO
+    ) {
+      updatingInfo.current = true;
+
+      const extension = getExtension(path);
+      console.log("useFileInfo-1");
+      if (
+        !extension ||
+        (isDirectory &&
+          !MOUNTABLE_EXTENSIONS.has(extension) &&
+          !isMountedFolder(rootFs.mntMap[path]))
+      ) {
+        getInfoWithoutExtension(
+          fs,
+          rootFs,
+          path,
+          isDirectory,
+          hasNewFolderIcon,
+          updateInfo,
+        );
+      } else {
+        getInfoWithExtension(fs, path, extension, updateInfo);
+      }
+    }
+  }, [fs, hasNewFolderIcon, info, isDirectory, isVisible, path, rootFs]);
+
   return [info, setInfo];
 };
+
+export default useFileInfo;

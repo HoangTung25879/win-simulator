@@ -16,7 +16,19 @@ import {
   KEYVAL_STORE_NAME,
   supportsIndexedDB,
 } from "./core";
-import { join } from "path";
+import { basename, dirname, join } from "path";
+import { FileInfo } from "@/hooks/useFileInfo";
+import ini from "ini";
+import shortcutCache from "../../../public/.index/shortcutCache.json";
+import { SYSTEM_FILES, SYSTEM_PATHS } from "@/lib/constants";
+
+type InternetShortcut = {
+  BaseURL: string;
+  Comment: string;
+  IconFile: string;
+  Type: string;
+  URL: string;
+};
 
 const KNOWN_IDB_DBS = [
   "/classicube",
@@ -165,3 +177,50 @@ export const addFileSystemHandle = async (
     // Ignore errors storing handle
   }
 };
+
+export const getShortcutInfo = (
+  contents?: Buffer,
+  shortcutData?: InternetShortcut,
+): FileInfo => {
+  const {
+    InternetShortcut: {
+      BaseURL: pid = "",
+      Comment: comment = "",
+      IconFile: icon = "",
+      Type: type = "",
+      URL: url = "",
+    } = {},
+  } = shortcutData
+    ? { InternetShortcut: shortcutData }
+    : ((ini.parse(contents?.toString() || "") || {}) as {
+        InternetShortcut: InternetShortcut;
+      });
+
+  return {
+    comment,
+    // icon:
+    //   !icon && pid && pid !== "FileExplorer"
+    //     ? processDirectory[pid]?.icon
+    //     : icon,
+    icon,
+    pid,
+    type,
+    url,
+  };
+};
+
+export const getCachedShortcut = (path: string): FileInfo =>
+  getShortcutInfo(
+    undefined,
+    (
+      shortcutCache as unknown as Record<
+        string,
+        Record<string, InternetShortcut>
+      >
+    )?.[dirname(path)]?.[basename(path)],
+  );
+
+export const filterSystemFiles =
+  (directory: string) =>
+  (file: string): boolean =>
+    !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);

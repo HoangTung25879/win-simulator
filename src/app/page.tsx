@@ -3,6 +3,8 @@ import { MenuProvider } from "@/contexts/menu";
 import Desktop from "./components/Desktop/Desktop";
 import Taskbar from "./components/Taskbar";
 import { FileSystemProvider } from "@/contexts/fileSystem";
+import { ProcessProvider } from "@/contexts/process";
+import { SessionProvider } from "@/contexts/session";
 
 export default function Page() {
   const ChildrenComponent = () => (
@@ -12,11 +14,15 @@ export default function Page() {
   );
   return (
     <>
-      <FileSystemProvider>
-        <MenuProvider>
-          <ChildrenComponent />
-        </MenuProvider>
-      </FileSystemProvider>
+      <ProcessProvider>
+        <FileSystemProvider>
+          <SessionProvider>
+            <MenuProvider>
+              <ChildrenComponent />
+            </MenuProvider>
+          </SessionProvider>
+        </FileSystemProvider>
+      </ProcessProvider>
     </>
   );
 }

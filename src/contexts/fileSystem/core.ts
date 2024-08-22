@@ -118,3 +118,6 @@ export const getFileSystemHandles = async (): Promise<FileSystemHandles> => {
     (Object.create(null) as FileSystemHandles)
   );
 };
+
+export const get9pModifiedTime = (path: string): number =>
+  get9pData(path, IDX_MTIME);

@@ -35,39 +35,39 @@ type IFileSystemAccess = {
 };
 
 type FileSystemContextState = AsyncFS & {
-  addFile: (
-    directory: string,
-    callback: NewPath,
-    accept?: string,
-    multiple?: boolean,
-  ) => Promise<string[]>;
-  addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  copyEntries: (entries: string[]) => void;
-  createPath: (
-    name: string,
-    directory: string,
-    buffer?: Buffer,
-  ) => Promise<string>;
-  deletePath: (path: string) => Promise<boolean>;
+  // addFile: (
+  //   directory: string,
+  //   callback: NewPath,
+  //   accept?: string,
+  //   multiple?: boolean,
+  // ) => Promise<string[]>;
+  // addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+  // copyEntries: (entries: string[]) => void;
+  // createPath: (
+  //   name: string,
+  //   directory: string,
+  //   buffer?: Buffer,
+  // ) => Promise<string>;
+  // deletePath: (path: string) => Promise<boolean>;
   fs?: FSModule;
-  mapFs: (
-    directory: string,
-    existingHandle?: FileSystemDirectoryHandle,
-  ) => Promise<string>;
-  mkdirRecursive: (path: string) => Promise<void>;
-  mountEmscriptenFs: (FS: EmscriptenFS, fsName?: string) => Promise<string>;
-  mountFs: (url: string) => Promise<void>;
-  moveEntries: (entries: string[]) => void;
-  pasteList: FilePasteOperations;
-  removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+  // mapFs: (
+  //   directory: string,
+  //   existingHandle?: FileSystemDirectoryHandle,
+  // ) => Promise<string>;
+  // mkdirRecursive: (path: string) => Promise<void>;
+  // mountEmscriptenFs: (FS: EmscriptenFS, fsName?: string) => Promise<string>;
+  // mountFs: (url: string) => Promise<void>;
+  // moveEntries: (entries: string[]) => void;
+  // pasteList: FilePasteOperations;
+  // removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
   rootFs?: RootFileSystem;
-  unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
-  unMountFs: (url: string) => void;
-  updateFolder: (
-    folder: string,
-    newFile?: string,
-    oldFile?: string,
-  ) => Promise<void>;
+  // unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
+  // unMountFs: (url: string) => void;
+  // updateFolder: (
+  //   folder: string,
+  //   newFile?: string,
+  //   oldFile?: string,
+  // ) => Promise<void>;
 };
 
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
@@ -322,49 +322,49 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [unMountFs, updateFolder],
   );
 
-  const addFile = useCallback(
-    (directory: string, callback: NewPath): Promise<string[]> =>
-      new Promise((resolve) => {
-        const fileInput = document.createElement("input");
+  // const addFile = useCallback(
+  //   (directory: string, callback: NewPath): Promise<string[]> =>
+  //     new Promise((resolve) => {
+  //       const fileInput = document.createElement("input");
 
-        fileInput.type = "file";
-        fileInput.multiple = true;
-        fileInput.setAttribute("style", "display: none");
-        fileInput.addEventListener(
-          "change",
-          (event) => {
-            handleFileInputEvent(
-              event as InputChangeEvent,
-              callback,
-              directory,
-              openTransferDialog,
-            );
+  //       fileInput.type = "file";
+  //       fileInput.multiple = true;
+  //       fileInput.setAttribute("style", "display: none");
+  //       fileInput.addEventListener(
+  //         "change",
+  //         (event) => {
+  //           handleFileInputEvent(
+  //             event as InputChangeEvent,
+  //             callback,
+  //             directory,
+  //             openTransferDialog,
+  //           );
 
-            const { files } = getEventData(event as InputChangeEvent);
+  //           const { files } = getEventData(event as InputChangeEvent);
 
-            if (files) {
-              resolve(
-                [...files].map((file) =>
-                  files instanceof FileList
-                    ? (file as File).name
-                    : (
-                        (
-                          file as DataTransferItem
-                        ).webkitGetAsEntry() as FileSystemEntry
-                      ).name,
-                ),
-              );
-            }
+  //           if (files) {
+  //             resolve(
+  //               [...files].map((file) =>
+  //                 files instanceof FileList
+  //                   ? (file as File).name
+  //                   : (
+  //                       (
+  //                         file as DataTransferItem
+  //                       ).webkitGetAsEntry() as FileSystemEntry
+  //                     ).name,
+  //               ),
+  //             );
+  //           }
 
-            fileInput.remove();
-          },
-          { once: true },
-        );
-        document.body.append(fileInput);
-        fileInput.click();
-      }),
-    [],
-  );
+  //           fileInput.remove();
+  //         },
+  //         { once: true },
+  //       );
+  //       document.body.append(fileInput);
+  //       fileInput.click();
+  //     }),
+  //   [],
+  // );
 
   useEffect(() => {
     if (!restoredFsHandles.current && rootFs) {
@@ -402,20 +402,20 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
   return {
     // addFile,
-    addFsWatcher,
-    copyEntries,
+    // addFsWatcher,
+    // copyEntries,
     // createPath,
     // deletePath,
-    mapFs,
+    // mapFs,
     // mkdirRecursive,
-    mountEmscriptenFs,
+    // mountEmscriptenFs,
     // mountFs,
-    moveEntries,
-    pasteList,
-    removeFsWatcher,
-    unMapFs,
-    unMountFs,
-    updateFolder,
+    // moveEntries,
+    // pasteList,
+    // removeFsWatcher,
+    // unMapFs,
+    // unMountFs,
+    // updateFolder,
     ...asyncFs,
   };
 };

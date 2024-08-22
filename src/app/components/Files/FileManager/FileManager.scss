@@ -1,0 +1,8 @@
+.desktop-file-manager {
+  margin-top: 7px;
+  width: 100%;
+  .file {
+    display: flex;
+    flex-direction: column;
+  }
+}
