@@ -16,15 +16,15 @@ const DESKTOP_PATH = `${HOME}/Desktop`;
 const START_MENU_PATH = `${HOME}/Start Menu`;
 
 const ICON_PATH = "/System/Icons";
-const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
-const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
+const SHORTCUT_ICON = `${ICON_PATH}/shortcut.png`;
+const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.png`;
 
 const USER_ICON_PATH = `${HOME}/Icons`;
 const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 const YT_ICON_CACHE = `${ICON_CACHE}/YouTube`;
 const ICON_CACHE_EXTENSION = ".cache";
 
-const VLC_SUBICON = "/System/Icons/16x16/vlc.webp";
+const VLC_SUBICON = "/System/Icons/16x16/vlc.png";
 
 const isYouTubeUrl = (url) =>
   url.includes("youtube.com/") || url.includes("youtu.be/");
@@ -60,7 +60,7 @@ const getPublicDirectoryIcons = (directory) => [
         else {
           if (isVideo && isYouTubeUrl(url)) {
             const iconFileName = `/${getYouTubeUrlId(
-              url
+              url,
             )}${ICON_CACHE_EXTENSION}`;
 
             if (
@@ -83,7 +83,7 @@ const getPublicDirectoryIcons = (directory) => [
       }
 
       return icons;
-    }, [])
+    }, []),
   ),
 ];
 
@@ -116,12 +116,15 @@ if (!existsSync(join(PUBLIC_DIR, ".index"))) {
 
 writeFileSync(
   "./public/.index/desktopIcons.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)])
+  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)]),
 );
 
 writeFileSync(
   "./public/.index/startMenuIcons.json",
-  JSON.stringify([NEW_FOLDER_ICON, ...getPublicDirectoryIcons(START_MENU_PATH)])
+  JSON.stringify([
+    NEW_FOLDER_ICON,
+    ...getPublicDirectoryIcons(START_MENU_PATH),
+  ]),
 );
 
 writeFileSync("./public/.index/iniIcons.json", JSON.stringify(getIniIcons()));
