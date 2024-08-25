@@ -43,8 +43,8 @@ const KNOWN_IDB_DBS = [
 ];
 
 export const isExistingFile = (
-  { birthtime, ctime }: Stats = {} as Stats,
-): boolean => Boolean(birthtime && birthtime === ctime);
+  { birthtimeMs, ctimeMs }: any = {} as Stats,
+): boolean => Boolean(birthtimeMs && birthtimeMs === ctimeMs);
 
 export const resetStorage = (rootFs?: RootFileSystem): Promise<void> =>
   new Promise((resolve, reject) => {

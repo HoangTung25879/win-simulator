@@ -49,7 +49,6 @@ const useFileInfo = (
       updatingInfo.current = true;
 
       const extension = getExtension(path);
-      console.log("useFileInfo-1");
       if (
         !extension ||
         (isDirectory &&

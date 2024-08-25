@@ -1,8 +1,36 @@
 .desktop-file-manager {
-  margin-top: 7px;
   width: 100%;
-  .file {
+  contain: strict;
+  display: grid;
+  gap: 28px 1px;
+  grid-auto-flow: column;
+  grid-template-columns: repeat(auto-fill, 74px);
+  grid-template-rows: repeat(auto-fill, 70px);
+  place-content: flex-start;
+  overflow: visible;
+  padding: 5px 0;
+  padding-bottom: 21px;
+
+  .list-desktop-file {
     display: flex;
-    flex-direction: column;
+    height: min-content;
+    outline-offset: -2px;
+    padding: 2px;
+    &:hover {
+      background-color: hsla(207, 30%, 72%, 25%);
+      outline: 1px solid hsla(207, 30%, 72%, 30%);
+    }
+    &.focus-within {
+      background-color: hsla(207, 60%, 72%, 35%);
+      outline: 1px solid hsla(207, 60%, 72%, 35%);
+      z-index: 1;
+      &.only-focused {
+        // margin-bottom: -1000px;
+      }
+      &:hover {
+        background-color: hsla(207, 90%, 72%, 30%);
+        outline: 1px solid hsla(207, 90%, 72%, 40%);
+      }
+    }
   }
 }

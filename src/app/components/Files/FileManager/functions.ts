@@ -362,7 +362,7 @@ export const getIconByFileExtension = (extension: string): string => {
   const { icon: extensionIcon = "", process: [defaultProcess = ""] = [] } =
     extension in extensions ? extensions[extension] : {};
 
-  if (extensionIcon) return `/System/Icons/${extensionIcon}.webp`;
+  if (extensionIcon) return `/System/Icons/${extensionIcon}.png`;
 
   return (
     processDirectory[defaultProcess || getDefaultFileViewer(extension)]?.icon ||
@@ -533,7 +533,7 @@ export const getInfoWithExtension = (
       }
       break;
     // case ".exe":
-    //   getInfoByFileExtension("/System/Icons/executable.webp", (signal) =>
+    //   getInfoByFileExtension("/System/Icons/executable.png", (signal) =>
     //     fs.readFile(path, async (error, contents = Buffer.from("")) => {
     //       if (!error && contents.length > 0 && !signal.aborted) {
     //         const { extractExeIcon } = await import(
@@ -550,7 +550,7 @@ export const getInfoWithExtension = (
     //   break;
     // case ".mp3":
     //   getInfoByFileExtension(
-    //     `/System/Icons/${extensions[".mp3"].icon as string}.webp`,
+    //     `/System/Icons/${extensions[".mp3"].icon as string}.png`,
     //     (signal) =>
     //       fs.readFile(path, (error, contents = Buffer.from("")) => {
     //         if (!error && !signal.aborted) {
@@ -590,7 +590,7 @@ export const getInfoWithExtension = (
     //   decodeImage();
     //   break;
     // case ".whtml":
-    //   getInfoByFileExtension("/System/Icons/tinymce.webp", (signal) =>
+    //   getInfoByFileExtension("/System/Icons/tinymce.png", (signal) =>
     //     fs.readFile(path, async (error, contents = Buffer.from("")) => {
     //       if (!error && contents.length > 0 && !signal.aborted) {
     //         const htmlToImage = await getHtmlToImage();

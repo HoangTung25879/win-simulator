@@ -1,3 +1,4 @@
+import { FocusEntryFunctions } from "@/app/components/Files/FileEntry/useFocusableEntries";
 import {
   FileStat,
   sortByDate,
@@ -69,6 +70,7 @@ const NO_FILES = undefined;
 const useFolder = (
   directory: string,
   setRenaming: React.Dispatch<React.SetStateAction<string>>,
+  { blurEntry, focusEntry }: FocusEntryFunctions,
   { hideFolders, hideLoading, skipFsWatcher, skipSorting }: FolderFlags,
 ): Folder => {
   const [currentDirectory, setCurrentDirectory] = useState(directory);
@@ -126,7 +128,6 @@ const useFolder = (
 
   const updateFiles = useCallback(
     async (newFile?: string, oldFile?: string) => {
-      console.log("UPDATEFILES", newFile, oldFile);
       if (oldFile) {
         if (!(await exists(join(directory, oldFile)))) {
           const oldName = basename(oldFile);
@@ -146,7 +147,7 @@ const useFolder = (
               ),
             );
           } else {
-            // blurEntry(oldName);
+            blurEntry(oldName);
             setFiles(
               ({ [oldName]: _fileStats, ...currentFiles } = {}) => currentFiles,
             );
@@ -234,7 +235,7 @@ const useFolder = (
       }
     },
     [
-      // blurEntry,
+      blurEntry,
       // closeProcessesByUrl,
       directory,
       exists,

@@ -1,5 +1,14 @@
-import { extname } from "path";
-import { ONE_TIME_PASSIVE_EVENT } from "./constants";
+import { basename, dirname, extname, join } from "path";
+import {
+  ICON_CACHE,
+  ICON_PATH,
+  ICON_RES_MAP,
+  MAX_ICON_SIZE,
+  MAX_RES_ICON_OVERRIDE,
+  ONE_TIME_PASSIVE_EVENT,
+  SUPPORTED_ICON_SIZES,
+  USER_ICON_PATH,
+} from "./constants";
 
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
@@ -138,3 +147,83 @@ export const imageToBufferUrl = (
     : `data:image/${
         extension === ".ani" || extension === ".gif" ? "gif" : "png"
       };base64,${buffer.toString("base64")}`;
+
+export const isDynamicIcon = (icon?: string): boolean =>
+  typeof icon === "string" &&
+  (icon.startsWith(ICON_PATH) ||
+    (icon.startsWith(USER_ICON_PATH) && !icon.startsWith(ICON_CACHE)));
+
+export const cleanUpBufferUrl = (url: string): void => URL.revokeObjectURL(url);
+
+export const imageSrc = (
+  imagePath: string,
+  size: number,
+  ratio: number,
+  extension: string,
+): string => {
+  const imageName = basename(imagePath, ".png");
+  const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
+  const ratioSize = size * ratio;
+  const imageSize = Math.min(
+    MAX_ICON_SIZE,
+    expectedSize === size ? Math.min(maxIconSize, ratioSize) : ratioSize,
+  );
+
+  return `${join(
+    dirname(imagePath),
+    `${ICON_RES_MAP[imageSize] || imageSize}x${
+      ICON_RES_MAP[imageSize] || imageSize
+    }`,
+    `${imageName}${extension}`,
+  ).replace(/\\/g, "/")}${ratio > 1 ? ` ${ratio}x` : ""}`;
+};
+
+export const imageSrcs = (
+  imagePath: string,
+  size: number,
+  extension: string,
+  failedUrls = [] as string[],
+): string => {
+  const srcs = [
+    imageSrc(imagePath, size, 1, extension),
+    imageSrc(imagePath, size, 2, extension),
+    imageSrc(imagePath, size, 3, extension),
+  ]
+    .filter(
+      (url) =>
+        failedUrls.length === 0 || failedUrls.includes(url.split(" ")[0]),
+    )
+    .join(", ");
+
+  return failedUrls?.includes(srcs) ? "" : srcs;
+};
+
+export const createFallbackSrcSet = (
+  src: string,
+  failedUrls: string[],
+): string => {
+  const failedSizes = new Set(
+    new Set(
+      failedUrls.map((failedUrl) => {
+        const fileName = basename(src, extname(src));
+
+        return Number(
+          failedUrl
+            .replace(`${ICON_PATH}/`, "")
+            .replace(`${USER_ICON_PATH}/`, "")
+            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.png`, "")
+            .split("x")[0],
+        );
+      }),
+    ),
+  );
+  const possibleSizes = SUPPORTED_ICON_SIZES.filter(
+    (size) => !failedSizes.has(size),
+  );
+
+  return possibleSizes
+    .map((size) => imageSrc(src, size, 1, extname(src)))
+    .reverse()
+    .join(", ");
+};
