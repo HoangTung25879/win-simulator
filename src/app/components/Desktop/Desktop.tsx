@@ -11,15 +11,15 @@ type DesktopProps = {
 };
 
 const Desktop = ({ children }: DesktopProps) => {
-  const desktopRef = useRef<HTMLDivElement | null>(null);
+  const desktopRef = useRef<HTMLElement | null>(null);
   useWallpaper(desktopRef);
   const {} = useFileSystem();
 
   return (
-    <div ref={desktopRef} className="desktop" {...FOCUSABLE_ELEMENT}>
+    <main ref={desktopRef} className="desktop" {...FOCUSABLE_ELEMENT}>
       <DesktopFileManager url={DESKTOP_PATH} />
       {children}
-    </div>
+    </main>
   );
 };
 

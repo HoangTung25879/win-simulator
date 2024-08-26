@@ -9,6 +9,15 @@ import {
   SUPPORTED_ICON_SIZES,
   USER_ICON_PATH,
 } from "./constants";
+import {
+  IconPosition,
+  IconPositions,
+  SortOrders,
+} from "@/contexts/session/types";
+import { DragPosition } from "@/app/components/Files/FileEntry/useDraggableEntries";
+
+export const pxToNum = (value: number | string = 0): number =>
+  typeof value === "number" ? value : Number.parseFloat(value);
 
 export const createOffscreenCanvas = (
   containerElement: HTMLElement,
@@ -226,4 +235,286 @@ export const createFallbackSrcSet = (
     .map((size) => imageSrc(src, size, 1, extname(src)))
     .reverse()
     .join(", ");
+};
+
+const GRID_TEMPLATE_ROWS = "grid-template-rows";
+
+const calcGridDropPosition = (
+  gridElement: HTMLElement | null,
+  { x = 0, y = 0 }: DragPosition,
+): IconPosition => {
+  if (!gridElement) return Object.create(null) as IconPosition;
+
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRows = gridComputedStyle
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
+    .split(" ");
+  const gridTemplateColumns = gridComputedStyle
+    .getPropertyValue("grid-template-columns")
+    .split(" ");
+  const gridRowHeight = pxToNum(gridTemplateRows[0]);
+  const gridColumnWidth = pxToNum(gridTemplateColumns[0]);
+  const gridColumnGap = pxToNum(
+    gridComputedStyle.getPropertyValue("grid-column-gap"),
+  );
+  const gridRowGap = pxToNum(
+    gridComputedStyle.getPropertyValue("grid-row-gap"),
+  );
+  const paddingTop = pxToNum(gridComputedStyle.getPropertyValue("padding-top"));
+
+  return {
+    gridColumnStart: Math.min(
+      Math.ceil(x / (gridColumnWidth + gridColumnGap)),
+      gridTemplateColumns.length,
+    ),
+    gridRowStart: Math.min(
+      Math.ceil((y - paddingTop) / (gridRowHeight + gridRowGap)),
+      gridTemplateRows.length,
+    ),
+  };
+};
+
+export const updateIconPositionsIfEmpty = (
+  url: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders,
+): IconPositions => {
+  if (!gridElement) return iconPositions;
+
+  const [fileOrder = []] = sortOrders[url] || [];
+  const newIconPositions: IconPositions = {};
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
+    .split(" ").length;
+
+  fileOrder.forEach((entry, index) => {
+    const entryUrl = join(url, entry);
+    if (!iconPositions[entryUrl]) {
+      const gridEntry = [...gridElement.children].find((element) =>
+        element.querySelector(`button[aria-label="${entry}"]`),
+      );
+
+      if (gridEntry instanceof HTMLElement) {
+        const { x, y, height, width } = gridEntry.getBoundingClientRect();
+
+        newIconPositions[entryUrl] = calcGridDropPosition(gridElement, {
+          x: x - width,
+          y: y + height,
+        });
+      } else {
+        const position = index + 1;
+        const gridColumnStart = Math.ceil(position / gridTemplateRowCount);
+        const gridRowStart =
+          position - gridTemplateRowCount * (gridColumnStart - 1);
+
+        newIconPositions[entryUrl] = { gridColumnStart, gridRowStart };
+      }
+    }
+  });
+
+  return Object.keys(newIconPositions).length > 0
+    ? { ...newIconPositions, ...iconPositions }
+    : iconPositions;
+};
+
+const calcGridPositionOffset = (
+  url: string,
+  targetUrl: string,
+  currentIconPositions: IconPositions,
+  gridDropPosition: IconPosition,
+  [, ...draggedEntries]: string[],
+  gridElement: HTMLElement,
+): IconPosition => {
+  if (currentIconPositions[url] && currentIconPositions[targetUrl]) {
+    return {
+      gridColumnStart:
+        currentIconPositions[url].gridColumnStart +
+        (gridDropPosition.gridColumnStart -
+          currentIconPositions[targetUrl].gridColumnStart),
+      gridRowStart:
+        currentIconPositions[url].gridRowStart +
+        (gridDropPosition.gridRowStart -
+          currentIconPositions[targetUrl].gridRowStart),
+    };
+  }
+
+  const gridComputedStyle = window.getComputedStyle(gridElement);
+  const gridTemplateRowCount = gridComputedStyle
+    .getPropertyValue(GRID_TEMPLATE_ROWS)
+    .split(" ").length;
+  const {
+    gridColumnStart: targetGridColumnStart,
+    gridRowStart: targetGridRowStart,
+  } = gridDropPosition;
+  const gridRowStart =
+    targetGridRowStart + draggedEntries.indexOf(basename(url)) + 1;
+
+  return gridRowStart > gridTemplateRowCount
+    ? {
+        gridColumnStart:
+          targetGridColumnStart +
+          Math.ceil(gridRowStart / gridTemplateRowCount) -
+          1,
+        gridRowStart:
+          gridRowStart % gridTemplateRowCount || gridTemplateRowCount,
+      }
+    : {
+        gridColumnStart: targetGridColumnStart,
+        gridRowStart,
+      };
+};
+
+export const updateIconPositions = (
+  directory: string,
+  gridElement: HTMLElement | null,
+  iconPositions: IconPositions,
+  sortOrders: SortOrders,
+  dragPosition: DragPosition,
+  draggedEntries: string[],
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>,
+  exists: (path: string) => Promise<boolean>,
+): void => {
+  if (!gridElement || draggedEntries.length === 0) return;
+  console.log("updateIconPositions", {
+    directory,
+    iconPositions,
+    sortOrders,
+    dragPosition,
+    draggedEntries,
+  });
+  const currentIconPositions = updateIconPositionsIfEmpty(
+    directory,
+    gridElement,
+    iconPositions,
+    sortOrders,
+  );
+  const gridDropPosition = calcGridDropPosition(gridElement, dragPosition);
+  const conflictingIcon = Object.entries(currentIconPositions).find(
+    ([, { gridColumnStart, gridRowStart }]) =>
+      gridColumnStart === gridDropPosition.gridColumnStart &&
+      gridRowStart === gridDropPosition.gridRowStart,
+  );
+  const processIconMove = (): void => {
+    const targetFile =
+      draggedEntries.find((entry) =>
+        entry.startsWith(document.activeElement?.textContent || ""),
+      ) || draggedEntries[0];
+    const targetUrl = join(directory, targetFile);
+    const adjustDraggedEntries = [
+      targetFile,
+      ...draggedEntries.filter((entry) => entry !== targetFile),
+    ];
+    const newIconPositions = Object.fromEntries(
+      adjustDraggedEntries
+        .map<[string, IconPosition]>((entryFile) => {
+          const url = join(directory, entryFile);
+
+          return [
+            url,
+            url === targetUrl
+              ? gridDropPosition
+              : calcGridPositionOffset(
+                  url,
+                  targetUrl,
+                  currentIconPositions,
+                  gridDropPosition,
+                  adjustDraggedEntries,
+                  gridElement,
+                ),
+          ];
+        })
+        .filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            gridColumnStart >= 1 && gridRowStart >= 1,
+        ),
+    );
+
+    setIconPositions({
+      ...currentIconPositions,
+      ...Object.fromEntries(
+        Object.entries(newIconPositions).filter(
+          ([, { gridColumnStart, gridRowStart }]) =>
+            !Object.values(currentIconPositions).some(
+              ({
+                gridColumnStart: currentGridColumnStart,
+                gridRowStart: currentRowColumnStart,
+              }) =>
+                gridColumnStart === currentGridColumnStart &&
+                gridRowStart === currentRowColumnStart,
+            ),
+        ),
+      ),
+    });
+  };
+
+  if (conflictingIcon) {
+    const [conflictingIconPath] = conflictingIcon;
+
+    exists(conflictingIconPath).then((pathExists) => {
+      if (!pathExists) {
+        delete currentIconPositions[conflictingIconPath];
+        processIconMove();
+      }
+    });
+  } else {
+    processIconMove();
+  }
+};
+
+const rowBlank = (imageData: ImageData, width: number, y: number): boolean => {
+  for (let x = 0; x < width; ++x) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+const columnBlank = (
+  imageData: ImageData,
+  width: number,
+  x: number,
+  top: number,
+  bottom: number,
+): boolean => {
+  for (let y = top; y < bottom; ++y) {
+    if (imageData.data[y * width * 4 + x * 4 + 3] !== 0) return false;
+  }
+  return true;
+};
+
+export const trimCanvasToTopLeft = (
+  canvas: HTMLCanvasElement,
+): HTMLCanvasElement => {
+  const ctx = canvas.getContext("2d", {
+    alpha: true,
+    desynchronized: true,
+    willReadFrequently: true,
+  });
+
+  if (!ctx) return canvas;
+
+  const { height, ownerDocument, width } = canvas;
+  const imageData = ctx.getImageData(0, 0, width, height);
+  const { height: bottom, width: right } = imageData;
+
+  let top = 0;
+  let left = 0;
+
+  while (top < bottom && rowBlank(imageData, width, top)) ++top;
+  while (left < right && columnBlank(imageData, width, left, top, bottom)) {
+    ++left;
+  }
+
+  const trimmed = ctx.getImageData(left, top, right - left, bottom - top);
+  const copy = ownerDocument.createElement("canvas");
+  const copyCtx = copy.getContext("2d");
+
+  if (!copyCtx) return canvas;
+
+  copy.width = trimmed.width;
+  copy.height = trimmed.height;
+  copyCtx.putImageData(trimmed, 0, 0);
+
+  return copy;
 };

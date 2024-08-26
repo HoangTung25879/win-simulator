@@ -1,4 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useFileSystem } from "../fileSystem";
 import {
   IconPositions,
@@ -11,10 +17,15 @@ import {
 } from "./types";
 import {
   DEFAULT_ASCENDING,
+  DESKTOP_GRID_ID,
+  DESKTOP_PATH,
   SESSION_FILE,
+  SYSTEM_FILES,
   TRANSITIONS_IN_MS,
 } from "@/lib/constants";
 import defaultSession from "../../../public/session.json";
+import { dirname } from "path";
+import { updateIconPositionsIfEmpty } from "@/lib/utils";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 
@@ -59,6 +70,54 @@ const useSessionContextState = (): SessionContextState => {
         };
       }),
     [],
+  );
+
+  const setAndUpdateIconPositions = useCallback(
+    async (positions: SetStateAction<IconPositions>): Promise<void> => {
+      if (typeof positions === "function") {
+        return setIconPositions(positions);
+      }
+
+      const [firstIcon] = Object.keys(positions) || [];
+      const isDesktop = firstIcon && DESKTOP_PATH === dirname(firstIcon);
+
+      if (isDesktop) {
+        const desktopGrid = document.getElementById(DESKTOP_GRID_ID);
+
+        if (desktopGrid instanceof HTMLOListElement) {
+          try {
+            const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
+              sortOrders || {};
+            const newDesktopSortOrder = {
+              [DESKTOP_PATH]: [
+                [
+                  ...new Set([
+                    ...desktopFileOrder,
+                    ...(await readdir(DESKTOP_PATH)).filter(
+                      (entry) => !SYSTEM_FILES.has(entry),
+                    ),
+                  ]),
+                ],
+              ],
+            } as SortOrders;
+
+            return setIconPositions(
+              updateIconPositionsIfEmpty(
+                DESKTOP_PATH,
+                desktopGrid,
+                positions,
+                newDesktopSortOrder,
+              ),
+            );
+          } catch {
+            // Ignore failure to update icon positions with directory
+          }
+        }
+      }
+
+      return setIconPositions(positions);
+    },
+    [readdir, sortOrders],
   );
 
   useEffect(() => {
@@ -178,7 +237,7 @@ const useSessionContextState = (): SessionContextState => {
     setCursor,
     // setForegroundId,
     // setHaltSession,
-    // setIconPositions: setAndUpdateIconPositions,
+    setIconPositions: setAndUpdateIconPositions,
     // setRunHistory,
     setSortOrder,
     // setThemeName,

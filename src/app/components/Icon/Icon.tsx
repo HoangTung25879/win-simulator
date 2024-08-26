@@ -39,40 +39,43 @@ const Icon = forwardRef<
   );
 
   return (
-    <Image
-      ref={ref}
-      loading={eager ? "eager" : "lazy"}
-      width={width}
-      height={height}
-      decoding="async"
-      draggable={false}
-      fetchPriority={eager ? "high" : "auto"}
-      className="pointer-events-none aspect-square object-contain"
-      style={{
-        left: offset || undefined,
-        maxHeight: `${height}px`,
-        maxWidth: `${width}px`,
-        minHeight: `${height}px`,
-        minWidth: `${width}px`,
-        opacity: `${moving ? 0.5 : 1}`,
-        top: offset || undefined,
-        visibility: loaded ? "visible" : "hidden",
-      }}
-      onError={({ target }) => {
-        const { currentSrc = "" } = (target as HTMLImageElement) || {};
-        try {
-          const { pathname } = new URL(currentSrc);
-          if (pathname && failedUrl !== pathname) {
-            setFailedUrl(pathname);
+    src && (
+      <Image
+        ref={ref}
+        loading={eager ? "eager" : "lazy"}
+        width={width}
+        height={height}
+        decoding="async"
+        draggable={false}
+        priority={eager ? true : false}
+        fetchPriority={eager ? "high" : "auto"}
+        className="pointer-events-none aspect-square object-contain"
+        style={{
+          left: offset || undefined,
+          maxHeight: `${height}px`,
+          maxWidth: `${width}px`,
+          minHeight: `${height}px`,
+          minWidth: `${width}px`,
+          opacity: `${moving ? 0.5 : 1}`,
+          top: offset || undefined,
+          visibility: loaded ? "visible" : "hidden",
+        }}
+        onError={({ target }) => {
+          const { currentSrc = "" } = (target as HTMLImageElement) || {};
+          try {
+            const { pathname } = new URL(currentSrc);
+            if (pathname && failedUrl !== pathname) {
+              setFailedUrl(pathname);
+            }
+          } catch {
+            // Ignore failure to log failed url
           }
-        } catch {
-          // Ignore failure to log failed url
-        }
-      }}
-      onLoad={() => setLoaded(true)}
-      src={src}
-      alt={alt || ""}
-    />
+        }}
+        onLoad={() => setLoaded(true)}
+        src={src}
+        alt={alt || ""}
+      />
+    )
   );
 });
 

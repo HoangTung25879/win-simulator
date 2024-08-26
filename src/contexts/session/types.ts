@@ -56,5 +56,6 @@ export type SessionContextState = SessionData & {
     sortBy?: SortBy,
     ascending?: boolean,
   ) => void;
+  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
   stackOrder: string[];
 };

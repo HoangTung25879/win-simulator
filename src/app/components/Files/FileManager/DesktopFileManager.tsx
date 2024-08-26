@@ -6,15 +6,22 @@ import { useMemo, useRef, useState } from "react";
 import "./FileManager.scss";
 import FileEntry from "../FileEntry/FileEntry";
 import { basename, join } from "path";
-import { FOCUSABLE_ELEMENT, SHORTCUT_EXTENSION } from "@/lib/constants";
+import {
+  DESKTOP_GRID_ID,
+  FOCUSABLE_ELEMENT,
+  SHORTCUT_EXTENSION,
+} from "@/lib/constants";
 import useFocusableEntries from "../FileEntry/useFocusableEntries";
 import clsx from "clsx";
 import useSelection from "./Selection/useSelection";
 import SelectionArea from "./Selection/SelectionArea";
+import useDraggableEntries from "../FileEntry/useDraggableEntries";
 
 type DesktopFileManagerProps = {
   url: string;
 };
+
+const allowMoving = true;
 
 const DesktopFileManager = ({ url }: DesktopFileManagerProps) => {
   const [currentUrl, setCurrentUrl] = useState(url);
@@ -27,10 +34,18 @@ const DesktopFileManager = ({ url }: DesktopFileManagerProps) => {
   const { files, isLoading } = useFolder(url, setRenaming, focusFunctions, {});
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions);
+  const draggableEntry = useDraggableEntries(
+    focusedEntries,
+    focusFunctions,
+    fileManagerRef,
+    isSelecting,
+    allowMoving,
+  );
 
   const fileKeys = useMemo(() => Object.keys(files), [files]);
   return (
     <ol
+      id={DESKTOP_GRID_ID}
       ref={fileManagerRef}
       className={clsx(
         "desktop-file-manager h-[calc(100%-theme(spacing[taskbar-height]))]",
@@ -43,7 +58,12 @@ const DesktopFileManager = ({ url }: DesktopFileManagerProps) => {
       {fileKeys.map((file) => {
         const { className, ...rest } = focusableEntry(file);
         return (
-          <li className={clsx("list-desktop-file", className)} {...rest}>
+          <li
+            key={file}
+            className={clsx("list-desktop-file", className)}
+            {...draggableEntry(url, file, renaming === file)}
+            {...rest}
+          >
             <FileEntry
               fileManagerRef={fileManagerRef}
               focusFunctions={focusFunctions}

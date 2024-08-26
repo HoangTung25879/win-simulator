@@ -52,7 +52,7 @@ const FileEntry = ({
   selectionRect,
 }: FileEntryProps) => {
   const { blurEntry, focusEntry } = focusFunctions;
-  const buttonRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
@@ -61,17 +61,17 @@ const FileEntry = ({
   );
   const iconRef = useRef<HTMLImageElement | null>(null);
   const fileName = basename(path);
-  console.log("FileEntry", {
-    comment,
-    getIcon,
-    icon,
-    pid,
-    subIcons,
-    url,
-    name,
-    path,
-    stats,
-  });
+  // console.log("FileEntry", {
+  //   comment,
+  //   getIcon,
+  //   icon,
+  //   pid,
+  //   subIcons,
+  //   url,
+  //   name,
+  //   path,
+  //   stats,
+  // });
 
   useLayoutEffect(() => {
     if (buttonRef.current && fileManagerRef.current) {
@@ -117,12 +117,12 @@ const FileEntry = ({
   ]);
 
   return (
-    <div ref={buttonRef} role="button" className="file-entry">
+    <button aria-label={name} ref={buttonRef} className="file-entry">
       <figure>
-        <Icon ref={iconRef} imgSize={48} src={icon} alt={name} />
+        <Icon ref={iconRef} imgSize={48} src={icon} alt={name} eager />
         <figcaption className="pointer-events-none">{name}</figcaption>
       </figure>
-    </div>
+    </button>
   );
 };
 
