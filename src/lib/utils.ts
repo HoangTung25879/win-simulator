@@ -1,5 +1,6 @@
 import { basename, dirname, extname, join } from "path";
 import {
+  DEFAULT_LOCALE,
   ICON_CACHE,
   ICON_PATH,
   ICON_RES_MAP,
@@ -7,6 +8,7 @@ import {
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
   SUPPORTED_ICON_SIZES,
+  TIMESTAMP_DATE_FORMAT,
   USER_ICON_PATH,
 } from "./constants";
 import {
@@ -15,6 +17,7 @@ import {
   SortOrders,
 } from "@/contexts/session/types";
 import { DragPosition } from "@/app/components/Files/FileEntry/useDraggableEntries";
+import dayjs from "dayjs";
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
@@ -377,13 +380,6 @@ export const updateIconPositions = (
   exists: (path: string) => Promise<boolean>,
 ): void => {
   if (!gridElement || draggedEntries.length === 0) return;
-  console.log("updateIconPositions", {
-    directory,
-    iconPositions,
-    sortOrders,
-    dragPosition,
-    draggedEntries,
-  });
   const currentIconPositions = updateIconPositionsIfEmpty(
     directory,
     gridElement,
@@ -517,4 +513,122 @@ export const trimCanvasToTopLeft = (
   copyCtx.putImageData(trimmed, 0, 0);
 
   return copy;
+};
+
+export const preloadLibs = (libs: string[] = []): void => {
+  const scripts = [...document.scripts];
+  const preloadedLinks = [
+    ...document.querySelectorAll("link[rel=preload]"),
+  ] as HTMLLinkElement[];
+
+  // eslint-disable-next-line unicorn/no-array-callback-reference
+  libs.map(encodeURI).forEach((lib) => {
+    if (
+      scripts.some((script) => script.src.endsWith(lib)) ||
+      preloadedLinks.some((preloadedLink) => preloadedLink.href.endsWith(lib))
+    ) {
+      return;
+    }
+
+    const link = document.createElement("link");
+
+    link.fetchPriority = "high";
+    link.rel = "preload";
+    link.href = lib;
+
+    switch (getExtension(lib)) {
+      case ".css":
+        link.as = "style";
+        break;
+      case ".htm":
+      case ".html":
+        link.rel = "prerender";
+        break;
+      case ".json":
+      case ".wasm":
+        link.as = "fetch";
+        link.crossOrigin = "anonymous";
+        break;
+      default:
+        link.as = "script";
+        break;
+    }
+
+    document.head.append(link);
+  });
+};
+
+let IS_FIREFOX: boolean;
+
+export const isFirefox = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_FIREFOX ?? false) return IS_FIREFOX;
+
+  IS_FIREFOX = /firefox/i.test(window.navigator.userAgent);
+
+  return IS_FIREFOX;
+};
+
+let IS_SAFARI: boolean;
+
+export const isSafari = (): boolean => {
+  if (typeof window === "undefined") return false;
+  if (IS_SAFARI ?? false) return IS_SAFARI;
+
+  IS_SAFARI = /^(?:(?!chrome|android).)*safari/i.test(
+    window.navigator.userAgent,
+  );
+
+  return IS_SAFARI;
+};
+
+export const generatePrettyTimestamp = (): string =>
+  dayjs().format("M_D_YYYY h_mm_ss A");
+
+export const blobToBuffer = async (blob?: Blob | null): Promise<Buffer> =>
+  blob ? Buffer.from(await blob.arrayBuffer()) : Buffer.from("");
+
+export const sendMouseClick = (target: HTMLElement, count = 1): void => {
+  if (count === 0) return;
+
+  target.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+
+  sendMouseClick(target, count - 1);
+};
+
+export const isYouTubeUrl = (url: string): boolean =>
+  (url.includes("youtube.com/") || url.includes("youtu.be/")) &&
+  !url.includes("youtube.com/@") &&
+  !url.includes("/channel/") &&
+  !url.includes("/c/");
+
+const bytesInKB = 1024;
+const bytesInMB = 1022976; // 1024 * 999
+const bytesInGB = 1047527424; // 1024 * 1024 * 999
+const bytesInTB = 1072668082176; // 1024 * 1024 * 1024 * 999
+
+const formatNumber = (number: number): string => {
+  const formattedNumber = new Intl.NumberFormat("en-US", {
+    maximumSignificantDigits: number < 1 ? 2 : 4,
+    minimumSignificantDigits: number < 1 ? 2 : 3,
+  }).format(Number(number.toFixed(4).slice(0, -2)));
+  const [integer, decimal] = formattedNumber.split(".");
+  if (integer.length === 3) return integer;
+  if (integer.length === 2 && decimal.length === 2) {
+    return `${integer}.${decimal[0]}`;
+  }
+  return formattedNumber;
+};
+
+export const getFormattedSize = (size = 0): string => {
+  if (size === 1) return "1 byte";
+  if (size < bytesInKB) return `${size} bytes`;
+  if (size < bytesInMB) return `${formatNumber(size / bytesInKB)} KB`;
+  if (size < bytesInGB) {
+    return `${formatNumber(size / bytesInKB / bytesInKB)} MB`;
+  }
+  if (size < bytesInTB) {
+    return `${formatNumber(size / bytesInKB / bytesInKB / bytesInKB)} GB`;
+  }
+  return `${size} bytes`;
 };

@@ -1,77 +1,231 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import "./FileEntry.scss";
-import { FileStat } from "../FileManager/functions";
+import { FileStat, getModifiedTime } from "../FileManager/functions";
 import Icon from "../../Icon/Icon";
-import useFileInfo from "@/hooks/useFileInfo";
+import useFileInfo from "./useFileInfo";
 import { FocusEntryFunctions } from "./useFocusableEntries";
 import { SelectionRect } from "../FileManager/Selection/useSelection";
-import { basename } from "path";
+import { basename, dirname, extname, join } from "path";
 import { isSelectionIntersecting } from "../FileManager/Selection/function";
-import { PREVENT_SCROLL } from "@/lib/constants";
+import {
+  DEFAULT_LOCALE,
+  ICON_CACHE,
+  ICON_CACHE_EXTENSION,
+  IMAGE_FILE_EXTENSIONS,
+  MOUNTABLE_EXTENSIONS,
+  PREVENT_SCROLL,
+  SHORTCUT_EXTENSION,
+  SYSTEM_FONT,
+  VIDEO_FILE_EXTENSIONS,
+} from "@/lib/constants";
+import { FileActions } from "./useFolder";
+import { FileManagerViewNames } from "./useFileKeyboardShortcuts";
+import { useProcesses } from "@/contexts/process";
+import { useIsVisible } from "@/hooks/useIsVisible";
+import useFile from "./useFile";
+import { useFileSystem } from "@/contexts/fileSystem";
+import { getExtension, getFormattedSize, isYouTubeUrl } from "@/lib/utils";
+import { truncateName } from "./functions";
+import sizes from "@/lib/sizes";
+import extensions from "../extensions";
+import { UNKNOWN_SIZE } from "@/contexts/fileSystem/core";
+import dayjs from "dayjs";
+import useDoubleClick from "@/hooks/useDoubleClick";
+import clsx from "clsx";
+import useFileContextMenu from "./useFileContextMenu";
 
 type FileEntryProps = {
-  name: string;
-  path: string;
-  stats: FileStat;
+  fileActions: FileActions;
+  fileManagerId?: string;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   focusFunctions: FocusEntryFunctions;
   focusedEntries: string[];
-  selectionRect?: SelectionRect;
+  hasNewFolderIcon?: boolean;
+  hideShortcutIcon?: boolean;
   isDesktop?: boolean;
+  isHeading?: boolean;
+  isLoadingFileManager: boolean;
+  loadIconImmediately?: boolean;
+  name: string;
+  path: string;
+  readOnly?: boolean;
+  renaming: boolean;
+  setRenaming: React.Dispatch<React.SetStateAction<string>>;
+  stats: FileStat;
+  view: FileManagerViewNames;
+  selectionRect?: SelectionRect;
 };
-
-//Desktop
-// fileActions{
-//   archiveFiles
-//   deleteLocalPath
-//   downloadFiles
-//   extractFiles
-//   newShorcut
-//   renameFile
-// }
-
-// isDesktop true
-// isHeading true
-// loadIconsImmediately true
-// name "Public"
-// path "/Users/Public/Desktop/Public.url"
-// view icon
 
 const focusing: string[] = [];
 
 const FileEntry = ({
+  fileActions,
+  fileManagerId,
+  fileManagerRef,
+  focusedEntries,
+  focusFunctions,
+  hideShortcutIcon,
+  isDesktop,
+  isHeading,
+  isLoadingFileManager,
+  loadIconImmediately,
   name,
   path,
-  stats,
-  fileManagerRef,
-  focusFunctions,
-  focusedEntries,
-  isDesktop,
+  readOnly,
+  renaming,
   selectionRect,
+  setRenaming,
+  stats,
+  hasNewFolderIcon,
+  view,
 }: FileEntryProps) => {
   const { blurEntry, focusEntry } = focusFunctions;
+  const { url: changeUrl } = useProcesses();
   const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
     false,
     isDesktop,
   );
+  const fileContextMenu = useFileContextMenu(
+    url,
+    pid,
+    path,
+    setRenaming,
+    fileActions,
+    focusFunctions,
+    focusedEntries,
+    stats,
+    fileManagerId,
+    readOnly,
+  );
+
+  const openFile = useFile(url, path);
+  const {
+    createPath,
+    exists,
+    fs,
+    mkdirRecursive,
+    pasteList,
+    stat,
+    updateFolder,
+    writeFile,
+  } = useFileSystem();
+  const [tooltip, setTooltip] = useState<string>();
+  const [showInFileManager, setShowInFileManager] = useState(false);
   const iconRef = useRef<HTMLImageElement | null>(null);
+  const isIconCached = useRef(false);
+  const isDynamicIconLoaded = useRef(false);
+  const getIconAbortController = useRef<AbortController>();
   const fileName = basename(path);
-  // console.log("FileEntry", {
-  //   comment,
-  //   getIcon,
-  //   icon,
-  //   pid,
-  //   subIcons,
-  //   url,
-  //   name,
-  //   path,
-  //   stats,
-  // });
+  const urlExt = getExtension(url);
+  const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);
+  const isDynamicIcon = useMemo(
+    () =>
+      IMAGE_FILE_EXTENSIONS.has(urlExt) ||
+      VIDEO_FILE_EXTENSIONS.has(urlExt) ||
+      isYTUrl,
+    [isYTUrl, urlExt],
+  );
+  const extension = useMemo(() => getExtension(path), [path]);
+  const isShortcut = useMemo(
+    () => extension === SHORTCUT_EXTENSION,
+    [extension],
+  );
+  const directory = isShortcut ? url : path;
+  const isOnlyFocusedEntry =
+    focusedEntries.length === 1 && focusedEntries[0] === fileName;
+  const isListView = view === "list";
+  const openInFileExplorer = pid === "FileExplorer";
+
+  const truncatedName = useMemo(
+    () =>
+      truncateName(
+        name,
+        sizes.fileEntry.fontSize,
+        SYSTEM_FONT,
+        sizes.fileEntry[
+          isListView ? "maxListTextDisplayWidth" : "maxIconTextDisplayWidth"
+        ],
+        !isDesktop,
+      ),
+    [isDesktop, isListView, name, sizes.fileEntry],
+  );
+
+  const createTooltip = useCallback(async (): Promise<string> => {
+    if (stats.isDirectory()) return "";
+
+    if (isShortcut) {
+      if (comment) return comment;
+      if (url) {
+        if (url.startsWith("http:") || url.startsWith("https:")) {
+          return decodeURIComponent(url);
+        }
+
+        const directoryPath = dirname(url);
+
+        return `Location: ${basename(url, extname(url))}${
+          !directoryPath || directoryPath === "." ? "" : ` (${dirname(url)})`
+        }`;
+      }
+      return "";
+    }
+
+    const type =
+      extensions[extension]?.type ||
+      `${extension.toUpperCase().replace(".", "")} File`;
+    const fullStats = stats.size === UNKNOWN_SIZE ? await stat(path) : stats;
+    const { size: sizeInBytes } = fullStats;
+    const modifiedTime = getModifiedTime(path, fullStats);
+    const size = getFormattedSize(sizeInBytes);
+    const toolTip = `Type: ${type}${
+      size === "-1 bytes" ? "" : `\nSize: ${size}`
+    }`;
+    const date = new Date(modifiedTime).toISOString().slice(0, 10);
+    const time = dayjs(modifiedTime).format("h:mm A");
+    const dateModified = `${date} ${time}`;
+
+    return `${toolTip}\nDate modified: ${dateModified}`;
+  }, [comment, extension, isShortcut, path, stat, stats, url]);
+
+  const doubleClickHandler = useCallback(() => {
+    if (
+      openInFileExplorer &&
+      fileManagerId &&
+      // !window.globalKeyStates?.ctrlKey &&
+      !MOUNTABLE_EXTENSIONS.has(urlExt)
+    ) {
+      changeUrl(fileManagerId, url);
+      blurEntry();
+    } else if (openInFileExplorer && isListView) {
+      setShowInFileManager((currentState) => !currentState);
+    } else {
+      openFile(pid, isDynamicIcon ? undefined : icon);
+    }
+  }, [
+    blurEntry,
+    changeUrl,
+    fileManagerId,
+    icon,
+    isDynamicIcon,
+    isListView,
+    openFile,
+    openInFileExplorer,
+    pid,
+    url,
+    urlExt,
+  ]);
 
   useLayoutEffect(() => {
     if (buttonRef.current && fileManagerRef.current) {
@@ -116,11 +270,38 @@ const FileEntry = ({
     selectionRect,
   ]);
 
+  const onClick = useDoubleClick(doubleClickHandler);
+
   return (
-    <button aria-label={name} ref={buttonRef} className="file-entry">
-      <figure>
-        <Icon ref={iconRef} imgSize={48} src={icon} alt={name} eager />
-        <figcaption className="pointer-events-none">{name}</figcaption>
+    <button
+      ref={buttonRef}
+      onMouseOver={() => createTooltip().then(setTooltip)}
+      title={tooltip}
+      aria-label={name}
+      className="file-entry"
+      onClick={onClick}
+      {...fileContextMenu}
+    >
+      <figure className={clsx(renaming ? "pointer-events-[all" : "")}>
+        <Icon
+          ref={iconRef}
+          imgSize={48}
+          src={icon}
+          alt={name}
+          eager={loadIconImmediately}
+          moving={pasteList[path] === "move"}
+        />
+        <figcaption
+          {...(isHeading && {
+            "aria-level": 1,
+            role: "heading",
+          })}
+          className="pointer-events-none"
+        >
+          {!isOnlyFocusedEntry || name.length === truncatedName.length
+            ? truncatedName
+            : name}
+        </figcaption>
       </figure>
     </button>
   );

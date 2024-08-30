@@ -5,7 +5,7 @@ import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { get9pSize, supportsIndexedDB, UNKNOWN_STATE_CODES } from "./core";
 import FileSystemConfig from "./FileSystemConfig";
-import { isExistingFile } from "./utils";
+import { isExistingFile, resetStorage } from "./utils";
 import {
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/constants";
 import { join } from "path";
 import EmscriptenFileSystem from "browserfs/dist/node/backend/Emscripten";
+import { Prettify } from "@/lib/types.js";
 
 export type AsyncFS = {
   exists: (path: string) => Promise<boolean>;
@@ -37,27 +38,30 @@ export type Mount = {
   getName: () => string;
 };
 
-export type RootFileSystem = Omit<
-  MountableFileSystem,
-  "mntMap" | "mountList"
-> & {
-  mntMap: Record<string, Mount>;
-  mountList: string[];
-};
+export type RootFileSystem = Prettify<
+  Omit<MountableFileSystem, "mntMap" | "mountList"> & {
+    mntMap: Record<string, Mount>;
+    mountList: string[];
+  }
+>;
 
 export type EmscriptenFS = {
   DB_NAME: () => string;
   DB_STORE_NAME: string;
 };
 
-type AsyncFSModule = AsyncFS & {
-  fs?: FSModule;
-  rootFs?: RootFileSystem;
-};
+type AsyncFSModule = Prettify<
+  AsyncFS & {
+    fs?: FSModule;
+    rootFs?: RootFileSystem;
+  }
+>;
 
-export type ExtendedEmscriptenFileSystem = Omit<EmscriptenFileSystem, "_FS"> & {
-  _FS?: EmscriptenFS;
-};
+export type ExtendedEmscriptenFileSystem = Prettify<
+  Omit<EmscriptenFileSystem, "_FS"> & {
+    _FS?: EmscriptenFS;
+  }
+>;
 
 type FsQueueCall = [string, unknown[]];
 
@@ -209,11 +213,7 @@ const useAsyncFs = (): AsyncFSModule => {
             (error) => {
               if (error && (!overwrite || error.code !== "EEXIST")) {
                 if (error.code === "ENOENT" && error.path === "/") {
-                  import("./utils").then(({ resetStorage }) =>
-                    resetStorage(rootFs).finally(() =>
-                      window.location.reload(),
-                    ),
-                  );
+                  resetStorage(rootFs).finally(() => window.location.reload());
                 }
 
                 reject(error);

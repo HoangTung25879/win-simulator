@@ -1,24 +1,39 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import useAsyncFs, { AsyncFS, RootFileSystem } from "./useAsyncFs";
+import useAsyncFs, {
+  AsyncFS,
+  EmscriptenFS,
+  ExtendedEmscriptenFileSystem,
+  RootFileSystem,
+} from "./useAsyncFs";
 import { UpdateFiles } from "../session/types";
 import {
   CLIPBOARD_FILE_EXTENSIONS,
   DEFAULT_MAPPED_NAME,
   DESKTOP_PATH,
+  PROCESS_DELIMITER,
   TRANSITIONS_IN_MS,
 } from "@/lib/constants";
 import { bufferToBlob, getExtension } from "@/lib/utils";
-import {
-  getMimeType,
-  isMountedFolder,
-  removeInvalidFilenameCharacters,
-} from "./utils";
-import { EmscriptenFS } from "browserfs";
+import { getMimeType, isMountedFolder, removeFileSystemHandle } from "./utils";
+import type IZipFS from "browserfs/dist/node/backend/ZipFS";
+import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
+import type * as IBrowserFS from "browserfs";
 import { FSModule } from "browserfs/dist/node/core/FS";
-import { NewPath } from "@/hooks/useFolder";
+import { NewPath } from "@/app/components/Files/FileEntry/useFolder";
 import { getFileSystemHandles } from "./core";
-import { dirname, join } from "path";
+import { basename, dirname, isAbsolute, join } from "path";
 import { BFSCallback, FileSystem } from "browserfs/dist/node/core/file_system";
+import { useProcesses } from "../process";
+import useTransferDialog from "@/app/components/Dialogs/Transfer/useTransferDiaglog";
+import {
+  getEventData,
+  handleFileInputEvent,
+  InputChangeEvent,
+  iterateFileName,
+  removeInvalidFilenameCharacters,
+} from "@/app/components/Files/FileManager/functions";
+import { ApiError } from "browserfs/dist/node/core/api_error";
+import { Prettify } from "@/lib/types";
 
 type FilePasteOperations = Record<string, "copy" | "move">;
 type FileSystemWatchers = Record<string, UpdateFiles[]>;
@@ -34,41 +49,43 @@ type IFileSystemAccess = {
   };
 };
 
-type FileSystemContextState = AsyncFS & {
-  // addFile: (
-  //   directory: string,
-  //   callback: NewPath,
-  //   accept?: string,
-  //   multiple?: boolean,
-  // ) => Promise<string[]>;
-  // addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  // copyEntries: (entries: string[]) => void;
-  // createPath: (
-  //   name: string,
-  //   directory: string,
-  //   buffer?: Buffer,
-  // ) => Promise<string>;
-  // deletePath: (path: string) => Promise<boolean>;
-  fs?: FSModule;
-  // mapFs: (
-  //   directory: string,
-  //   existingHandle?: FileSystemDirectoryHandle,
-  // ) => Promise<string>;
-  // mkdirRecursive: (path: string) => Promise<void>;
-  // mountEmscriptenFs: (FS: EmscriptenFS, fsName?: string) => Promise<string>;
-  // mountFs: (url: string) => Promise<void>;
-  // moveEntries: (entries: string[]) => void;
-  // pasteList: FilePasteOperations;
-  // removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
-  rootFs?: RootFileSystem;
-  // unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
-  // unMountFs: (url: string) => void;
-  // updateFolder: (
-  //   folder: string,
-  //   newFile?: string,
-  //   oldFile?: string,
-  // ) => Promise<void>;
-};
+type FileSystemContextState = Prettify<
+  AsyncFS & {
+    addFile: (
+      directory: string,
+      callback: NewPath,
+      accept?: string,
+      multiple?: boolean,
+    ) => Promise<string[]>;
+    addFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+    copyEntries: (entries: string[]) => void;
+    createPath: (
+      name: string,
+      directory: string,
+      buffer?: Buffer,
+    ) => Promise<string>;
+    deletePath: (path: string) => Promise<boolean>;
+    fs?: FSModule;
+    mapFs: (
+      directory: string,
+      existingHandle?: FileSystemDirectoryHandle,
+    ) => Promise<string>;
+    mkdirRecursive: (path: string) => Promise<void>;
+    mountEmscriptenFs: (FS: EmscriptenFS, fsName?: string) => Promise<string>;
+    mountFs: (url: string) => Promise<void>;
+    moveEntries: (entries: string[]) => void;
+    pasteList: FilePasteOperations;
+    removeFsWatcher: (folder: string, updateFiles: UpdateFiles) => void;
+    rootFs?: RootFileSystem;
+    unMapFs: (directory: string, hasNoHandle?: boolean) => Promise<void>;
+    unMountFs: (url: string) => void;
+    updateFolder: (
+      folder: string,
+      newFile?: string,
+      oldFile?: string,
+    ) => Promise<void>;
+  }
+>;
 
 const SYSTEM_DIRECTORIES = new Set(["/OPFS"]);
 
@@ -85,15 +102,18 @@ const useFileSystemContextState = (): FileSystemContextState => {
     unlink,
     writeFile,
   } = asyncFs;
-
-  const restoredFsHandles = useRef(false);
-  const unusedMountsCleanupTimerRef = useRef(0);
-  const fsWatchersRef = useRef<FileSystemWatchers>(
-    Object.create(null) as FileSystemWatchers,
-  );
+  const { closeWithTransition } = useProcesses();
+  const { openTransferDialog } = useTransferDialog();
   const [pasteList, setPasteList] = useState<FilePasteOperations>(
     Object.create(null) as FilePasteOperations,
   );
+
+  const fsWatchersRef = useRef<FileSystemWatchers>(
+    Object.create(null) as FileSystemWatchers,
+  );
+  const restoredFsHandles = useRef(false);
+  const unusedMountsCleanupTimerRef = useRef(0);
+
   const updatePasteEntries = useCallback(
     (entries: string[], operation: "copy" | "move"): void =>
       setPasteList(
@@ -223,30 +243,32 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const mountEmscriptenFs = useCallback(
     async (FS: EmscriptenFS, fsName?: string) =>
       new Promise<string>((resolve, reject) => {
-        // import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
-        //   const {
-        //     FileSystem: { Emscripten },
-        //   } = ExtraFS as typeof IBrowserFS;
-        //   Emscripten?.Create({ FS }, (error, newFs) => {
-        //     const emscriptenFS =
-        //       newFs as unknown as ExtendedEmscriptenFileSystem;
-        //     if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
-        //       reject(new Error("Error while mounting Emscripten FS."));
-        //       return;
-        //     }
-        //     const dbName =
-        //       fsName ||
-        //       `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${
-        //         emscriptenFS._FS?.DB_STORE_NAME
-        //       }`;
-        //     try {
-        //       rootFs?.mount?.(join("/", dbName), newFs);
-        //     } catch {
-        //       // Ignore error during mounting
-        //     }
-        //     resolve(dbName);
-        //   });
-        // });
+        import("../../../public/System/BrowserFS/extrafs.min.js").then(
+          (ExtraFS) => {
+            const {
+              FileSystem: { Emscripten },
+            } = ExtraFS as typeof IBrowserFS;
+            Emscripten?.Create({ FS }, (error, newFs) => {
+              const emscriptenFS =
+                newFs as unknown as ExtendedEmscriptenFileSystem;
+              if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
+                reject(new Error("Error while mounting Emscripten FS."));
+                return;
+              }
+              const dbName =
+                fsName ||
+                `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${
+                  emscriptenFS._FS?.DB_STORE_NAME
+                }`;
+              try {
+                rootFs?.mount?.(join("/", dbName), newFs);
+              } catch {
+                // Ignore error during mounting
+              }
+              resolve(dbName);
+            });
+          },
+        );
       }),
     [rootFs],
   );
@@ -304,6 +326,41 @@ const useFileSystemContextState = (): FileSystemContextState => {
     [rootFs],
   );
 
+  const mountFs = useCallback(
+    async (url: string): Promise<void> => {
+      const fileData = await readFile(url);
+
+      return new Promise((resolve, reject) => {
+        const isIso = getExtension(url) === ".iso";
+        const createFs: BFSCallback<IIsoFS | IZipFS> = (createError, newFs) => {
+          if (createError) {
+            reject(
+              new Error(`Error while mounting ${isIso ? "ISO" : "ZIP"} FS.`),
+            );
+          } else if (newFs) {
+            rootFs?.mount?.(url, newFs);
+            resolve();
+          }
+        };
+
+        import("../../../public/System/BrowserFS/extrafs.min.js").then(
+          (ExtraFS) => {
+            const {
+              FileSystem: { IsoFS, ZipFS },
+            } = ExtraFS as typeof IBrowserFS;
+
+            if (isIso) {
+              IsoFS?.Create({ data: fileData }, createFs);
+            } else {
+              ZipFS?.Create({ zipData: fileData }, createFs);
+            }
+          },
+        );
+      });
+    },
+    [readFile, rootFs],
+  );
+
   const unMountFs = useCallback(
     (url: string): void => rootFs?.umount?.(url),
     [rootFs],
@@ -311,60 +368,53 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
   const unMapFs = useCallback(
     async (directory: string, hasNoHandle?: boolean): Promise<void> => {
-      // unMountFs(directory);
-      // updateFolder(dirname(directory), undefined, directory);
-      // if (hasNoHandle) return;
-      // const { removeFileSystemHandle } = await import(
-      //   "contexts/fileSystem/functions"
-      // );
-      // removeFileSystemHandle(directory);
+      unMountFs(directory);
+      updateFolder(dirname(directory), undefined, directory);
+      if (hasNoHandle) return;
+      removeFileSystemHandle(directory);
     },
     [unMountFs, updateFolder],
   );
 
-  // const addFile = useCallback(
-  //   (directory: string, callback: NewPath): Promise<string[]> =>
-  //     new Promise((resolve) => {
-  //       const fileInput = document.createElement("input");
-
-  //       fileInput.type = "file";
-  //       fileInput.multiple = true;
-  //       fileInput.setAttribute("style", "display: none");
-  //       fileInput.addEventListener(
-  //         "change",
-  //         (event) => {
-  //           handleFileInputEvent(
-  //             event as InputChangeEvent,
-  //             callback,
-  //             directory,
-  //             openTransferDialog,
-  //           );
-
-  //           const { files } = getEventData(event as InputChangeEvent);
-
-  //           if (files) {
-  //             resolve(
-  //               [...files].map((file) =>
-  //                 files instanceof FileList
-  //                   ? (file as File).name
-  //                   : (
-  //                       (
-  //                         file as DataTransferItem
-  //                       ).webkitGetAsEntry() as FileSystemEntry
-  //                     ).name,
-  //               ),
-  //             );
-  //           }
-
-  //           fileInput.remove();
-  //         },
-  //         { once: true },
-  //       );
-  //       document.body.append(fileInput);
-  //       fileInput.click();
-  //     }),
-  //   [],
-  // );
+  const addFile = useCallback(
+    (directory: string, callback: NewPath): Promise<string[]> =>
+      new Promise((resolve) => {
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.multiple = true;
+        fileInput.setAttribute("style", "display: none");
+        fileInput.addEventListener(
+          "change",
+          (event) => {
+            handleFileInputEvent(
+              event as InputChangeEvent,
+              callback,
+              directory,
+              openTransferDialog,
+            );
+            const { files } = getEventData(event as InputChangeEvent);
+            if (files) {
+              resolve(
+                [...files].map((file) =>
+                  files instanceof FileList
+                    ? (file as File).name
+                    : (
+                        (
+                          file as DataTransferItem
+                        ).webkitGetAsEntry() as FileSystemEntry
+                      ).name,
+                ),
+              );
+            }
+            fileInput.remove();
+          },
+          { once: true },
+        );
+        document.body.append(fileInput);
+        fileInput.click();
+      }),
+    [],
+  );
 
   useEffect(() => {
     if (!restoredFsHandles.current && rootFs) {
@@ -400,22 +450,143 @@ const useFileSystemContextState = (): FileSystemContextState => {
     }
   }, [exists, mapFs, rootFs, updateFolder]);
 
+  const mkdirRecursive = useCallback(
+    async (path: string): Promise<void> => {
+      const pathParts = path.split("/").filter(Boolean);
+      const recursePath = async (position = 1, retry = 0): Promise<void> => {
+        const makePath = join("/", pathParts.slice(0, position).join("/"));
+        let created: boolean;
+
+        try {
+          created = (await exists(makePath)) || (await mkdir(makePath));
+        } catch {
+          created = false;
+        }
+
+        if (created) {
+          if (position !== pathParts.length) {
+            await recursePath(position + 1);
+          }
+        } else if (retry < 3) {
+          await recursePath(position, retry + 1);
+        }
+      };
+
+      await recursePath();
+    },
+    [exists, mkdir],
+  );
+
+  const deletePath = useCallback(
+    async (path: string): Promise<boolean> => {
+      let deleted = false;
+
+      try {
+        deleted = await unlink(path);
+      } catch (error) {
+        if ((error as ApiError).code === "EISDIR") {
+          const dirContents = await readdir(path);
+
+          await Promise.all(
+            dirContents.map((entry) => deletePath(join(path, entry))),
+          );
+          deleted = await rmdir(path);
+        }
+      }
+
+      if (Object.keys(fsWatchersRef.current || {}).includes(path)) {
+        closeWithTransition(`FileExplorer${PROCESS_DELIMITER}${path}`);
+      }
+
+      return deleted;
+    },
+    [closeWithTransition, readdir, rmdir, unlink],
+  );
+
+  const createPath = useCallback(
+    async (
+      name: string,
+      directory: string,
+      buffer?: Buffer,
+      iteration = 0,
+    ): Promise<string> => {
+      const isInternal = !buffer && isAbsolute(name);
+      const baseName = isInternal ? basename(name) : name;
+      const uniqueName = iteration
+        ? iterateFileName(baseName, iteration)
+        : baseName;
+      const fullNewPath = join(directory, uniqueName);
+
+      if (isInternal) {
+        if (
+          name !== fullNewPath &&
+          directory !== name &&
+          !directory.startsWith(`${name}/`) &&
+          !rootFs?.mntMap[name]
+        ) {
+          if (await exists(fullNewPath)) {
+            return createPath(name, directory, buffer, iteration + 1);
+          }
+
+          if (await rename(name, fullNewPath)) {
+            updateFolder(dirname(name), "", name);
+          }
+
+          return uniqueName;
+        }
+      } else {
+        const maybeMakePath = async (makePath: string): Promise<void> => {
+          try {
+            if (!(await exists(makePath))) {
+              await mkdir(makePath);
+              updateFolder(dirname(makePath), basename(makePath));
+            }
+          } catch (error) {
+            if ((error as ApiError).code === "ENOENT") {
+              await maybeMakePath(dirname(makePath));
+              await maybeMakePath(makePath);
+            }
+          }
+        };
+
+        await maybeMakePath(dirname(fullNewPath));
+
+        try {
+          if (
+            buffer
+              ? await writeFile(fullNewPath, buffer)
+              : await mkdir(fullNewPath)
+          ) {
+            return uniqueName;
+          }
+        } catch (error) {
+          if ((error as ApiError)?.code === "EEXIST") {
+            return createPath(name, directory, buffer, iteration + 1);
+          }
+        }
+      }
+
+      return "";
+    },
+    [exists, mkdir, rename, rootFs?.mntMap, updateFolder, writeFile],
+  );
+
   return {
-    // addFile,
-    // addFsWatcher,
-    // copyEntries,
-    // createPath,
-    // deletePath,
-    // mapFs,
-    // mkdirRecursive,
-    // mountEmscriptenFs,
-    // mountFs,
-    // moveEntries,
-    // pasteList,
-    // removeFsWatcher,
-    // unMapFs,
-    // unMountFs,
-    // updateFolder,
+    addFile,
+    addFsWatcher,
+    copyEntries,
+    createPath,
+    deletePath,
+    mapFs,
+    mkdirRecursive,
+    mountEmscriptenFs,
+    mountFs,
+    moveEntries,
+    pasteList,
+    removeFsWatcher,
+    unMapFs,
+    unMountFs,
+    updateFolder,
     ...asyncFs,
   };
 };

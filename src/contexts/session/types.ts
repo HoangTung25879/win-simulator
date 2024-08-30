@@ -1,3 +1,5 @@
+import { SortBy } from "@/app/components/Files/FileEntry/useSortBy";
+import { Prettify } from "@/lib/types";
 import { Position, Props } from "react-rnd";
 
 declare global {
@@ -18,8 +20,6 @@ export type WindowState = {
   size?: Size;
 };
 
-export type SortBy = "date" | "name" | "size" | "type";
-
 export type WindowStates = Record<string, WindowState>;
 
 type SortOrder = [string[], SortBy?, boolean?];
@@ -38,7 +38,7 @@ export type SessionData = {
   cursor: string;
   iconPositions: IconPositions;
   recentFiles: RecentFiles;
-  // runHistory: string[];
+  runHistory: string[];
   sortOrders: SortOrders;
   // themeName: ThemeName;
   // wallpaperFit: WallpaperFit;
@@ -46,16 +46,25 @@ export type SessionData = {
   windowStates: WindowStates;
 };
 
-export type SessionContextState = SessionData & {
-  sessionLoaded: boolean;
-  setCursor: React.Dispatch<React.SetStateAction<string>>;
-  setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
-  setSortOrder: (
-    directory: string,
-    order: string[] | ((currentSortOrder: string[]) => string[]),
-    sortBy?: SortBy,
-    ascending?: boolean,
-  ) => void;
-  setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
-  stackOrder: string[];
-};
+export type SessionContextState = Prettify<
+  SessionData & {
+    foregroundId: string;
+    setForegroundId: React.Dispatch<React.SetStateAction<string>>;
+    prependToStack: (id: string) => void;
+    removeFromStack: (id: string) => void;
+    sessionLoaded: boolean;
+    setHaltSession: React.Dispatch<React.SetStateAction<boolean>>;
+    setCursor: React.Dispatch<React.SetStateAction<string>>;
+    setRunHistory: React.Dispatch<React.SetStateAction<string[]>>;
+    setWindowStates: React.Dispatch<React.SetStateAction<WindowStates>>;
+    setSortOrder: (
+      directory: string,
+      order: string[] | ((currentSortOrder: string[]) => string[]),
+      sortBy?: SortBy,
+      ascending?: boolean,
+    ) => void;
+    setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
+    stackOrder: string[];
+    updateRecentFiles: (url: string, pid: string, title?: string) => void;
+  }
+>;

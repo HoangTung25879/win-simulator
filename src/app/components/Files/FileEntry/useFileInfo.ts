@@ -47,7 +47,6 @@ const useFileInfo = (
       info === INITIAL_FILE_INFO
     ) {
       updatingInfo.current = true;
-
       const extension = getExtension(path);
       if (
         !extension ||

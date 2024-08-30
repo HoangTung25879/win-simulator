@@ -14,7 +14,7 @@ import CalendarGrid from "./CalendarGrid";
 import { Down, Up } from "./Icons";
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
 import { motion } from "framer-motion";
-import useTaskbarMenuTransition from "@/hooks/useTaskbarMenuTransition";
+import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import "./Calendar.scss";
 
 type CalendarProps = {

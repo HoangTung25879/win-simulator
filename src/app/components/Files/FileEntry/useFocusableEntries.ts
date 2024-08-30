@@ -1,4 +1,5 @@
 import { PREVENT_SCROLL } from "@/lib/constants";
+import { Prettify } from "@/lib/types";
 import { haltEvent } from "@/lib/utils";
 import { useCallback, useRef, useState } from "react";
 
@@ -17,10 +18,12 @@ export type FocusEntryFunctions = {
   focusEntry: (entry: string) => void;
 };
 
-type FocusableEntries = FocusEntryFunctions & {
-  focusableEntry: FocusableEntry;
-  focusedEntries: string[];
-};
+type FocusableEntries = Prettify<
+  FocusEntryFunctions & {
+    focusableEntry: FocusableEntry;
+    focusedEntries: string[];
+  }
+>;
 
 const useFocusableEntries = (
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>,

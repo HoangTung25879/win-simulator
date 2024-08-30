@@ -11,7 +11,7 @@ const contextFactory = <T,>(
   Provider: React.NamedExoticComponent<PropsWithChildren>;
   useContext: () => T;
 } => {
-  const Context = createContext(null as T);
+  const Context = createContext(Object.create(null) as T);
   const Provider = memo<PropsWithChildren>(({ children }) => (
     <Context.Provider value={useContextState()}>
       {children}

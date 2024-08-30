@@ -7,7 +7,7 @@ import {
   isSameDate,
 } from "./functions";
 import clsx from "clsx";
-import useCalendarGridTransition from "@/hooks/useCalendarGridTransition";
+import useCalendarGridTransition from "./useCalendarGridTransition";
 
 type CalendarGridProps = {
   date: Date;

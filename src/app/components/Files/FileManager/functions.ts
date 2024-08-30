@@ -1,14 +1,3 @@
-// export const handleFileInputEvent = (
-//   event: InputChangeEvent | React.DragEvent,
-//   callback: NewPath,
-//   directory: string,
-//   openTransferDialog: (
-//     fileReaders: FileReaders | ObjectReaders,
-//   ) => Promise<void>,
-//   hasUpdateId = false,
-// ): void => {
-//   haltEvent(event);
-
 import { get9pModifiedTime } from "@/contexts/fileSystem/core";
 import { RootFileSystem } from "@/contexts/fileSystem/useAsyncFs";
 import {
@@ -17,8 +6,8 @@ import {
   isExistingFile,
   isMountedFolder,
 } from "@/contexts/fileSystem/utils";
-import { FileInfo } from "@/hooks/useFileInfo";
-import { Files } from "@/hooks/useFolder";
+import { FileInfo } from "../FileEntry/useFileInfo";
+import { Files } from "../FileEntry/useFolder";
 import {
   AUDIO_FILE_EXTENSIONS,
   DYNAMIC_EXTENSION,
@@ -32,6 +21,7 @@ import {
   IMAGE_FILE_EXTENSIONS,
   MOUNTED_FOLDER_ICON,
   NEW_FOLDER_ICON,
+  NON_BREAKING_HYPHEN,
   ONE_TIME_PASSIVE_EVENT,
   PHOTO_ICON,
   ROOT_SHORTCUT,
@@ -45,71 +35,32 @@ import {
 import {
   bufferToUrl,
   getExtension,
+  haltEvent,
   imageToBufferUrl,
   toSorted,
 } from "@/lib/utils";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import Stats from "browserfs/dist/node/core/node_fs_stats";
-import { extname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import ini from "ini";
 import extensions from "../extensions";
 import processDirectory from "@/contexts/process/directory";
+import { SortBy } from "../FileEntry/useSortBy";
+import { COMPLETE_ACTION, NewPath } from "../FileEntry/useFolder";
+import {
+  FileReaders,
+  ObjectReader,
+  ObjectReaders,
+} from "../../Dialogs/Transfer/useTransferDiaglog";
+import { Prettify } from "@/lib/types";
 
-//   const { files, text } = getEventData(event);
-
-//   if (text) {
-//     try {
-//       const filePaths = JSON.parse(text) as string[];
-
-//       if (!Array.isArray(filePaths) || filePaths.length === 0) return;
-
-//       const isSingleFile = filePaths.length === 1;
-//       const objectReaders = filePaths.map<ObjectReader>((filePath) => {
-//         let aborted = false;
-
-//         return {
-//           abort: () => {
-//             aborted = true;
-//           },
-//           directory,
-//           name: filePath,
-//           operation: "Moving",
-//           read: async () => {
-//             if (aborted || dirname(filePath) === ".") return;
-
-//             await callback(
-//               filePath,
-//               undefined,
-//               isSingleFile ? COMPLETE_ACTION.UPDATE_URL : undefined,
-//             );
-//           },
-//         };
-//       });
-
-//       if (isSingleFile) {
-//         const [singleFile] = objectReaders;
-
-//         if (hasUpdateId) {
-//           callback(singleFile.name, undefined, COMPLETE_ACTION.UPDATE_URL);
-//         }
-//         if (hasUpdateId || singleFile.directory === singleFile.name) return;
-//       }
-
-//       if (
-//         filePaths.every((filePath) => dirname(filePath) === directory) ||
-//         filePaths.includes(directory)
-//       ) {
-//         return;
-//       }
-
-//       openTransferDialog(objectReaders);
-//     } catch {
-//       // Failed to parse text data to JSON
-//     }
-//   } else {
-//     createFileReaders(files, directory, callback).then(openTransferDialog);
-//   }
-// };
+type InternetShortcut = {
+  BaseURL: string;
+  Comment: string;
+  IconFile: string;
+  Type: string;
+  URL: string;
+};
 
 type ShellClassInfo = {
   ShellClassInfo: {
@@ -117,16 +68,15 @@ type ShellClassInfo = {
   };
 };
 
-export type FileStat = Stats & {
-  systemShortcut?: boolean;
-};
+export type FileStat = Prettify<
+  Stats & {
+    systemShortcut?: boolean;
+  }
+>;
 
 type FileStats = [string, FileStat];
 
 type SortFunction = (a: FileStats, b: FileStats) => number;
-
-const sortByName = ([a]: FileStats, [b]: FileStats): number =>
-  a.localeCompare(b, "en", { sensitivity: "base" });
 
 export const getModifiedTime = (path: string, stats: FileStat): number => {
   const { mtime } = stats;
@@ -135,6 +85,9 @@ export const getModifiedTime = (path: string, stats: FileStat): number => {
     ? get9pModifiedTime(path) || mtime.getTime()
     : mtime.getTime();
 };
+
+const sortByName = ([a]: FileStats, [b]: FileStats): number =>
+  a.localeCompare(b, "en", { sensitivity: "base" });
 
 export const sortByDate =
   (directory: string) =>
@@ -149,6 +102,24 @@ export const sortBySize = (
 
 const sortByType = ([a]: FileStats, [b]: FileStats): number =>
   extname(a).localeCompare(extname(b), "en", { sensitivity: "base" });
+
+export const sortFiles = (
+  directory: string,
+  files: Files,
+  sortBy: SortBy,
+  ascending: boolean,
+): Files => {
+  const sortFunctionMap: Record<string, SortFunction> = {
+    date: sortByDate(directory),
+    name: sortByName,
+    size: sortBySize,
+    type: sortByType,
+  };
+
+  return sortBy in sortFunctionMap
+    ? sortContents(files, [], sortFunctionMap[sortBy], ascending)
+    : files;
+};
 
 const sortSystemShortcuts = (
   [aName, { systemShortcut: aSystem = false }]: FileStats,
@@ -175,7 +146,6 @@ export const sortContents = (
     return Object.fromEntries(
       sortOrder
         .filter((entry) => contentOrder.includes(entry))
-        // eslint-disable-next-line unicorn/prefer-spread
         .concat(contentOrder.filter((entry) => !sortOrder.includes(entry)))
         .map((entry) => [entry, contents[entry]]),
     );
@@ -282,7 +252,6 @@ const getIconsFromCache = (fs: FSModule, path: string): Promise<string[]> =>
                   .filter((icon) => icon?.endsWith(ICON_CACHE_EXTENSION))
                   .map(
                     (cachedIcon): Promise<string> =>
-                      // eslint-disable-next-line promise/param-names
                       new Promise((resolveIcon) => {
                         getCachedIconUrl(
                           fs,
@@ -780,4 +749,184 @@ export const getInfoWithExtension = (
         getInfoByFileExtension();
       }
   }
+};
+
+export const iterateFileName = (name: string, iteration: number): string => {
+  const extension = extname(name);
+  const fileName = basename(name, extension);
+
+  return `${fileName} (${iteration})${extension}`;
+};
+
+export const createFileReaders = async (
+  files: DataTransferItemList | FileList | never[],
+  directory: string,
+  callback: NewPath,
+): Promise<FileReaders> => {
+  const fileReaders: FileReaders = [];
+  const addFile = (file: File, subFolder = ""): void => {
+    const reader = new FileReader();
+
+    reader.addEventListener(
+      "load",
+      ({ target }) => {
+        if (target?.result instanceof ArrayBuffer) {
+          callback(
+            join(subFolder, file.name),
+            Buffer.from(target.result),
+            files.length === 1 ? COMPLETE_ACTION.UPDATE_URL : undefined,
+          );
+        }
+      },
+      ONE_TIME_PASSIVE_EVENT,
+    );
+
+    fileReaders.push([file, join(directory, subFolder), reader]);
+  };
+  const addEntry = async (
+    fileSystemEntry: FileSystemEntry,
+    subFolder = "",
+  ): Promise<void> =>
+    new Promise((resolve) => {
+      if (fileSystemEntry?.isDirectory) {
+        (fileSystemEntry as FileSystemDirectoryEntry)
+          .createReader()
+          .readEntries((entries) =>
+            Promise.all(
+              entries.map((entry) =>
+                addEntry(entry, join(subFolder, fileSystemEntry.name)),
+              ),
+            ).then(() => resolve()),
+          );
+      } else {
+        (fileSystemEntry as FileSystemFileEntry)?.file((file) => {
+          addFile(file, subFolder);
+          resolve();
+        });
+      }
+    });
+
+  if (files instanceof FileList) {
+    [...files].forEach((file) => addFile(file));
+  } else {
+    await Promise.all(
+      [...files].map(async (file) =>
+        addEntry(file.webkitGetAsEntry() as FileSystemEntry),
+      ),
+    );
+  }
+
+  return fileReaders;
+};
+
+export type InputChangeEvent = Prettify<Event & { target: HTMLInputElement }>;
+
+type EventData = {
+  files: DataTransferItemList | FileList | never[];
+  text?: string;
+};
+
+export const getEventData = (
+  event: DragEvent | InputChangeEvent | never[] | React.DragEvent,
+): EventData => {
+  const dataTransfer =
+    (event as React.DragEvent).nativeEvent?.dataTransfer ||
+    (event as DragEvent).dataTransfer;
+  let files =
+    (event as InputChangeEvent).target?.files || dataTransfer?.items || [];
+  const text = dataTransfer?.getData("application/json");
+
+  if (Array.isArray(files)) {
+    files = [...(files as unknown as DataTransferItemList)].filter(
+      (item) => !("kind" in item) || item.kind === "file",
+    ) as unknown as DataTransferItemList;
+  }
+
+  return { files, text };
+};
+
+export const handleFileInputEvent = (
+  event: InputChangeEvent | React.DragEvent,
+  callback: NewPath,
+  directory: string,
+  openTransferDialog: (
+    fileReaders: FileReaders | ObjectReaders,
+  ) => Promise<void>,
+  hasUpdateId = false,
+): void => {
+  haltEvent(event);
+
+  const { files, text } = getEventData(event);
+
+  if (text) {
+    try {
+      const filePaths = JSON.parse(text) as string[];
+
+      if (!Array.isArray(filePaths) || filePaths.length === 0) return;
+
+      const isSingleFile = filePaths.length === 1;
+      const objectReaders = filePaths.map<ObjectReader>((filePath) => {
+        let aborted = false;
+
+        return {
+          abort: () => {
+            aborted = true;
+          },
+          directory,
+          name: filePath,
+          operation: "Moving",
+          read: async () => {
+            if (aborted || dirname(filePath) === ".") return;
+
+            await callback(
+              filePath,
+              undefined,
+              isSingleFile ? COMPLETE_ACTION.UPDATE_URL : undefined,
+            );
+          },
+        };
+      });
+
+      if (isSingleFile) {
+        const [singleFile] = objectReaders;
+
+        if (hasUpdateId) {
+          callback(singleFile.name, undefined, COMPLETE_ACTION.UPDATE_URL);
+        }
+        if (hasUpdateId || singleFile.directory === singleFile.name) return;
+      }
+
+      if (
+        filePaths.every((filePath) => dirname(filePath) === directory) ||
+        filePaths.includes(directory)
+      ) {
+        return;
+      }
+
+      openTransferDialog(objectReaders);
+    } catch {
+      // Failed to parse text data to JSON
+    }
+  } else {
+    createFileReaders(files, directory, callback).then(openTransferDialog);
+  }
+};
+
+export const removeInvalidFilenameCharacters = (name = ""): string =>
+  name.replace(/["*/:<>?\\|]/g, "");
+
+export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
+  ini
+    .encode(shortcut, {
+      section: "InternetShortcut",
+      whitespace: false,
+    })
+    .replace(/"/g, "");
+
+export const getParentDirectories = (directory: string): string[] => {
+  if (directory === "/") return [];
+
+  const currentParent = dirname(directory);
+
+  return [currentParent, ...getParentDirectories(currentParent)];
 };

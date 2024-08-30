@@ -11,7 +11,6 @@ import {
   RecentFiles,
   SessionContextState,
   SessionData,
-  SortBy,
   SortOrders,
   WindowStates,
 } from "./types";
@@ -24,14 +23,19 @@ import {
   TRANSITIONS_IN_MS,
 } from "@/lib/constants";
 import defaultSession from "../../../public/session.json";
-import { dirname } from "path";
+import { dirname, extname } from "path";
 import { updateIconPositionsIfEmpty } from "@/lib/utils";
+import { SortBy } from "@/app/components/Files/FileEntry/useSortBy";
+import { ApiError } from "browserfs/dist/node/core/api_error";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
+const KEEP_RECENT_FILES_LIST_COUNT = 10;
 
 const useSessionContextState = (): SessionContextState => {
-  const { readdir, readFile, rootFs, writeFile, lstat } = useFileSystem();
+  const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
+    useFileSystem();
   const [sessionLoaded, setSessionLoaded] = useState(false);
+  const [foregroundId, setForegroundId] = useState("");
   const [stackOrder, setStackOrder] = useState<string[]>([]);
   const [cursor, setCursor] = useState("");
   const [windowStates, setWindowStates] = useState(
@@ -43,9 +47,54 @@ const useSessionContextState = (): SessionContextState => {
   const [iconPositions, setIconPositions] = useState(
     Object.create(null) as IconPositions,
   );
+  const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
+  const [haltSession, setHaltSession] = useState(false);
   const initializedSession = useRef(false);
   const loadingDebounceRef = useRef(0);
+
+  const updateRecentFiles = useCallback(
+    (url: string, pid: string, title?: string) =>
+      (title || extname(url)) &&
+      pid !== "FileExplorer" &&
+      setRecentFiles((currentRecentFiles) => {
+        const entryIndex = currentRecentFiles.findIndex(
+          ([recentUrl, recentPid]) => recentUrl === url && recentPid === pid,
+        );
+
+        if (entryIndex !== -1) {
+          return [
+            currentRecentFiles[entryIndex],
+            ...currentRecentFiles.slice(0, entryIndex),
+            ...currentRecentFiles.slice(entryIndex + 1),
+          ] as RecentFiles;
+        }
+
+        return [[url, pid, title], ...currentRecentFiles].slice(
+          0,
+          KEEP_RECENT_FILES_LIST_COUNT,
+        ) as RecentFiles;
+      }),
+    [],
+  );
+
+  const prependToStack = useCallback(
+    (id: string) =>
+      setStackOrder((currentStackOrder) =>
+        currentStackOrder[0] === id
+          ? currentStackOrder
+          : [id, ...currentStackOrder.filter((stackId) => stackId !== id)],
+      ),
+    [],
+  );
+
+  const removeFromStack = useCallback(
+    (id: string) =>
+      setStackOrder((currentStackOrder) =>
+        currentStackOrder.filter((stackId) => stackId !== id),
+      ),
+    [],
+  );
 
   const setSortOrder = useCallback(
     (
@@ -206,9 +255,9 @@ const useSessionContextState = (): SessionContextState => {
             setRecentFiles(DEFAULT_SESSION?.recentFiles || []);
           }
         } catch (error) {
-          // if ((error as ApiError)?.code === "ENOENT") {
-          //   deletePath(SESSION_FILE);
-          // }
+          if ((error as ApiError)?.code === "ENOENT") {
+            deletePath(SESSION_FILE);
+          }
         }
 
         loadingDebounceRef.current = window.setTimeout(() => {
@@ -226,19 +275,19 @@ const useSessionContextState = (): SessionContextState => {
   return {
     // clockSource,
     cursor,
-    // foregroundId,
+    foregroundId,
     iconPositions,
-    // prependToStack,
+    prependToStack,
     recentFiles,
-    // removeFromStack,
-    // runHistory,
+    removeFromStack,
+    runHistory,
     sessionLoaded,
     // setClockSource,
     setCursor,
-    // setForegroundId,
-    // setHaltSession,
+    setForegroundId,
+    setHaltSession,
     setIconPositions: setAndUpdateIconPositions,
-    // setRunHistory,
+    setRunHistory,
     setSortOrder,
     // setThemeName,
     // setWallpaper,
@@ -246,7 +295,7 @@ const useSessionContextState = (): SessionContextState => {
     sortOrders,
     stackOrder,
     // themeName,
-    // updateRecentFiles,
+    updateRecentFiles,
     // wallpaperFit,
     // wallpaperImage,
     windowStates,

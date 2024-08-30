@@ -17,7 +17,7 @@ import {
   supportsIndexedDB,
 } from "./core";
 import { basename, dirname, join } from "path";
-import { FileInfo } from "@/hooks/useFileInfo";
+import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
 import ini from "ini";
 import shortcutCache from "../../../public/.index/shortcutCache.json";
 import { SYSTEM_FILES, SYSTEM_PATHS } from "@/lib/constants";
@@ -96,9 +96,6 @@ export const isMountedFolder = (mount?: Mount): boolean =>
   typeof mount === "object" &&
   (mount.getName() === "FileSystemAccess" ||
     (mount as ExtendedEmscriptenFileSystem)._FS?.DB_STORE_NAME === "FILE_DATA");
-
-export const removeInvalidFilenameCharacters = (name = ""): string =>
-  name.replace(/["*/:<>?\\|]/g, "");
 
 export const getMimeType = (url: string): string => {
   switch (getExtension(url)) {
@@ -224,3 +221,36 @@ export const filterSystemFiles =
   (directory: string) =>
   (file: string): boolean =>
     !SYSTEM_PATHS.has(join(directory, file)) && !SYSTEM_FILES.has(file);
+
+export const removeFileSystemHandle = async (
+  directory: string,
+): Promise<void> => {
+  if (!(await supportsIndexedDB())) return;
+
+  const { [directory]: _removedHandle, ...handles } =
+    await getFileSystemHandles();
+  const db = await getKeyValStore();
+
+  await db.put(KEYVAL_STORE_NAME, handles, FS_HANDLES);
+};
+
+export const requestPermission = async (
+  url: string,
+): Promise<PermissionState | false> => {
+  const fsHandles = await getFileSystemHandles();
+  const handle = fsHandles[url];
+
+  if (handle) {
+    const currentPermissions = await handle.queryPermission();
+
+    if (currentPermissions === "prompt") {
+      await handle.requestPermission();
+    } else if (currentPermissions === "granted") {
+      throw new Error("Permission already granted");
+    }
+
+    return handle.queryPermission();
+  }
+
+  return false;
+};

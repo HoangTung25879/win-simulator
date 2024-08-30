@@ -6,7 +6,7 @@ import Sidebar from "./Sidebar/Sidebar";
 import "./StartMenu.scss";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import useTaskbarMenuTransition from "@/hooks/useTaskbarMenuTransition";
+import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;

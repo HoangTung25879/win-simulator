@@ -9,6 +9,7 @@ import { FOCUSABLE_ELEMENT, TRANSITIONS_IN_MS } from "@/lib/constants";
 import Icon from "../Icon/Icon";
 import { Checkmark, ChevronRight, Circle } from "./Icons";
 import { haltEvent } from "@/lib/utils";
+import sizes from "@/lib/sizes";
 
 type MenuItemProps = {
   item: Item;
@@ -89,13 +90,11 @@ const MenuItem = ({ item, resetMenu }: MenuItemProps) => {
 
   useLayoutEffect(() => {
     if (menu && itemRef.current) {
-      const subMenuOffsetX = -1;
-      const subMenuOffsetY = 4;
       const { height, width } = itemRef.current.getBoundingClientRect();
 
       setSubMenuOffset({
-        x: width - subMenuOffsetX,
-        y: 0 - height - subMenuOffsetY,
+        x: width - sizes.contextMenu.subMenuOffsetX,
+        y: 0 - height - sizes.contextMenu.subMenuOffsetY,
       });
     }
   }, [menu]);

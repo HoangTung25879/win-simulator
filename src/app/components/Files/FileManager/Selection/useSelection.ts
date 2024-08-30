@@ -5,8 +5,9 @@ import { useRef, useState } from "react";
 import { useMenu } from "@/contexts/menu";
 import { MenuState } from "@/contexts/menu/useMenuContextState";
 import { createSelectionStyling } from "./function";
+import { Prettify } from "@/lib/types";
 
-export type SelectionRect = Partial<Position> & Partial<Size>;
+export type SelectionRect = Prettify<Partial<Position> & Partial<Size>>;
 
 type Selection = {
   isSelecting: boolean;

@@ -15,6 +15,7 @@
     "browserfs": "^1.4.3",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.11",
+    "fix-webm-duration": "^1.0.6",
     "framer-motion": "^11.3.8",
     "html-to-image": "^1.11.11",
     "idb": "^8.0.0",
