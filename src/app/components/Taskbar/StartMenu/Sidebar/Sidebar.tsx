@@ -11,14 +11,18 @@ import {
 } from "./SidebarIcons";
 import clsx from "clsx";
 import "./Sidebar.scss";
-import { hasFinePointer } from "@/lib/utils";
+import { haltEvent, hasFinePointer } from "@/lib/utils";
 import { spotlightEffect } from "@/lib/spotlightEffect";
+import { useFileSystem } from "@/contexts/fileSystem";
+import { useSession } from "@/contexts/session";
+import { resetStorage } from "@/contexts/fileSystem/utils";
 
 type SidebarProps = {};
 
 type SidebarButton = {
   name: string;
   icon: React.JSX.Element;
+  tooltip?: string;
 };
 
 const buttons: SidebarButton[] = [
@@ -41,13 +45,15 @@ const buttons: SidebarButton[] = [
   {
     name: "Power",
     icon: <Power width={16} height={16} />,
+    tooltip: "Clears session data and reloads the page.",
   },
 ];
 
 const Sidebar = ({}: SidebarProps) => {
+  const { rootFs } = useFileSystem();
+  const { setHaltSession } = useSession();
   const [expanded, setExpanded] = useState(false);
   const expandTimer = useRef<number>();
-  const sidebarRef = useRef<HTMLElement>(null);
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };
@@ -64,6 +70,10 @@ const Sidebar = ({}: SidebarProps) => {
     if (button.name === "Start") {
       setExpanded((expanded) => !expanded);
     }
+    if (button.name === "Power") {
+      setHaltSession(true);
+      resetStorage(rootFs).finally(() => window.location.reload());
+    }
   };
 
   return (
@@ -71,6 +81,7 @@ const Sidebar = ({}: SidebarProps) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       className={clsx("side-bar", expanded ? "expanded" : "")}
+      onContextMenu={haltEvent}
     >
       {buttons.map((button) => {
         return (
@@ -78,12 +89,14 @@ const Sidebar = ({}: SidebarProps) => {
             ref={(element: HTMLDivElement) => {
               if (hasFinePointer()) spotlightEffect(element, true, 1.5);
             }}
+            aria-label={button.name}
             key={button.name}
             className={clsx(
               "side-bar-item hover:bg-hover-item-menu",
               button.name === "Start" ? "mb-auto" : "",
             )}
             onClick={() => handleClickButton(button)}
+            title={button.tooltip}
           >
             <div className="p-4">{button.icon}</div>
             <div

@@ -1,49 +1,47 @@
 "use client";
 
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
-import clsx from "clsx";
 import Sidebar from "./Sidebar/Sidebar";
 import "./StartMenu.scss";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
+import { maybeCloseTaskbarMenu, START_BUTTON_TITLE } from "../functions";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
 };
 
 const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTransition = useTaskbarMenuTransition();
 
-  useEffect(() => {
-    const handleBlurMenu = ({ relatedTarget }: FocusEvent) => {
-      if (relatedTarget instanceof HTMLElement) {
-        if (menuRef.current?.contains(relatedTarget)) {
-          menuRef.current?.focus(PREVENT_SCROLL);
-          return;
-        }
-        const startButton = document.getElementById("startButton");
-        if (
-          startButton instanceof HTMLDivElement &&
-          startButton === relatedTarget
-        ) {
-          return;
-        }
-      }
-      toggleStartMenu(false);
-    };
-    menuRef.current?.addEventListener("blur", handleBlurMenu);
-    menuRef.current?.focus(PREVENT_SCROLL);
-    return () => {
-      menuRef.current?.removeEventListener("blur", handleBlurMenu);
-    };
-  }, [toggleStartMenu]);
+  const focusOnRenderCallback = useCallback(
+    (element: HTMLDivElement | null) => {
+      element?.focus(PREVENT_SCROLL);
+      menuRef.current = element;
+    },
+    [],
+  );
 
   return (
     <motion.div
-      ref={menuRef}
+      ref={focusOnRenderCallback}
+      id="startMenu"
       className="start-menu bottom-taskbar-height border-windows-border"
+      onKeyDown={({ key }) => {
+        if (key === "Escape") toggleStartMenu(false);
+      }}
+      // Click button will trigger process -> component rerender -> trigger onBlur event
+      onBlurCapture={(event) =>
+        maybeCloseTaskbarMenu(
+          event,
+          menuRef.current,
+          toggleStartMenu,
+          undefined,
+          START_BUTTON_TITLE,
+        )
+      }
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >

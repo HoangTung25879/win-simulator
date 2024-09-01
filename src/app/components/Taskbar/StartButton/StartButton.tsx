@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import StartButtonIcon from "./StartButtonIcon";
 import clsx from "clsx";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
+import { START_BUTTON_TITLE } from "../functions";
 
 type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -19,7 +20,8 @@ const StartButton = ({
     <div
       role="button"
       id="startButton"
-      title="Start"
+      aria-label={START_BUTTON_TITLE}
+      title={START_BUTTON_TITLE}
       className={clsx(
         "h-full w-10 cursor-default p-3 hover:bg-taskbar-hover",
         startMenuVisible && "bg-taskbar-hover",
