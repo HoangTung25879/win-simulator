@@ -24,3 +24,30 @@
     }
   }
 }
+
+.rename-box {
+  background-color: #fff;
+  border: 1px solid rgb(100, 100, 100);
+  color: #000;
+  border-radius: 0;
+  font-family: inherit;
+  font-size: 11.5px;
+  margin-bottom: 2px;
+  max-width: 75px;
+  min-height: 19px;
+  min-width: 30px;
+  overflow: hidden;
+  padding: 1px 5px;
+  position: relative;
+  resize: none;
+  text-align: center;
+  top: 2px;
+  user-select: text;
+  white-space: break-spaces;
+  z-index: 1;
+  &.--dark {
+    background-color: rgb(33, 33, 33);
+    border: 1px solid #fff;
+    color: #fff;
+  }
+}

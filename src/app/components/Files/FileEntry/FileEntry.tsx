@@ -42,6 +42,7 @@ import dayjs from "dayjs";
 import useDoubleClick from "@/hooks/useDoubleClick";
 import clsx from "clsx";
 import useFileContextMenu from "./useFileContextMenu";
+import RenameBox from "./RenameBox";
 
 type FileEntryProps = {
   fileActions: FileActions;
@@ -291,17 +292,30 @@ const FileEntry = ({
           eager={loadIconImmediately}
           moving={pasteList[path] === "move"}
         />
-        <figcaption
-          {...(isHeading && {
-            "aria-level": 1,
-            role: "heading",
-          })}
-          className="pointer-events-none"
-        >
-          {!isOnlyFocusedEntry || name.length === truncatedName.length
-            ? truncatedName
-            : name}
-        </figcaption>
+        {renaming ? (
+          <RenameBox
+            isDesktop={isDesktop}
+            name={name}
+            path={path}
+            renameFile={(originPath, newName) => {
+              fileActions.renameFile(originPath, newName);
+              setRenaming("");
+            }}
+            setRenaming={setRenaming}
+          />
+        ) : (
+          <figcaption
+            {...(isHeading && {
+              "aria-level": 1,
+              role: "heading",
+            })}
+            className="pointer-events-none"
+          >
+            {!isOnlyFocusedEntry || name.length === truncatedName.length
+              ? truncatedName
+              : name}
+          </figcaption>
+        )}
       </figure>
     </button>
   );
