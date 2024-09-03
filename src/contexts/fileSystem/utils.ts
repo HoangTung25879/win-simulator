@@ -21,6 +21,7 @@ import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
 import ini from "ini";
 import shortcutCache from "../../../public/.index/shortcutCache.json";
 import { SYSTEM_FILES, SYSTEM_PATHS } from "@/lib/constants";
+import processDirectory from "@/contexts/process/directory";
 
 type InternetShortcut = {
   BaseURL: string;
@@ -195,11 +196,10 @@ export const getShortcutInfo = (
 
   return {
     comment,
-    // icon:
-    //   !icon && pid && pid !== "FileExplorer"
-    //     ? processDirectory[pid]?.icon
-    //     : icon,
-    icon,
+    icon:
+      !icon && pid && pid !== "FileExplorer"
+        ? processDirectory[pid]?.icon
+        : icon,
     pid,
     type,
     url,
