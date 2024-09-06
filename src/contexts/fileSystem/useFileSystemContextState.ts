@@ -108,6 +108,10 @@ const useFileSystemContextState = (): FileSystemContextState => {
     Object.create(null) as FilePasteOperations,
   );
 
+  useEffect(() => {
+    console.log("useFileSystemContextState", pasteList);
+  }, [pasteList]);
+
   const fsWatchersRef = useRef<FileSystemWatchers>(
     Object.create(null) as FileSystemWatchers,
   );

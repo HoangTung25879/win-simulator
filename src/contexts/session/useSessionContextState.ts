@@ -53,6 +53,30 @@ const useSessionContextState = (): SessionContextState => {
   const initializedSession = useRef(false);
   const loadingDebounceRef = useRef(0);
 
+  useEffect(() => {
+    console.log("useSessionContextState", {
+      sessionLoaded,
+      foregroundId,
+      stackOrder,
+      cursor,
+      windowStates,
+      sortOrders,
+      iconPositions,
+      runHistory,
+      recentFiles,
+    });
+  }, [
+    sessionLoaded,
+    foregroundId,
+    stackOrder,
+    cursor,
+    windowStates,
+    sortOrders,
+    iconPositions,
+    runHistory,
+    recentFiles,
+  ]);
+
   const updateRecentFiles = useCallback(
     (url: string, pid: string, title?: string) =>
       (title || extname(url)) &&

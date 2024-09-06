@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { ProcessArguments, ProcessElements, Processes } from "./types";
 import {
   closeProcess,
@@ -44,6 +44,10 @@ const useProcessContextState = (): ProcessContextState => {
   const [processes, setProcesses] = useState<Processes>(
     Object.create(null) as Processes,
   );
+
+  useEffect(() => {
+    console.log("useProcessContextState", processes);
+  }, [processes]);
 
   const argument = useCallback(
     (
