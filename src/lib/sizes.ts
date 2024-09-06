@@ -1,3 +1,4 @@
+//* AI prompt: convert this to CSS Variables in a Global Stylesheet
 const sizes = {
   calendar: {
     maxHeight: 357,
@@ -40,13 +41,14 @@ const sizes = {
     maxHeight: 390,
     sideBar: {
       buttonHeight: 48,
-      expandedWidth: "228px",
+      expandedWidth: 228,
       iconSize: "16px",
       width: 48,
     },
     size: 320,
   },
   taskbar: {
+    height: 40,
     blur: "5px",
     button: {
       iconSize: "15px",
@@ -75,7 +77,7 @@ const sizes = {
   },
   window: {
     cascadeOffset: 26,
-    outline: "1px",
+    outlineSize: "1px",
   },
 };
 

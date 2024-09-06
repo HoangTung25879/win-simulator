@@ -1,4 +1,5 @@
 import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
+import sizes from "@/lib/sizes";
 import { MotionProps } from "framer-motion";
 
 const useTaskbarMenuTransition = (): MotionProps => {
@@ -13,6 +14,7 @@ const useTaskbarMenuTransition = (): MotionProps => {
     variants: {
       active: {
         transform: "translateY(0%)",
+        bottom: sizes.taskbar.height,
         transitionEnd: {
           pointerEvents: "auto",
         },

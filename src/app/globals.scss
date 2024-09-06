@@ -17,6 +17,107 @@
 }
 
 :root {
+  //* Colors
+  --background: #000;
+  --file-entry-background: hsla(207, 30%, 72%, 25%);
+  --file-entry-background-focused: hsla(207, 60%, 72%, 35%);
+  --file-entry-background-focused-hover: hsla(207, 90%, 72%, 30%);
+  --file-entry-border: hsla(207, 30%, 72%, 30%);
+  --file-entry-border-focused: hsla(207, 60%, 72%, 35%);
+  --file-entry-border-focused-hover: hsla(207, 90%, 72%, 40%);
+  --file-entry-text: #fff;
+  --file-entry-text-shadow: 0 0 1px rgba(0, 0, 0, 75%),
+    0 0 2px rgba(0, 0, 0, 50%), 0 1px 1px rgba(0, 0, 0, 75%),
+    0 1px 2px rgba(0, 0, 0, 50%), 0 2px 1px rgba(0, 0, 0, 75%),
+    0 2px 2px rgba(0, 0, 0, 50%);
+  --highlight: hsla(207, 100%, 72%, 90%);
+  --progress: hsla(113, 78%, 56%, 90%);
+  --progress-background: hsla(104, 22%, 45%, 70%);
+  --progress-bar-rgb: rgb(6, 176, 37);
+  --selection-highlight: hsla(207, 100%, 45%, 90%);
+  --selection-highlight-background: hsla(207, 100%, 45%, 30%);
+  --taskbar-active: hsla(0, 0%, 20%, 70%);
+  --taskbar-active-foreground: hsla(0, 0%, 40%, 70%);
+  --taskbar-background: hsla(0, 0%, 10%, 70%);
+  --taskbar-button-color: #fff;
+  --taskbar-foreground: hsla(0, 0%, 35%, 70%);
+  --taskbar-foreground-hover: hsla(0, 0%, 45%, 70%);
+  --taskbar-foreground-progress: hsla(104, 22%, 45%, 30%);
+  --taskbar-hover: hsla(0, 0%, 25%, 70%);
+  --taskbar-peek-border: hsla(0, 0%, 50%, 50%);
+  --text: rgba(255, 255, 255, 90%);
+  --title-bar-background: rgb(0, 0, 0);
+  --title-bar-background-hover: rgb(26, 26, 26);
+  --title-bar-background-inactive: rgb(43, 43, 43);
+  --title-bar-button-inactive: rgb(128, 128, 128);
+  --title-bar-close-hover: rgb(232, 17, 35);
+  --title-bar-text: rgb(255, 255, 255);
+  --title-bar-text-inactive: rgb(170, 170, 170);
+  --window-background: #808080;
+  --window-outline: hsla(0, 0%, 25%, 75%);
+  --window-outline-inactive: hsla(0, 0%, 30%, 100%);
+  --window-shadow: 0 0 14px 0 rgba(0, 0, 0, 50%);
+  --window-shadow-inactive: 0 0 10px 0 rgba(0, 0, 0, 45%);
+  //* Sizes
+  /* Calendar */
+  --calendar-max-height: 357px;
+  /* Clock */
+  --clock-font-size: 12px;
+  --clock-padding: 5px;
+  /* Context Menu */
+  --context-menu-sub-menu-offset: 3px;
+  /* File Entry */
+  --file-entry-font-size: 12px;
+  --file-entry-icon-size: 48px;
+  --file-entry-max-icon-text-display-width: 72px;
+  --file-entry-max-list-text-display-width: 102px;
+  --file-entry-rename-padding: 5px;
+  --file-entry-rename-width: 75px;
+  /* File Explorer */
+  --file-explorer-nav-bar-height: 38px;
+  --file-explorer-nav-input-height: 24px;
+  --file-explorer-status-bar-height: 23px;
+  /* File Manager */
+  --file-manager-column-gap: 1px;
+  --file-manager-grid-entry-height: 70px;
+  --file-manager-grid-entry-width: 74px;
+  --file-manager-padding: 5px 0;
+  --file-manager-row-gap: 28px;
+  /* Search */
+  --search-header-height: 52px;
+  --search-input-height: 40px;
+  --search-max-height: 415px;
+  --search-size: 600px;
+  /* Start Menu */
+  --start-menu-max-height: 390px;
+  --start-menu-side-bar-button-height: 48px;
+  --start-menu-side-bar-expanded-width: 228px;
+  --start-menu-side-bar-icon-size: 16px;
+  --start-menu-side-bar-width: 48px;
+  --start-menu-size: 320px;
+  /* Taskbar */
+  --taskbar-height: 40px;
+  --taskbar-blur: 5px;
+  --taskbar-button-icon-size: 15px;
+  --taskbar-button-width: 36px;
+  --taskbar-entry-border-size: 2px;
+  --taskbar-entry-font-size: 12px;
+  --taskbar-entry-icon-size: 16px;
+  --taskbar-entry-max-width: 160px;
+  --taskbar-entry-peek-controls-height: 36px;
+  --taskbar-entry-peek-image-height: 82px;
+  --taskbar-entry-peek-image-margin: 8px;
+  --taskbar-panel-blur: 12px;
+  /* Title Bar */
+  --title-bar-button-icon-width: 10px;
+  --title-bar-button-width: 45px;
+  --title-bar-font-size: 12px;
+  --title-bar-height: 30px;
+  --title-bar-icon-margin-right: 4px;
+  --title-bar-icon-size: 16px;
+  /* Window */
+  --window-cascade-offset: 26px;
+  --window-outline: 1px;
 }
 
 @media (prefers-color-scheme: dark) {

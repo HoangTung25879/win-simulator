@@ -28,7 +28,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
     <motion.div
       ref={focusOnRenderCallback}
       id="startMenu"
-      className="start-menu bottom-taskbar-height border-windows-border"
+      className="start-menu border-taskbar-peekBorder"
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleStartMenu(false);
       }}

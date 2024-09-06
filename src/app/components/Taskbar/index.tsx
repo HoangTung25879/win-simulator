@@ -34,8 +34,8 @@ const Taskbar = () => {
         {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
       </AnimatePresence>
       <footer
-        className="fixed bottom-0 left-0 z-[1000] flex h-taskbar-height w-screen items-center
-          bg-taskbar"
+        className="fixed bottom-0 left-0 z-[1000] flex h-[var(--taskbar-height)] w-screen
+          items-center bg-taskbar-background"
         {...FOCUSABLE_ELEMENT}
       >
         <StartButton

@@ -134,8 +134,8 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     <motion.div
       ref={calendarContainerRef}
       className={clsx(
-        `fixed bottom-taskbar-height right-0 z-[999] border-b-0 border-r-0 border-solid
-        border-windows-border bg-[#393939] text-white`,
+        `fixed right-0 z-[999] border-b-0 border-r-0 border-solid
+        border-taskbar-peekBorder bg-[#393939] text-white`,
       )}
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}

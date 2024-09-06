@@ -118,7 +118,7 @@ const DesktopFileManager = ({ url }: DesktopFileManagerProps) => {
       id={DESKTOP_GRID_ID}
       ref={fileManagerRef}
       className={clsx(
-        "desktop-file-manager h-[calc(100%-theme(spacing[taskbar-height]))]",
+        "desktop-file-manager",
         isSelecting ? "pointer-events-auto" : "",
       )}
       {...selectionEvents}

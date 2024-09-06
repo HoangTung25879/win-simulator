@@ -18,6 +18,8 @@ import {
 } from "@/contexts/session/types";
 import { DragPosition } from "@/app/components/Files/FileEntry/useDraggableEntries";
 import dayjs from "dayjs";
+import { Position } from "react-rnd";
+import sizes from "./sizes";
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
@@ -632,3 +634,8 @@ export const getFormattedSize = (size = 0): string => {
   }
   return `${size} bytes`;
 };
+
+export const getWindowViewport = (): Position => ({
+  x: window.innerWidth,
+  y: window.innerHeight - sizes.taskbar.height,
+});

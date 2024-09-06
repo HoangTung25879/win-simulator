@@ -1,3 +1,5 @@
+//* AI prompt: convert this to CSS Variables in a Global Stylesheet
+//* AI prompt: Convert this to tailwind theme
 const colors = {
   background: "#000",
   fileEntry: {

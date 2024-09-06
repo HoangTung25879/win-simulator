@@ -92,7 +92,7 @@ const Sidebar = ({}: SidebarProps) => {
             aria-label={button.name}
             key={button.name}
             className={clsx(
-              "side-bar-item hover:bg-hover-item-menu",
+              "side-bar-item",
               button.name === "Start" ? "mb-auto" : "",
             )}
             onClick={() => handleClickButton(button)}

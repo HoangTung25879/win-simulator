@@ -1,4 +1,5 @@
 .desktop-file-manager {
+  height: calc(100% - var(--taskbar-height));
   width: 100%;
   contain: strict;
   display: grid;

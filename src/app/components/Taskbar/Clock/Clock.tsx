@@ -2,20 +2,16 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import useWorker from "@/hooks/useWorker";
-import {
-  CLOCK_CANVAS_BASE_WIDTH,
-  FOCUSABLE_ELEMENT,
-  TASKBAR_HEIGHT,
-} from "@/lib/constants";
+import { CLOCK_CANVAS_BASE_WIDTH, FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { createOffscreenCanvas } from "@/lib/utils";
 import clsx from "clsx";
 import dayjs, { Dayjs } from "dayjs";
 import { clearInterval, setInterval } from "worker-timers";
+import sizes from "@/lib/sizes";
 
 type ClockProps = {
   toggleCalendar: () => void;
 };
-
 const formatDate = "dddd, MMMM D, YYYY";
 
 //*: Using worker canvas
@@ -45,7 +41,7 @@ const formatDate = "dddd, MMMM D, YYYY";
 //             window.devicePixelRatio,
 //             {
 //               width: CLOCK_CANVAS_BASE_WIDTH,
-//               height: TASKBAR_HEIGHT,
+//               height: sizes.taskbar.height,
 //             },
 //           );
 //           currentWorker.current?.postMessage(
