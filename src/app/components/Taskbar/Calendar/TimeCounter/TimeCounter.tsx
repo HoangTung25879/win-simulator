@@ -49,7 +49,7 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
     };
   }, []);
   return (
-    <div className="border-taskbar-peekBorder relative z-[100] border-b bg-[#393939] p-5">
+    <div className="relative z-[100] border-b border-taskbar-peekBorder bg-[#393939] p-5">
       <div className="flex gap-2">
         <div className="text-5xl font-thin leading-10">
           {timeObj.hours}:
@@ -60,13 +60,12 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
           {timeObj.meridiem}
         </div>
       </div>
-      <div
-        role="button"
+      <button
         className="mt-3 w-fit text-sm text-[#a1ccef] hover:text-[#7d7d7d]"
         onClick={onClickToday}
       >
         {dayjs().format("dddd, MMMM D, YYYY")}
-      </div>
+      </button>
     </div>
   );
 };

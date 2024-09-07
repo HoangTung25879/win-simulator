@@ -52,10 +52,10 @@ const sizes = {
     blur: "5px",
     button: {
       iconSize: "15px",
-      width: 36,
+      width: 40,
     },
     entry: {
-      borderSize: "2px",
+      borderSize: "3px",
       fontSize: "12px",
       iconSize: "16px",
       maxWidth: "160px",

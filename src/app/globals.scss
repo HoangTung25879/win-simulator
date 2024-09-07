@@ -16,6 +16,10 @@
   user-select: none;
 }
 
+button {
+  cursor: default;
+}
+
 :root {
   //* Colors
   --background: #000;
@@ -99,8 +103,8 @@
   --taskbar-height: 40px;
   --taskbar-blur: 5px;
   --taskbar-button-icon-size: 15px;
-  --taskbar-button-width: 36px;
-  --taskbar-entry-border-size: 2px;
+  --taskbar-button-width: 40px;
+  --taskbar-entry-border-size: 3px;
   --taskbar-entry-font-size: 12px;
   --taskbar-entry-icon-size: 16px;
   --taskbar-entry-max-width: 160px;

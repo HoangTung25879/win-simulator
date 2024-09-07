@@ -102,8 +102,7 @@ const CalendarGrid = ({
           {calendar?.map((week) => (
             <div className="calendar-row" key={week.toString()}>
               {week.map(([vDay, vType, vDate]) => (
-                <div
-                  role="button"
+                <button
                   onClick={() => handleClickDate(vDate)}
                   key={`${vDay}${vType}`}
                   className={clsx(
@@ -116,7 +115,7 @@ const CalendarGrid = ({
                   )}
                 >
                   {formatCell(vDay)}
-                </div>
+                </button>
               ))}
             </div>
           ))}

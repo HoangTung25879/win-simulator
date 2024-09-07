@@ -111,8 +111,7 @@ const MenuItem = ({ item, resetMenu }: MenuItemProps) => {
       {seperator ? (
         <hr />
       ) : (
-        <div
-          role="button"
+        <button
           className={clsx(
             "item-button",
             showSubMenu && mouseOver ? "--active" : "",
@@ -137,7 +136,7 @@ const MenuItem = ({ item, resetMenu }: MenuItemProps) => {
             {label}
           </div>
           {menu && <ChevronRight className="right-2" />}
-        </div>
+        </button>
       )}
       {showSubMenu && menu && (
         <Menu subMenu={{ items: menu, ...subMenuOffset }} />

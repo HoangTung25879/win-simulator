@@ -7,10 +7,10 @@ import Calendar from "./Calendar/Calendar";
 import { AnimatePresence } from "framer-motion";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import StartMenu from "./StartMenu/StartMenu";
+import Tabs from "./Tabs/Tabs";
 
 const Taskbar = () => {
   const [calendarVisible, setCalendarVisible] = useState(false);
-
   const [startMenuVisible, setStartMenuVisible] = useState(false);
   const [searchVisible, setSearchVisible] = useState(false);
 
@@ -42,6 +42,7 @@ const Taskbar = () => {
           toggleStartMenu={toggleStartMenu}
           startMenuVisible={startMenuVisible}
         />
+        <Tabs />
         <Clock toggleCalendar={toggleCalendar} />
       </footer>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>

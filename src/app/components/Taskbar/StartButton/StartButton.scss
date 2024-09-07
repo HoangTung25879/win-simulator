@@ -1,0 +1,11 @@
+.start-button {
+  height: 100%;
+  width: var(--taskbar-button-width);
+  padding: 0.75rem;
+  &:hover {
+    background-color: var(--taskbar-hover);
+  }
+}
+.start-button.--active {
+  background-color: var(--taskbar-hover);
+}

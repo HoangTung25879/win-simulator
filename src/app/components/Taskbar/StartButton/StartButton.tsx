@@ -5,6 +5,7 @@ import StartButtonIcon from "./StartButtonIcon";
 import clsx from "clsx";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { START_BUTTON_TITLE } from "../functions";
+import "./StartButton.scss";
 
 type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -17,15 +18,11 @@ const StartButton = ({
 }: StartButtonProps) => {
   const [isHover, setIsHover] = useState(false);
   return (
-    <div
-      role="button"
+    <button
       id="startButton"
       aria-label={START_BUTTON_TITLE}
       title={START_BUTTON_TITLE}
-      className={clsx(
-        "h-full w-10 cursor-default p-3 hover:bg-taskbar-hover",
-        startMenuVisible && "bg-taskbar-hover",
-      )}
+      className={clsx("start-button", startMenuVisible && "--active")}
       onMouseOver={(e) => setIsHover(true)}
       onMouseOut={(e) => setIsHover(false)}
       onClick={() => {
@@ -34,7 +31,7 @@ const StartButton = ({
       {...FOCUSABLE_ELEMENT}
     >
       <StartButtonIcon isHover={isHover} />
-    </div>
+    </button>
   );
 };
 

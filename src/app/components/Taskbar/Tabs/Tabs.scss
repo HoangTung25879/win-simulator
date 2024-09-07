@@ -1,0 +1,63 @@
+.tabs {
+  column-gap: 1px;
+  display: flex;
+  height: 100%;
+  margin: 0 3px;
+  overflow: hidden;
+  .tab {
+    display: flex;
+    min-width: 0;
+    overflow: hidden;
+    place-content: center;
+    position: relative;
+    width: var(--taskbar-entry-max-width);
+    border-bottom: var(--taskbar-entry-border-size) solid var(--highlight);
+    &.progressing {
+      background-color: var(--taskbar-foreground-progress);
+      border-bottom: var(--taskbar-entry-border-size) solid var(--progress);
+    }
+    &.is-foreground {
+      background-color: var(--taskbar-foreground);
+      &:hover {
+        background-color: var(--taskbar-foreground-hover);
+      }
+      &:active {
+        background-color: var(--taskbar-active-foreground);
+      }
+    }
+    &:hover {
+      background-color: var(--taskbar-hover);
+    }
+    &:active {
+      background-color: var(--taskbar-active);
+    }
+    figure {
+      align-items: center;
+      display: flex;
+      padding: 4px;
+      figcaption {
+        color: var(--text);
+        font-size: var(--taskbar-entry-font-size);
+        margin: 0 4px;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      img {
+        height: var(--taskbar-entry-icon-size);
+        width: var(--taskbar-entry-icon-size);
+        position: relative;
+        top: 1px;
+      }
+    }
+
+    button {
+      width: 100%;
+      align-items: center;
+      display: flex;
+      figure {
+        width: 100%;
+      }
+    }
+  }
+}

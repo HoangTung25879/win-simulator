@@ -1,7 +1,7 @@
 "use client";
 import { MenuProvider } from "@/contexts/menu";
 import Desktop from "./components/Desktop/Desktop";
-import Taskbar from "./components/Taskbar";
+import Taskbar from "./components/Taskbar/Taskbar";
 import { FileSystemProvider } from "@/contexts/fileSystem";
 import { ProcessProvider } from "@/contexts/process";
 import { SessionProvider } from "@/contexts/session";
