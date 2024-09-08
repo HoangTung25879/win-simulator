@@ -1,0 +1,52 @@
+.peek-window {
+  backdrop-filter: blur(var(--taskbar-blur));
+  background-color: var(--taskbar-background);
+  border: 1px solid var(--taskbar-peek-border);
+  border-bottom: 0;
+  bottom: var(--taskbar-height);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  place-content: center;
+  place-items: flex-start;
+  position: fixed;
+
+  .title {
+    width: 100%;
+    display: flex;
+    padding-left: 8px;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text);
+    font-size: var(--taskbar-entry-font-size);
+    .close {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(40, 40, 40);
+      height: 32px;
+      width: 32px;
+      svg {
+        fill: rgb(252, 246, 247);
+        width: 12px;
+      }
+      &:active {
+        background-color: rgb(139, 10, 20) !important;
+      }
+      &:hover {
+        background-color: rgb(194, 22, 36);
+      }
+    }
+  }
+
+  .peek-image {
+    height: var(--taskbar-entry-peek-image-height);
+    margin: var(--taskbar-entry-peek-image-margin);
+    margin-top: 0;
+    max-height: var(--taskbar-entry-peek-max-width);
+    max-width: var(--taskbar-entry-peek-max-width);
+    min-height: 80px;
+    min-width: 80px;
+    object-fit: contain;
+  }
+}

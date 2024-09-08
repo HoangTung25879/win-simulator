@@ -61,9 +61,10 @@ const sizes = {
       maxWidth: "160px",
       peekControlsHeight: 36,
       peekImage: {
-        height: 82,
+        height: 140,
         margin: 8,
       },
+      peekMaxWidth: 200,
     },
     panelBlur: "12px",
   },

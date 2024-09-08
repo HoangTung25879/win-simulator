@@ -7,9 +7,14 @@ import { useCallback, useState } from "react";
 import clsx from "clsx";
 import useTaskbarTabTransition from "../useTaskbarTabTransition";
 import useTitlebarContextMenu from "../../Window/Titlebar/useTitlebarContextMenu";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Icon from "../../Icon/Icon";
 import colors from "@/lib/colors";
+import dynamic from "next/dynamic";
+
+const PeekWindow = dynamic(
+  () => import("@/app/components/Taskbar/PeekWindow/PeekWindow"),
+);
 
 type TabProps = {
   icon: string;
@@ -67,6 +72,9 @@ const Tab = ({ icon, id, title }: TabProps) => {
       {...tabTransition}
       {...tabContextMenu}
     >
+      <AnimatePresence initial={false} presenceAffectsLayout={false}>
+        {isPeekVisible && <PeekWindow id={id} />}
+      </AnimatePresence>
       <button
         ref={linkTaskbarEntry}
         onClick={onClick}

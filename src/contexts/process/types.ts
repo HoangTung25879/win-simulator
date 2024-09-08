@@ -41,8 +41,14 @@ type DialogProcessArguments = {
   shortcutPath?: string;
 };
 
+type MediaPlayerProcessArguments = {
+  pause?: () => void;
+  paused?: (callback?: (paused: boolean) => void) => boolean;
+  play?: () => void;
+};
+
 export type ProcessArguments = Prettify<
-  BaseProcessArguments & DialogProcessArguments
+  BaseProcessArguments & DialogProcessArguments & MediaPlayerProcessArguments
 >;
 
 export type Process = Prettify<

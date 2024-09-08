@@ -20,8 +20,8 @@ export default function Error({
       className="flex h-screen w-screen flex-col items-center justify-center bg-gray-900
         text-white"
     >
-      <div className="flex flex-col rounded-lg bg-gray-800 p-8 shadow-lg">
-        <h1 className="mb-4 text-5xl font-bold text-red-500">
+      <div className="flex h-1/2 w-1/2 flex-col rounded-lg bg-gray-800 p-8 shadow-lg">
+        <h1 className="mb-4 overflow-y-scroll break-words text-5xl font-bold text-red-500">
           {error.message}
         </h1>
         <p className="mb-4 text-lg">

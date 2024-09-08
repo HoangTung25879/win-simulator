@@ -205,8 +205,9 @@ const useDraggableEntries = (
             x: capturedFileManager.width - trimmedCapture.width,
             y: capturedFileManager.height - trimmedCapture.height,
           };
-        } catch {
+        } catch (error) {
           // Ignore failure to capture
+          console.error(error);
         }
       }
     }
