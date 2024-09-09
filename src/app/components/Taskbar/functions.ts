@@ -1,6 +1,7 @@
 import { PREVENT_SCROLL } from "@/lib/constants";
 
 export const START_BUTTON_TITLE = "Start";
+export const SEARCH_BUTTON_TITLE = "Type here to search";
 
 export const maybeCloseTaskbarMenu = (
   { relatedTarget: focusedElement }: React.FocusEvent<HTMLElement>,

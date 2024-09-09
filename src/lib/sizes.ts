@@ -38,7 +38,7 @@ const sizes = {
     size: 600,
   },
   startMenu: {
-    maxHeight: 390,
+    maxHeight: 560,
     sideBar: {
       buttonHeight: 48,
       expandedWidth: 228,

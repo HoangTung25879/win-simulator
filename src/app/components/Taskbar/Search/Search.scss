@@ -1,0 +1,117 @@
+.search-panel {
+  @keyframes fade-in {
+    0% {
+      opacity: 0%;
+    }
+    100% {
+      opacity: 100%;
+    }
+  }
+  display: flex;
+  position: fixed;
+  left: var(--taskbar-button-width);
+  bottom: var(--taskbar-height);
+  border-right-width: 0;
+  border-bottom-width: 0;
+  border-style: solid;
+  background-color: hsla(0, 0%, 13%, 95%);
+  color: #ffffff;
+  height: 100%;
+  width: 100%;
+  max-height: var(--search-max-height);
+  max-width: var(--search-size);
+  box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
+  z-index: 9999;
+  backdrop-filter: blur(var(--taskbar-panel-blur));
+
+  .search-content {
+    animation: fade-in 0.85s;
+    height: 100%;
+    .no-results {
+      display: flex;
+      font-size: 14px;
+      font-weight: 300;
+      padding: 5px 15px;
+      place-items: center;
+      pointer-events: none;
+      user-select: none;
+      svg {
+        fill: #fff;
+        height: 32px;
+        margin-right: 12px;
+        width: 32px;
+      }
+    }
+    .tab {
+      color: rgb(175, 175, 175);
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - var(--search-header-height));
+      place-content: center;
+      place-items: center;
+      position: absolute;
+      top: var(--search-header-height);
+      width: 100%;
+      h1 {
+        font-size: 28px;
+        font-weight: 400;
+        padding-top: 14px;
+      }
+      h3 {
+        font-size: 14px;
+        font-weight: 400;
+        padding-top: 8px;
+      }
+      svg {
+        fill: rgb(115, 115, 115);
+        height: 128px;
+        width: 128px;
+      }
+    }
+  }
+}
+
+.search-bar {
+  position: relative;
+  svg {
+    bottom: 12px;
+    height: 16px;
+    left: 12px;
+    position: absolute;
+    width: 16px;
+    z-index: 2;
+  }
+  input {
+    cursor: text;
+    appearance: none;
+    background-color: rgb(242, 242, 242);
+    border-radius: 0;
+    color: #000;
+    font-size: 15px;
+    height: var(--taskbar-height);
+    padding-left: 37px;
+    padding-right: 1rem;
+    width: var(--taskbar-search-width);
+    border: 2px solid hsl(0, 0%, 76%);
+    &:hover {
+      background-color: #fff;
+      border: 2px solid hsl(0, 0%, 70%);
+    }
+    &:active {
+      border: 2px solid rgb(0, 120, 215);
+      background-color: #fff;
+    }
+    &:focus {
+      border: 2px solid rgb(0, 120, 215);
+      background-color: #fff;
+    }
+
+    &::placeholder {
+      color: #000;
+      inset: 0;
+      left: 37px;
+      opacity: 100%;
+      overflow: visible;
+    }
+  }
+}

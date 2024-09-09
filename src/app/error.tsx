@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+let errorCount = 0;
+
 export default function Error({
   error,
   reset,
@@ -30,7 +32,14 @@ export default function Error({
         <button
           className="mt-4 rounded bg-red-600 px-6 py-2 text-lg font-semibold text-white
             hover:bg-red-700"
-          onClick={reset}
+          onClick={() => {
+            if (errorCount > 1) {
+              window.location.reload();
+              return;
+            }
+            errorCount += 1;
+            reset();
+          }}
         >
           Retry
         </button>

@@ -522,8 +522,6 @@ export const preloadLibs = (libs: string[] = []): void => {
   const preloadedLinks = [
     ...document.querySelectorAll("link[rel=preload]"),
   ] as HTMLLinkElement[];
-
-  // eslint-disable-next-line unicorn/no-array-callback-reference
   libs.map(encodeURI).forEach((lib) => {
     if (
       scripts.some((script) => script.src.endsWith(lib)) ||
@@ -531,13 +529,10 @@ export const preloadLibs = (libs: string[] = []): void => {
     ) {
       return;
     }
-
     const link = document.createElement("link");
-
     link.fetchPriority = "high";
     link.rel = "preload";
     link.href = lib;
-
     switch (getExtension(lib)) {
       case ".css":
         link.as = "style";

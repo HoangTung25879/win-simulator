@@ -2,15 +2,17 @@
   display: flex;
   position: fixed;
   left: 0;
+  bottom: var(--taskbar-height);
   border-right-width: 0;
   border-bottom-width: 0;
   border-style: solid;
+  background-color: hsla(0, 0%, 13%, 95%);
   color: #ffffff;
-  height: 640px;
-  // background-color: hsla(0, 0%, 13%, 70%);
-  background-color: #393939;
+  height: 100%;
+  width: 100%;
+  max-height: var(--start-menu-max-height);
+  max-width: var(--start-menu-size);
   box-shadow: 3px 0 10px 3px hsla(0, 0%, 10%, 50%);
-  width: 20rem;
   z-index: 9999;
   .blur-background {
     backdrop-filter: blur(12px);
