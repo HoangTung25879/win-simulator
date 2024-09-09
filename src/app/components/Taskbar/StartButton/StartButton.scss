@@ -1,9 +1,14 @@
 .start-button {
   height: 100%;
   width: var(--taskbar-button-width);
-  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   &:hover {
     background-color: var(--taskbar-hover);
+  }
+  svg {
+    width: 1rem;
   }
 }
 .start-button.--active {

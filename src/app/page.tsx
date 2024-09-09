@@ -5,12 +5,15 @@ import Taskbar from "./components/Taskbar/Taskbar";
 import { FileSystemProvider } from "@/contexts/fileSystem";
 import { ProcessProvider } from "@/contexts/process";
 import { SessionProvider } from "@/contexts/session";
+import { SearchInputProvider } from "@/contexts/search";
 import AppsLoader from "./components/Apps/AppsLoader";
 
 export default function Page() {
   const ChildrenComponent = () => (
     <Desktop>
-      <Taskbar />
+      <SearchInputProvider>
+        <Taskbar />
+      </SearchInputProvider>
       <AppsLoader />
     </Desktop>
   );

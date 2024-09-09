@@ -50,9 +50,12 @@ const sizes = {
   taskbar: {
     height: 40,
     blur: "5px",
+    search: {
+      width: 288,
+    },
     button: {
       iconSize: "15px",
-      width: 40,
+      width: 48,
     },
     entry: {
       borderSize: "3px",
