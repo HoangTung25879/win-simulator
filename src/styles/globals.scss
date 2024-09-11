@@ -64,7 +64,7 @@ button {
   --window-shadow-inactive: 0 0 10px 0 rgba(0, 0, 0, 45%);
   //* Sizes
   /* Calendar */
-  --calendar-max-height: 357px;
+  --calendar-max-height: 486px;
   /* Clock */
   --clock-font-size: 12px;
   --clock-padding: 5px;
@@ -136,9 +136,6 @@ body {
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
 }
 
 @layer components {

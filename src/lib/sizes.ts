@@ -1,7 +1,7 @@
 //* AI prompt: convert this to CSS Variables in a Global Stylesheet
 const sizes = {
   calendar: {
-    maxHeight: 357,
+    maxHeight: 486,
   },
   clock: {
     fontSize: "12px",

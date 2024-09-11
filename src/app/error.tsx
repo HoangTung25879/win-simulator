@@ -23,14 +23,14 @@ export default function Error({
         text-white"
     >
       <div className="flex h-1/2 w-1/2 flex-col rounded-lg bg-gray-800 p-8 shadow-lg">
-        <h1 className="mb-4 overflow-y-scroll break-words text-5xl font-bold text-red-500">
+        <h1 className="mb-4 overflow-y-auto break-words text-5xl font-bold text-red-500">
           {error.message}
         </h1>
         <p className="mb-4 text-lg">
           Oops! Something went wrong on. Please try again later.
         </p>
         <button
-          className="mt-4 rounded bg-red-600 px-6 py-2 text-lg font-semibold text-white
+          className="mt-auto rounded bg-red-600 px-6 py-2 text-lg font-semibold text-white
             hover:bg-red-700"
           onClick={() => {
             if (errorCount > 1) {
