@@ -8,12 +8,9 @@ export const useIsVisible = (
 ): boolean => {
   const watching = useRef(false);
   const [isVisible, setIsVisible] = useState(alwaysVisible);
-
   useEffect(() => {
     if (alwaysVisible || !elementRef.current || watching.current) return;
-
     watching.current = true;
-
     new IntersectionObserver(
       (entries) =>
         entries.forEach(({ isIntersecting }) => setIsVisible(isIntersecting)),

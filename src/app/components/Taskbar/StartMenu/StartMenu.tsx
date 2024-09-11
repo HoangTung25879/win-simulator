@@ -7,6 +7,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import { maybeCloseTaskbarMenu, START_BUTTON_TITLE } from "../functions";
+import sizes from "@/lib/sizes";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -14,7 +15,7 @@ type StartMenuProps = {
 
 const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
-  const menuTransition = useTaskbarMenuTransition();
+  const menuTransition = useTaskbarMenuTransition(sizes.startMenu.maxHeight);
 
   const focusOnRenderCallback = useCallback(
     (element: HTMLDivElement | null) => {

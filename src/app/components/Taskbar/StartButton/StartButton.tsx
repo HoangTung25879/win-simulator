@@ -6,6 +6,7 @@ import clsx from "clsx";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { START_BUTTON_TITLE } from "../functions";
 import "./StartButton.scss";
+import useTaskbarContextMenu from "../useTaskbarContextMenu";
 
 type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -28,6 +29,7 @@ const StartButton = ({
       onClick={() => {
         toggleStartMenu();
       }}
+      {...useTaskbarContextMenu(true)}
       {...FOCUSABLE_ELEMENT}
     >
       <StartButtonIcon isHover={isHover} />

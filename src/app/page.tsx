@@ -7,6 +7,7 @@ import { ProcessProvider } from "@/contexts/process";
 import { SessionProvider } from "@/contexts/session";
 import { SearchInputProvider } from "@/contexts/search";
 import AppsLoader from "./components/Apps/AppsLoader";
+import { FullScreenProvider } from "@/contexts/fullScreen";
 
 export default function Page() {
   const ChildrenComponent = () => (
@@ -19,15 +20,17 @@ export default function Page() {
   );
   return (
     <>
-      <ProcessProvider>
-        <FileSystemProvider>
-          <SessionProvider>
-            <MenuProvider>
-              <ChildrenComponent />
-            </MenuProvider>
-          </SessionProvider>
-        </FileSystemProvider>
-      </ProcessProvider>
+      <FullScreenProvider>
+        <ProcessProvider>
+          <FileSystemProvider>
+            <SessionProvider>
+              <MenuProvider>
+                <ChildrenComponent />
+              </MenuProvider>
+            </SessionProvider>
+          </FileSystemProvider>
+        </ProcessProvider>
+      </FullScreenProvider>
     </>
   );
 }

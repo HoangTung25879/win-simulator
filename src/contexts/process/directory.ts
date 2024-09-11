@@ -48,6 +48,15 @@ const directory: Processes = {
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
+  DXBall: {
+    Component: undefined,
+    backgroundColor: "#000",
+    icon: "/System/Icons/dxball.png",
+    // libs: ["/Program Files/DX-Ball/game.js"],
+    lockAspectRatio: true,
+    singleton: true,
+    title: "DX-Ball",
+  },
 };
 
 export default directory;

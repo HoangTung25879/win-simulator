@@ -16,6 +16,7 @@ import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import "./Calendar.scss";
+import sizes from "@/lib/sizes";
 
 type CalendarProps = {
   toggleCalendar: (showCalendar?: boolean) => void;
@@ -30,7 +31,10 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     [date, mode],
   );
 
-  const menuTransition = useTaskbarMenuTransition();
+  const menuTransition = useTaskbarMenuTransition(
+    sizes.calendar.maxHeight,
+    false,
+  );
 
   const calendarContainerRef = useRef<HTMLDivElement>(null);
 
@@ -133,10 +137,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
   return (
     <motion.div
       ref={calendarContainerRef}
-      className={clsx(
-        `fixed right-0 z-[999] border-b-0 border-r-0 border-solid
-        border-taskbar-peekBorder bg-[#393939] text-white`,
-      )}
+      className={clsx("calendar-wrapper")}
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >

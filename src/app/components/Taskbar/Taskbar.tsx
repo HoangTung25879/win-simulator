@@ -10,6 +10,7 @@ import StartMenu from "./StartMenu/StartMenu";
 import Tabs from "./Tabs/Tabs";
 import SearchBar from "./Search/SearchBar";
 import SearchPanel from "./Search/SearchPanel";
+import useTaskbarContextMenu from "./useTaskbarContextMenu";
 
 const Taskbar = () => {
   const [calendarVisible, setCalendarVisible] = useState(false);
@@ -41,7 +42,9 @@ const Taskbar = () => {
   return (
     <>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {startMenuVisible && <StartMenu toggleStartMenu={toggleStartMenu} />}
+        {startMenuVisible && (
+          <StartMenu key="startMenu" toggleStartMenu={toggleStartMenu} />
+        )}
         {searchVisible && (
           <SearchPanel key="search" toggleSearch={toggleSearch} />
         )}
@@ -49,6 +52,7 @@ const Taskbar = () => {
       <footer
         className="fixed bottom-0 left-0 z-[1000] flex h-[var(--taskbar-height)] w-screen
           items-center bg-taskbar-background"
+        {...useTaskbarContextMenu()}
         {...FOCUSABLE_ELEMENT}
       >
         <StartButton

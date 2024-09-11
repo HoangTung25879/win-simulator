@@ -7,6 +7,7 @@ import {
   MAX_ICON_SIZE,
   MAX_RES_ICON_OVERRIDE,
   ONE_TIME_PASSIVE_EVENT,
+  PREVENT_SCROLL,
   SUPPORTED_ICON_SIZES,
   TIMESTAMP_DATE_FORMAT,
   USER_ICON_PATH,
@@ -20,6 +21,7 @@ import { DragPosition } from "@/app/components/Files/FileEntry/useDraggableEntri
 import dayjs from "dayjs";
 import { Position } from "react-rnd";
 import sizes from "./sizes";
+import { Processes } from "@/contexts/process/types";
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
@@ -634,3 +636,37 @@ export const getWindowViewport = (): Position => ({
   x: window.innerWidth,
   y: window.innerHeight - sizes.taskbar.height,
 });
+
+export const makeBoldString = (str: string, substr: string) => {
+  return str.replace(new RegExp(`(${substr})`, "i"), "<b>$1</b>");
+};
+
+let visibleWindows: string[] = [];
+
+export const toggleShowDesktop = (
+  processes: Processes,
+  stackOrder: string[],
+  minimize: (id: string) => void,
+): void => {
+  const restoreWindows =
+    stackOrder.length > 0 &&
+    !stackOrder.some((pid) => !processes[pid]?.minimized);
+  const allWindows = restoreWindows ? [...stackOrder].reverse() : stackOrder;
+
+  if (!restoreWindows) visibleWindows = [];
+
+  allWindows.forEach((pid) => {
+    if (restoreWindows) {
+      if (visibleWindows.includes(pid)) minimize(pid);
+    } else if (!processes[pid]?.minimized) {
+      visibleWindows.push(pid);
+      minimize(pid);
+    }
+  });
+
+  if (restoreWindows) {
+    requestAnimationFrame(() =>
+      processes[stackOrder[0]]?.componentWindow?.focus(PREVENT_SCROLL),
+    );
+  }
+};
