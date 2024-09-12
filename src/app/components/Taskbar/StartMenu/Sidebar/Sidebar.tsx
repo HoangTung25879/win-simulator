@@ -11,7 +11,7 @@ import {
 } from "./SidebarIcons";
 import clsx from "clsx";
 import "./Sidebar.scss";
-import { haltEvent, hasFinePointer } from "@/lib/utils";
+import { haltEvent } from "@/lib/utils";
 import { spotlightEffect } from "@/lib/spotlightEffect";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useSession } from "@/contexts/session";
@@ -87,7 +87,7 @@ const Sidebar = ({}: SidebarProps) => {
         return (
           <div
             ref={(element: HTMLDivElement) => {
-              if (hasFinePointer()) spotlightEffect(element, true, 1.5);
+              spotlightEffect(element, true, 1.5);
             }}
             aria-label={button.name}
             key={button.name}

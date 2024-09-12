@@ -1,7 +1,7 @@
 "use client";
 
 import { ProcessArguments } from "@/contexts/process/types";
-import { NO_RESULTS, TabName } from "./SearchPanel";
+import { NO_RESULTS, TabName } from "./SearchMenu";
 import { useMemo } from "react";
 import clsx from "clsx";
 import { SearchIcon } from "../../FileExplorer/Icons";

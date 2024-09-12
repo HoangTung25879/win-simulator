@@ -12,17 +12,16 @@ import dayjs from "dayjs";
 import TimeCounter from "./TimeCounter/TimeCounter";
 import CalendarGrid from "./CalendarGrid";
 import { Down, Up } from "./Icons";
-import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
+import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import "./Calendar.scss";
 import sizes from "@/lib/sizes";
+import { IDS_MENU } from "../Taskbar";
 
-type CalendarProps = {
-  toggleCalendar: (showCalendar?: boolean) => void;
-};
+type CalendarProps = {};
 
-const Calendar = ({ toggleCalendar }: CalendarProps) => {
+const Calendar = ({}: CalendarProps) => {
   const [mode, setMode] = useState<CalendarMode>("week");
   const [date, setDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -36,7 +35,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     false,
   );
 
-  const calendarContainerRef = useRef<HTMLDivElement>(null);
+  const calendarContainerRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickDate = (clickedDate: Date) => {
     if (mode === "week") {
@@ -107,35 +106,9 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     setMode(modeState[mode]);
   };
 
-  useEffect(() => {
-    const handleBlurCalendar = ({ relatedTarget }: FocusEvent) => {
-      if (relatedTarget instanceof HTMLElement) {
-        if (calendarContainerRef.current?.contains(relatedTarget)) {
-          calendarContainerRef.current?.focus(PREVENT_SCROLL);
-          return;
-        }
-        const clockElement = document.getElementById("clock");
-        if (
-          clockElement instanceof HTMLDivElement &&
-          clockElement === relatedTarget
-        ) {
-          return;
-        }
-      }
-      toggleCalendar(false);
-    };
-    calendarContainerRef.current?.addEventListener("blur", handleBlurCalendar);
-    calendarContainerRef.current?.focus(PREVENT_SCROLL);
-    return () => {
-      calendarContainerRef.current?.removeEventListener(
-        "blur",
-        handleBlurCalendar,
-      );
-    };
-  }, [toggleCalendar]);
-
   return (
     <motion.div
+      id={IDS_MENU.calendar}
       ref={calendarContainerRef}
       className={clsx("calendar-wrapper")}
       {...menuTransition}
@@ -143,7 +116,7 @@ const Calendar = ({ toggleCalendar }: CalendarProps) => {
     >
       <TimeCounter onClickToday={onClickToday} />
       <div className="calendar">
-        <div className="calendar-header relative z-[100] bg-[#393939]">
+        <div className="calendar-header">
           <div onClick={changeMode}>{formatDate(date)}</div>
           <nav>
             <button

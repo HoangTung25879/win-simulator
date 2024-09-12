@@ -4,17 +4,22 @@ import { useEffect, useRef } from "react";
 import { SearchIcon } from "../../FileExplorer/Icons";
 import { useSearchInput } from "@/contexts/search";
 import { KEYPRESS_DEBOUNCE_MS } from "@/lib/constants";
-import { maybeCloseTaskbarMenu, SEARCH_BUTTON_TITLE } from "../functions";
+import { SEARCH_BUTTON_TITLE } from "../functions";
 import useTaskbarContextMenu from "../useTaskbarContextMenu";
 import clsx from "clsx";
-import { SEARCH_PARENT_CLASS } from "./SearchPanel";
+import { SEARCH_PARENT_CLASS } from "./SearchMenu";
 
 type SearchBarProps = {
+  startMenuVisible: boolean;
   searchVisible: boolean;
   toggleSearch: (showMenu?: boolean) => void;
 };
 
-const SearchBar = ({ searchVisible, toggleSearch }: SearchBarProps) => {
+const SearchBar = ({
+  startMenuVisible,
+  searchVisible,
+  toggleSearch,
+}: SearchBarProps) => {
   const { inputRef, firstResultRef, menuRef, setValue } = useSearchInput();
   const searchTimeoutRef = useRef(0);
 
@@ -27,26 +32,22 @@ const SearchBar = ({ searchVisible, toggleSearch }: SearchBarProps) => {
 
   return (
     <div
-      className={clsx("search-bar", searchVisible && "--active")}
+      className={clsx(
+        "search-bar",
+        searchVisible && "--active",
+        startMenuVisible && "fake-focus",
+      )}
       onClick={() => {
         if (!searchVisible) {
           toggleSearch(true);
         }
       }}
       title={SEARCH_BUTTON_TITLE}
-      onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(
-          event,
-          menuRef.current,
-          toggleSearch,
-          inputRef.current,
-          SEARCH_BUTTON_TITLE,
-          true,
-        )
-      }
+      aria-label="searchBar"
       {...useTaskbarContextMenu()}
     >
-      <SearchIcon />
+      <SearchIcon aria-label="searchBar" />
+      {startMenuVisible && <span className="blinking-cursor">|</span>}
       <input
         ref={inputRef}
         onChange={(e) => {
@@ -73,6 +74,7 @@ const SearchBar = ({ searchVisible, toggleSearch }: SearchBarProps) => {
         autoComplete="off"
         autoCorrect="off"
         spellCheck="false"
+        aria-label="searchBar"
       />
     </div>
   );

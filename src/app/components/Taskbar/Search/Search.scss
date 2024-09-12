@@ -1,6 +1,6 @@
 @import "../../../../styles/scrollbar.scss";
 
-.search-panel {
+.search-menu {
   @keyframes fade-in {
     0% {
       opacity: 0%;
@@ -487,7 +487,25 @@
 }
 
 .search-bar {
+  @keyframes blink {
+    from,
+    to {
+      color: transparent;
+    }
+    50% {
+      color: black;
+    }
+  }
   position: relative;
+  .blinking-cursor {
+    left: 37px;
+    top: 2px;
+    position: absolute;
+    font-weight: 100;
+    font-size: 20px;
+    color: #000;
+    animation: 1s blink step-end infinite;
+  }
   svg {
     bottom: 12px;
     height: 16px;
@@ -530,6 +548,12 @@
   }
   &.--active {
     input {
+      background-color: #fff;
+    }
+  }
+  &.fake-focus {
+    input {
+      border: 2px solid rgb(0, 120, 215);
       background-color: #fff;
     }
   }

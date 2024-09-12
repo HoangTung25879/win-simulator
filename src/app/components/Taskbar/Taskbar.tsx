@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import StartButton from "./StartButton/StartButton";
 import Clock from "./Clock/Clock";
 import Calendar from "./Calendar/Calendar";
@@ -9,8 +9,14 @@ import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import StartMenu from "./StartMenu/StartMenu";
 import Tabs from "./Tabs/Tabs";
 import SearchBar from "./Search/SearchBar";
-import SearchPanel from "./Search/SearchPanel";
+import SearchMenu from "./Search/SearchMenu";
 import useTaskbarContextMenu from "./useTaskbarContextMenu";
+
+export const IDS_MENU = {
+  startMenu: "startMenu",
+  searchMenu: "searchMenu",
+  calendar: "calendar",
+};
 
 const Taskbar = () => {
   const [calendarVisible, setCalendarVisible] = useState(false);
@@ -39,6 +45,40 @@ const Taskbar = () => {
     [],
   );
 
+  useEffect(() => {
+    const handleMouseDown = (event: MouseEvent) => {
+      if (!(startMenuVisible || searchVisible || calendarVisible)) {
+        return;
+      }
+      const elementClicked = document.elementFromPoint(
+        event.clientX,
+        event.clientY,
+      );
+      Object.values(IDS_MENU).forEach((id) => {
+        const menuElement = document.getElementById(id);
+        if (menuElement && !menuElement.contains(elementClicked)) {
+          if (id === IDS_MENU.startMenu) {
+            toggleStartMenu(false);
+            return;
+          }
+          if (
+            id === IDS_MENU.searchMenu &&
+            elementClicked?.ariaLabel !== "searchBar"
+          ) {
+            toggleSearch(false);
+            return;
+          }
+          if (id === IDS_MENU.calendar) {
+            toggleCalendar(false);
+            return;
+          }
+        }
+      });
+    };
+    document.addEventListener("mousedown", handleMouseDown);
+    return () => document.removeEventListener("mousedown", handleMouseDown);
+  }, [calendarVisible, searchVisible, startMenuVisible]);
+
   return (
     <>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
@@ -46,7 +86,7 @@ const Taskbar = () => {
           <StartMenu key="startMenu" toggleStartMenu={toggleStartMenu} />
         )}
         {searchVisible && (
-          <SearchPanel key="search" toggleSearch={toggleSearch} />
+          <SearchMenu key="search" toggleSearch={toggleSearch} />
         )}
       </AnimatePresence>
       <footer
@@ -59,12 +99,16 @@ const Taskbar = () => {
           toggleStartMenu={toggleStartMenu}
           startMenuVisible={startMenuVisible}
         />
-        <SearchBar searchVisible={searchVisible} toggleSearch={toggleSearch} />
+        <SearchBar
+          startMenuVisible={startMenuVisible}
+          searchVisible={searchVisible}
+          toggleSearch={toggleSearch}
+        />
         <Tabs />
         <Clock toggleCalendar={toggleCalendar} />
       </footer>
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {calendarVisible && <Calendar toggleCalendar={toggleCalendar} />}
+        {calendarVisible && <Calendar />}
       </AnimatePresence>
     </>
   );

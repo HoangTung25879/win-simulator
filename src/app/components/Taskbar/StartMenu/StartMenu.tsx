@@ -3,11 +3,12 @@
 import { FOCUSABLE_ELEMENT, PREVENT_SCROLL } from "@/lib/constants";
 import Sidebar from "./Sidebar/Sidebar";
 import "./StartMenu.scss";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
-import { maybeCloseTaskbarMenu, START_BUTTON_TITLE } from "../functions";
 import sizes from "@/lib/sizes";
+import { useSearchInput } from "@/contexts/search";
+import { IDS_MENU } from "../Taskbar";
 
 type StartMenuProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -16,6 +17,7 @@ type StartMenuProps = {
 const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const menuTransition = useTaskbarMenuTransition(sizes.startMenu.maxHeight);
+  const { inputRef } = useSearchInput();
 
   const focusOnRenderCallback = useCallback(
     (element: HTMLDivElement | null) => {
@@ -27,22 +29,17 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
 
   return (
     <motion.div
+      id={IDS_MENU.startMenu}
       ref={focusOnRenderCallback}
-      id="startMenu"
       className="start-menu border-taskbar-peekBorder"
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleStartMenu(false);
+        else if (key.length === 1) {
+          toggleStartMenu(false);
+          inputRef.current?.focus();
+          inputRef.current?.parentElement?.click();
+        }
       }}
-      // Click button will trigger process -> component rerender -> trigger onBlur event
-      onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(
-          event,
-          menuRef.current,
-          toggleStartMenu,
-          undefined,
-          START_BUTTON_TITLE,
-        )
-      }
       {...menuTransition}
       {...FOCUSABLE_ELEMENT}
     >

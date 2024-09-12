@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import {
   CalendarMode,
   getDecadeRange,
@@ -8,6 +8,7 @@ import {
 } from "./functions";
 import clsx from "clsx";
 import useCalendarGridTransition from "./useCalendarGridTransition";
+import { spotlightEffect } from "@/lib/spotlightEffect";
 
 type CalendarGridProps = {
   date: Date;
@@ -40,11 +41,7 @@ const CalendarGrid = ({
   mode,
   handleClickDate,
 }: CalendarGridProps) => {
-  const calendarRef = useRef<HTMLDivElement>(null);
-  const spotlightRef = useRef<HTMLDivElement>(null);
-
   // const calendarGridTransition = useCalendarGridTransition();
-
   const isCurrentDate = useMemo(() => {
     const today = new Date();
     if (mode === "month") {
@@ -66,62 +63,41 @@ const CalendarGrid = ({
     return MONTH_NAMES[value];
   };
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      if (calendarRef.current && spotlightRef.current) {
-        const rect = calendarRef.current.getBoundingClientRect();
-        spotlightRef.current.style.left = e.clientX - rect.left + "px";
-        spotlightRef.current.style.top = e.clientY - rect.top + "px";
-      }
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, []);
-
   return (
     <>
       {mode === "week" && (
-        <div className="calendar-weekday relative z-[100] bg-[#393939]">
+        <div className="calendar-weekday">
           {DAY_NAMES.map((dayName) => (
             <div key={dayName}>{dayName}</div>
           ))}
         </div>
       )}
-      <div className="grid-calendar">
-        <div className="z-[100] bg-[#393939] [grid-area:left]" />
-        <div
-          className={clsx(
-            "calendar-date [grid-area:content]",
-            isCurrentDate ? "curr" : undefined,
-          )}
-          ref={calendarRef}
-        >
-          <div ref={spotlightRef} id="spotlight"></div>
-          {calendar?.map((week) => (
-            <div className="calendar-row" key={week.toString()}>
-              {week.map(([vDay, vType, vDate]) => (
-                <button
-                  onClick={() => handleClickDate(vDate)}
-                  key={`${vDay}${vType}`}
-                  className={clsx(
-                    "date",
-                    vType,
-                    mode !== "week" && "--large",
-                    mode === "week" && isSameDate(vDate, selectedDate)
-                      ? "--selected"
-                      : "",
-                  )}
-                >
-                  {formatCell(vDay)}
-                </button>
-              ))}
-            </div>
-          ))}
-        </div>
-        <div className="z-[100] bg-[#393939] [grid-area:right]" />
-        <div className="z-[100] bg-[#393939] [grid-area:bottom]" />
+      <div
+        className={clsx("calendar-date", isCurrentDate ? "curr" : undefined)}
+      >
+        {calendar?.map((week) => (
+          <div className="calendar-row" key={week.toString()}>
+            {week.map(([vDay, vType, vDate]) => (
+              <button
+                ref={(element: HTMLButtonElement) => {
+                  if (vType !== "today") spotlightEffect(element, true, 1.5);
+                }}
+                onClick={() => handleClickDate(vDate)}
+                key={`${vDay}${vType}`}
+                className={clsx(
+                  "date",
+                  vType,
+                  mode !== "week" && "--large",
+                  mode === "week" && isSameDate(vDate, selectedDate)
+                    ? "--selected"
+                    : "",
+                )}
+              >
+                {formatCell(vDay)}
+              </button>
+            ))}
+          </div>
+        ))}
       </div>
     </>
   );

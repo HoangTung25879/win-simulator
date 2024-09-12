@@ -16,7 +16,7 @@ import { getShortcutInfo } from "@/contexts/fileSystem/utils";
 import Icon from "../../Icon/Icon";
 import { RightArrowIcon } from "./Icons";
 import { useIsVisible } from "@/hooks/useIsVisible";
-import { SEARCH_PARENT_CLASS } from "./SearchPanel";
+import { SEARCH_PARENT_CLASS } from "./SearchMenu";
 
 type ResultProps = {
   active?: boolean;

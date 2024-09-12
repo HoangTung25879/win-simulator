@@ -2,7 +2,6 @@
 
 import { useSearchInput } from "@/contexts/search";
 import "./Search.scss";
-import { maybeCloseTaskbarMenu, SEARCH_BUTTON_TITLE } from "../functions";
 import {
   FOCUSABLE_ELEMENT,
   MILLISECONDS_IN_SECOND,
@@ -34,8 +33,9 @@ import Icon from "../../Icon/Icon";
 import { GamesIcon } from "./Icons";
 import ResultSection from "./ResultSection";
 import ResultDetails from "./ResultDetails";
+import { IDS_MENU } from "../Taskbar";
 
-type SearchPanelProps = {
+type SearchMenuProps = {
   toggleSearch: (showMenu?: boolean) => void;
 };
 
@@ -73,7 +73,7 @@ const INITIAL_DATA = {
   },
 } as Record<TabName, TabData>;
 
-const SearchPanel = ({ toggleSearch }: SearchPanelProps) => {
+const SearchMenu = ({ toggleSearch }: SearchMenuProps) => {
   const {
     value: searchTerm,
     inputRef,
@@ -186,19 +186,9 @@ const SearchPanel = ({ toggleSearch }: SearchPanelProps) => {
 
   return (
     <div
-      id="searchMenu"
+      id={IDS_MENU.searchMenu}
       ref={menuRef}
-      className="search-panel"
-      onBlurCapture={(event) =>
-        maybeCloseTaskbarMenu(
-          event,
-          menuRef.current,
-          toggleSearch,
-          menuRef.current,
-          SEARCH_BUTTON_TITLE,
-          true,
-        )
-      }
+      className="search-menu"
       onKeyDown={({ key }) => {
         if (key === "Escape") toggleSearch(false);
       }}
@@ -365,4 +355,4 @@ const SearchPanel = ({ toggleSearch }: SearchPanelProps) => {
   );
 };
 
-export default SearchPanel;
+export default SearchMenu;
