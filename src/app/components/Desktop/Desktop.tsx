@@ -3,7 +3,7 @@ import { useRef } from "react";
 import "./Desktop.scss";
 import useWallpaper from "@/hooks/useWallpaper";
 import { DESKTOP_PATH, FOCUSABLE_ELEMENT } from "@/lib/constants";
-import DesktopFileManager from "../Files/FileManager/DesktopFileManager";
+import FileManager from "../Files/FileManager/FileManager";
 
 type DesktopProps = {
   children: React.ReactNode;
@@ -15,7 +15,15 @@ const Desktop = ({ children }: DesktopProps) => {
 
   return (
     <main ref={desktopRef} className="desktop" {...FOCUSABLE_ELEMENT}>
-      <DesktopFileManager url={DESKTOP_PATH} />
+      <FileManager
+        url={DESKTOP_PATH}
+        view="icon"
+        allowMovingDraggableEntries
+        hideLoading
+        hideScrolling
+        isDesktop
+        loadIconsImmediately
+      />
       {children}
     </main>
   );

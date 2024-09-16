@@ -1,3 +1,4 @@
+import { SYSTEM_FONT } from "@/lib/constants";
 import { OffscreenRenderProps } from "@/lib/types";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -6,8 +7,6 @@ const MILLISECONDS_IN_SECOND = 1000;
 
 const fontSize = 12;
 const textColor = "#ffffff";
-const systemFont =
-  "'Segoe UI', system-ui, Roboto, 'Helvetica Neue', sans-serif";
 
 let offscreenCanvas: OffscreenCanvas;
 let offscreenContext: OffscreenCanvasRenderingContext2D;
@@ -30,7 +29,7 @@ const styleClock = (): void => {
     globalThis.devicePixelRatio,
   );
   offscreenContext.fillStyle = textColor;
-  offscreenContext.font = `${fontSize}px ${systemFont}`;
+  offscreenContext.font = `${fontSize}px ${SYSTEM_FONT}`;
   offscreenContext.textAlign = "center";
   offscreenContext.textBaseline = "middle";
 

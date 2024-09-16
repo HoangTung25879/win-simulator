@@ -1,9 +1,13 @@
 "use client";
 
-type LoadingProps = {};
+import clsx from "clsx";
 
-const Loading = ({}: LoadingProps) => {
-  return <div className="h-full w-full cursor-wait"></div>;
+type LoadingProps = {
+  className?: string;
+};
+
+const Loading = ({ className = "" }: LoadingProps) => {
+  return <div className={clsx("file-manager-loading", className)}></div>;
 };
 
 export default Loading;

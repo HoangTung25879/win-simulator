@@ -33,7 +33,7 @@ const Icon = forwardRef<
 
   useEffect(
     () => () => {
-      if (loaded && src.startsWith("blob:")) cleanUpBufferUrl(src);
+      if (loaded && src?.startsWith("blob:")) cleanUpBufferUrl(src);
     },
     [loaded, src],
   );

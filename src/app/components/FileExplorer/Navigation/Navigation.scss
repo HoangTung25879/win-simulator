@@ -1,0 +1,151 @@
+.navigation {
+  background-color: rgb(25, 25, 25);
+  display: flex;
+  height: var(--file-explorer-nav-bar-height);
+  button {
+    height: 16px;
+    margin: 11px 9px;
+    width: 16px;
+    svg {
+      color: #fff;
+      fill: currentColor;
+      height: 16px;
+      transition: color 0.35s ease;
+      width: 16px;
+      &:hover {
+        color: rgb(50, 152, 254);
+      }
+      &:active {
+        color: rgb(54, 116, 178);
+        transition: none;
+      }
+    }
+    &[title^="Up"] {
+      margin-right: 8px;
+      position: relative;
+      right: -8px;
+      top: -1px;
+    }
+    &[title="Recent locations"] {
+      left: 55px;
+      position: absolute;
+
+      svg {
+        stroke: currentColor;
+        stroke-width: 3px;
+        width: 7px;
+      }
+    }
+    &:disabled {
+      svg {
+        color: rgb(140, 140, 140);
+
+        &:hover,
+        &:active {
+          color: rgb(140, 140, 140);
+        }
+      }
+    }
+  }
+  .address-bar {
+    background-position: 2px 5px;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    border: 1px solid rgb(83, 83, 83);
+    display: flex;
+    margin: 7px 12px 6px 5px;
+    padding: 0 22px 2px 25px;
+    position: relative;
+    width: 100%;
+    height: var(--file-explorer-nav-input-height);
+    input {
+      background-color: rgb(25, 25, 25);
+      border-right: 1px solid rgb(21, 21, 21);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 400;
+      height: calc(var(--file-explorer-nav-input-height) - 2px);
+      padding-bottom: 1px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: calc(100% - 2px);
+    }
+    img {
+      left: 2px;
+      position: absolute;
+      top: 3px;
+    }
+    .refresh {
+      background-color: rgb(25, 25, 25);
+      display: flex;
+      height: calc(var(--file-explorer-nav-input-height) - 2px);
+      margin: 0;
+      place-content: center;
+      place-items: center;
+      position: absolute;
+      right: 0;
+      stroke: rgb(128, 128, 128);
+      stroke-width: 3;
+      top: 0;
+      width: 24px;
+
+      &:hover {
+        background-color: rgb(27, 41, 49);
+        border: 1px solid rgb(34, 114, 153);
+      }
+
+      &:active {
+        background-color: rgb(28, 57, 71);
+        border: 1px solid rgb(38, 160, 218);
+      }
+
+      svg {
+        position: relative;
+        top: -1px;
+      }
+    }
+  }
+  .file-search-bar {
+    border: 1px solid rgb(83, 83, 83);
+    display: flex;
+    height: var(--file-explorer-nav-input-height);
+    margin: 7px 12px 6px 0;
+    max-width: 148px;
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    width: 100%;
+    svg {
+      display: none;
+    }
+    input {
+      appearance: none;
+      background-color: rgb(25, 25, 25);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 400;
+      height: calc(var(--file-explorer-nav-input-height) - 2px);
+      padding-bottom: 1px;
+      padding-left: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 100%;
+      &::-webkit-search-cancel-button {
+        filter: invert(1);
+        padding-right: 4px;
+      }
+    }
+    input:placeholder-shown ~ svg {
+      display: block;
+      fill: rgb(113, 113, 113);
+      height: 12px;
+      pointer-events: none;
+      position: absolute;
+      right: 6px;
+      stroke: rgb(113, 113, 113);
+      stroke-width: 1;
+      top: 5px;
+      width: 12px;
+    }
+  }
+}

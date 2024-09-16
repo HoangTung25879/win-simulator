@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { motion } from "framer-motion";
 import "./FileEntry.scss";
 import { FileStat, getModifiedTime } from "../FileManager/functions";
 import Icon from "../../Icon/Icon";
@@ -43,6 +44,10 @@ import useDoubleClick from "@/hooks/useDoubleClick";
 import clsx from "clsx";
 import useFileContextMenu from "./useFileContextMenu";
 import RenameBox from "./RenameBox";
+import { spotlightEffect } from "@/lib/spotlightEffect";
+import { DownIcon } from "../../FileExplorer/Navigation/Icons";
+import FileManager from "../FileManager/FileManager";
+import useFileDrop from "./useFileDrop";
 
 type FileEntryProps = {
   fileActions: FileActions;
@@ -67,6 +72,8 @@ type FileEntryProps = {
 };
 
 const focusing: string[] = [];
+
+const cacheQueue: (() => Promise<void>)[] = [];
 
 const FileEntry = ({
   fileActions,
@@ -96,8 +103,8 @@ const FileEntry = ({
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
     path,
     stats.isDirectory(),
-    false,
-    isDesktop,
+    hasNewFolderIcon,
+    isDesktop || isVisible,
   );
   const fileContextMenu = useFileContextMenu(
     url,
@@ -111,7 +118,6 @@ const FileEntry = ({
     fileManagerId,
     readOnly,
   );
-
   const openFile = useFile(url, path);
   const {
     createPath,
@@ -150,6 +156,20 @@ const FileEntry = ({
   const isListView = view === "list";
   const openInFileExplorer = pid === "FileExplorer";
 
+  const fileDrop = useFileDrop({
+    callback: async (fileDropName, data) => {
+      if (!focusedEntries.includes(fileName)) {
+        const uniqueName = await createPath(fileDropName, directory, data);
+        if (uniqueName) {
+          updateFolder(directory, uniqueName);
+          return uniqueName;
+        }
+      }
+      return "";
+    },
+    directory,
+  });
+
   const truncatedName = useMemo(
     () =>
       truncateName(
@@ -166,23 +186,19 @@ const FileEntry = ({
 
   const createTooltip = useCallback(async (): Promise<string> => {
     if (stats.isDirectory()) return "";
-
     if (isShortcut) {
       if (comment) return comment;
       if (url) {
         if (url.startsWith("http:") || url.startsWith("https:")) {
           return decodeURIComponent(url);
         }
-
         const directoryPath = dirname(url);
-
         return `Location: ${basename(url, extname(url))}${
           !directoryPath || directoryPath === "." ? "" : ` (${dirname(url)})`
         }`;
       }
       return "";
     }
-
     const type =
       extensions[extension]?.type ||
       `${extension.toUpperCase().replace(".", "")} File`;
@@ -196,11 +212,10 @@ const FileEntry = ({
     const date = new Date(modifiedTime).toISOString().slice(0, 10);
     const time = dayjs(modifiedTime).format("h:mm A");
     const dateModified = `${date} ${time}`;
-
     return `${toolTip}\nDate modified: ${dateModified}`;
   }, [comment, extension, isShortcut, path, stat, stats, url]);
 
-  const doubleClickHandler = useCallback(() => {
+  const clickHandler = useCallback(() => {
     if (
       openInFileExplorer &&
       fileManagerId &&
@@ -233,11 +248,9 @@ const FileEntry = ({
       const inFocusedEntries = focusedEntries.includes(fileName);
       const inFocusing = focusing.includes(fileName);
       const isFocused = inFocusedEntries || inFocusing;
-
       if (inFocusedEntries && inFocusing) {
         focusing.splice(focusing.indexOf(fileName), 1);
       }
-
       if (selectionRect) {
         const selected = isSelectionIntersecting(
           buttonRef.current.getBoundingClientRect(),
@@ -245,7 +258,6 @@ const FileEntry = ({
           selectionRect,
           fileManagerRef.current.scrollTop,
         );
-
         if (selected && !isFocused) {
           focusing.push(fileName);
           focusEntry(fileName);
@@ -271,53 +283,84 @@ const FileEntry = ({
     selectionRect,
   ]);
 
-  const onClick = useDoubleClick(doubleClickHandler);
+  const onDoubleClick = useDoubleClick(clickHandler);
 
   return (
-    <button
-      ref={buttonRef}
-      onMouseOver={() => createTooltip().then(setTooltip)}
-      title={tooltip}
-      aria-label={name}
-      className="file-entry"
-      onClick={onClick}
-      {...fileContextMenu}
-    >
-      <figure className={clsx(renaming ? "pointer-events-[all" : "")}>
-        <Icon
-          ref={iconRef}
-          imgSize={48}
-          src={icon}
-          alt={name}
-          eager={loadIconImmediately}
-          moving={pasteList[path] === "move"}
-        />
-        {renaming ? (
-          <RenameBox
-            isDesktop={isDesktop}
-            name={name}
-            path={path}
-            renameFile={(originPath, newName) => {
-              fileActions.renameFile(originPath, newName);
-              setRenaming("");
-            }}
-            setRenaming={setRenaming}
+    <>
+      <motion.button
+        ref={buttonRef}
+        onMouseOver={() => createTooltip().then(setTooltip)}
+        title={tooltip}
+        aria-label={name}
+        className="file-entry"
+        onClick={isListView ? clickHandler : onDoubleClick}
+        {...(openInFileExplorer && fileDrop)}
+        {...(isListView && {
+          animate: { opacity: 1 },
+          initial: { opacity: 0 },
+          transition: { duration: 0.15 },
+        })}
+        {...fileContextMenu}
+      >
+        <figure
+          ref={(node: HTMLElement) => {
+            if (isListView) spotlightEffect(node);
+          }}
+          className={clsx(renaming ? "pointer-events-[all" : "")}
+        >
+          <Icon
+            ref={iconRef}
+            src={icon}
+            alt={name}
+            eager={loadIconImmediately}
+            moving={pasteList[path] === "move"}
+            {...(view === "icon"
+              ? { imgSize: 48 }
+              : { displaySize: 24, imgSize: 48 })}
           />
-        ) : (
-          <figcaption
-            {...(isHeading && {
-              "aria-level": 1,
-              role: "heading",
-            })}
-            className="pointer-events-none"
-          >
-            {!isOnlyFocusedEntry || name.length === truncatedName.length
-              ? truncatedName
-              : name}
-          </figcaption>
-        )}
-      </figure>
-    </button>
+          {renaming ? (
+            <RenameBox
+              isDesktop={isDesktop}
+              name={name}
+              path={path}
+              renameFile={(originPath, newName) => {
+                fileActions.renameFile(originPath, newName);
+                setRenaming("");
+              }}
+              setRenaming={setRenaming}
+            />
+          ) : (
+            <figcaption
+              {...(isHeading && {
+                "aria-level": 1,
+                role: "heading",
+              })}
+              className="pointer-events-none"
+            >
+              {!isOnlyFocusedEntry || name.length === truncatedName.length
+                ? truncatedName
+                : name}
+            </figcaption>
+          )}
+          {isListView && openInFileExplorer && (
+            <DownIcon flip={showInFileManager} />
+          )}
+        </figure>
+      </motion.button>
+      {showInFileManager && (
+        <FileManager
+          url={url}
+          view="list"
+          hideFolders
+          hideLoading
+          hideShortcutIcons
+          loadIconsImmediately
+          readOnly
+          skipFsWatcher
+          skipSorting
+        />
+      )}
+    </>
   );
 };
 

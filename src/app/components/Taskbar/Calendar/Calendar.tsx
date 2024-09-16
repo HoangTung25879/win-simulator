@@ -11,7 +11,7 @@ import clsx from "clsx";
 import dayjs from "dayjs";
 import TimeCounter from "./TimeCounter/TimeCounter";
 import CalendarGrid from "./CalendarGrid";
-import { Down, Up } from "./Icons";
+import { DownIcon, UpIcon } from "./Icons";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { motion } from "framer-motion";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
@@ -123,13 +123,13 @@ const Calendar = ({}: CalendarProps) => {
               className="w-full bg-transparent"
               onClick={() => changeDirection(-1)}
             >
-              <Up />
+              <UpIcon />
             </button>
             <button
               className="w-full bg-transparent"
               onClick={() => changeDirection(1)}
             >
-              <Down />
+              <DownIcon />
             </button>
           </nav>
         </div>

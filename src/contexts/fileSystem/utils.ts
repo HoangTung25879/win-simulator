@@ -16,11 +16,15 @@ import {
   KEYVAL_STORE_NAME,
   supportsIndexedDB,
 } from "./core";
-import { basename, dirname, join } from "path";
+import { basename, dirname, extname, join } from "path";
 import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
 import ini from "ini";
 import shortcutCache from "../../../public/.index/shortcutCache.json";
-import { SYSTEM_FILES, SYSTEM_PATHS } from "@/lib/constants";
+import {
+  MOUNTABLE_EXTENSIONS,
+  SYSTEM_FILES,
+  SYSTEM_PATHS,
+} from "@/lib/constants";
 import processDirectory from "@/contexts/process/directory";
 
 type InternetShortcut = {
@@ -253,4 +257,18 @@ export const requestPermission = async (
   }
 
   return false;
+};
+
+export const getMountUrl = (
+  url: string,
+  mntMap: Record<string, Mount>,
+): string | undefined => {
+  if (url === "/") return "";
+  if (mntMap[url] || MOUNTABLE_EXTENSIONS.has(extname(url))) return url;
+
+  return Object.keys(mntMap)
+    .filter((mountedUrl) => mountedUrl !== "/")
+    .find(
+      (mountedUrl) => url === mountedUrl || url.startsWith(`${mountedUrl}/`),
+    );
 };
