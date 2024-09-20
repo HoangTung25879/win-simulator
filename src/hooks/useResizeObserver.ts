@@ -1,4 +1,6 @@
+import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 import { useEffect, useState } from "react";
+import { debounce } from "throttle-debounce";
 
 const useResizeObserver = (
   element?: HTMLElement | null,
@@ -8,7 +10,11 @@ const useResizeObserver = (
 
   useEffect(() => {
     if (callback) {
-      setResizeObserver(new ResizeObserver(callback));
+      setResizeObserver(
+        new ResizeObserver(
+          debounce(TRANSITIONS_IN_SECONDS.WINDOW * 1000, callback),
+        ),
+      );
     }
   }, [callback]);
 

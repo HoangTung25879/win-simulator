@@ -1,0 +1,16 @@
+@mixin message($text, $color) {
+  &::before {
+    color: $color;
+    content: $text;
+    display: flex;
+    font-size: 16px;
+    font-weight: 600;
+    height: 100%;
+    left: 0;
+    place-content: center;
+    place-items: center;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}

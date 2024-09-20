@@ -89,7 +89,13 @@ const Clock = ({ toggleCalendar }: ClockProps) => {
 
   useEffect(() => {
     const timerId = setInterval(() => {
-      setDate(dayjs());
+      setDate((prevDate) => {
+        const newDate = dayjs();
+        if (newDate.format("h:mm A") === prevDate.format("h:mm A")) {
+          return prevDate;
+        }
+        return newDate;
+      });
     }, 1000);
     return () => {
       clearInterval(timerId);

@@ -38,7 +38,7 @@ const Titlebar = ({ id }: TitlebarProps) => {
   const { foregroundId } = useSession();
   const isForeground = id === foregroundId;
   const { onClose, onMaximize, onMinimize } = useWindowActions(id);
-  const onClickMaximize = useDoubleClick(onMaximize);
+  const onDoubleClickMaximize = useDoubleClick(onMaximize);
   const { menu, setMenu } = useMenu();
   const titlebarContextMenu = useTitlebarContextMenu(id);
 
@@ -71,7 +71,7 @@ const Titlebar = ({ id }: TitlebarProps) => {
       <button
         onClick={
           !hideMaximizeButton && allowResizing && !closing
-            ? onClickMaximize
+            ? onDoubleClickMaximize
             : undefined
         }
         onMouseDownCapture={({ button }) => {

@@ -185,11 +185,7 @@ const FileManager = ({
       fileManagerRef.current?.focus(PREVENT_SCROLL);
     }
   }, [isDesktop, isStartMenu, loading]);
-  console.log("FileManager", {
-    isLoading,
-    view,
-    url,
-  });
+
   return (
     <>
       {loading ? (
@@ -229,7 +225,7 @@ const FileManager = ({
                   key={file}
                   className={clsx(
                     className,
-                    isLoading && "!hidden",
+                    isLoading && "!invisible",
                     "list-file",
                     isSelecting && "selecting",
                   )}

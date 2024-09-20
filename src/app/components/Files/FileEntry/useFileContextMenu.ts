@@ -198,7 +198,6 @@ const useFileContextMenu = (
           primary: true,
         });
       }
-      console.log("menuItems", menuItems);
       return menuItems[0] === MENU_SEPERATOR ? menuItems.slice(1) : menuItems;
     });
   }, [

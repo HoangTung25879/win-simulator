@@ -12,10 +12,10 @@ import { FullScreenProvider } from "@/contexts/fullScreen";
 export default function Page() {
   const ChildrenComponent = () => (
     <Desktop>
+      <AppsLoader />
       <SearchInputProvider>
         <Taskbar />
       </SearchInputProvider>
-      <AppsLoader />
     </Desktop>
   );
   return (

@@ -42,20 +42,22 @@ const directory: Processes = {
     ),
     backgroundColor: "#202020",
     defaultSize: {
-      height: 260,
-      width: 405,
+      height: 450,
+      width: 600,
     },
     icon: FOLDER_ICON,
     title: "File Explorer",
   },
-  DXBall: {
-    Component: undefined,
-    backgroundColor: "#000",
-    icon: "/System/Icons/dxball.png",
-    // libs: ["/Program Files/DX-Ball/game.js"],
-    lockAspectRatio: true,
-    singleton: true,
-    title: "DX-Ball",
+  Photos: {
+    Component: dynamic(() => import("@/app/components/Apps/Photos/Photos")),
+    backgroundColor: "rgb(39, 39, 39)",
+    defaultSize: {
+      height: 450,
+      width: 600,
+    },
+    hideTitlebarIcon: true,
+    icon: "/System/Icons/photos.png",
+    title: "Photos",
   },
 };
 
