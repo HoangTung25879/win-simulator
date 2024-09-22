@@ -64,7 +64,7 @@ const Photos = ({ id }: PhotosProps) => {
   const [brokenImage, setBrokenImage] = useState(false);
   const [imageScale, setImageScale] = useState<number>(0);
   const [scale, setScale] = useState<number>(0);
-  const [hasInitTransform, setHasInitTransform] = useState(false);
+  const [hasInitTransform, setHasInitTransform] = useState(true);
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [imageContainerSize, setImageContainerSize] = useState<{
     width: number;
@@ -110,6 +110,7 @@ const Photos = ({ id }: PhotosProps) => {
             const nextUrl = directory[nextIndex];
 
             if (IMAGE_FILE_EXTENSIONS.has(getExtension(nextUrl))) {
+              setHasInitTransform(false);
               setUrl(id, join(dirname(url), nextUrl));
             } else {
               nextPhoto(nextIndex, next);
@@ -138,6 +139,7 @@ const Photos = ({ id }: PhotosProps) => {
     const scale = Number(
       Math.min(rect.width / imageWidth, rect.height / imageHeight).toFixed(2),
     );
+    setBrokenImage(false);
     setHasInitTransform(false);
     setImageContainerSize({ width: rect.width, height: rect.height });
     setImageScale(scale);
@@ -185,15 +187,15 @@ const Photos = ({ id }: PhotosProps) => {
   }, [closing, loadSrc, src, url]);
 
   useEffect(() => {
-    componentWindow?.addEventListener("keydown", onKeyDown);
-    return () => componentWindow?.removeEventListener("keydown", onKeyDown);
-  }, [componentWindow, onKeyDown]);
-
-  useEffect(() => {
     if (src[url]) {
       loadImage();
     }
   }, [src, url]);
+
+  useEffect(() => {
+    componentWindow?.addEventListener("keydown", onKeyDown);
+    return () => componentWindow?.removeEventListener("keydown", onKeyDown);
+  }, [componentWindow, onKeyDown]);
 
   useResizeObserver(componentWindow, handleResize);
 

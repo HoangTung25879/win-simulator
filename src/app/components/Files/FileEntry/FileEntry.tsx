@@ -10,7 +10,11 @@ import {
 } from "react";
 import { motion } from "framer-motion";
 import "./FileEntry.scss";
-import { FileStat, getModifiedTime } from "../FileManager/functions";
+import {
+  FileStat,
+  getCachedIconUrl,
+  getModifiedTime,
+} from "../FileManager/functions";
 import Icon from "../../Icon/Icon";
 import useFileInfo from "./useFileInfo";
 import { FocusEntryFunctions } from "./useFocusableEntries";
@@ -18,14 +22,17 @@ import { SelectionRect } from "../FileManager/Selection/useSelection";
 import { basename, dirname, extname, join } from "path";
 import { isSelectionIntersecting } from "../FileManager/Selection/function";
 import {
-  DEFAULT_LOCALE,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
+  ICON_PATH,
   IMAGE_FILE_EXTENSIONS,
   MOUNTABLE_EXTENSIONS,
+  ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
   SHORTCUT_EXTENSION,
   SYSTEM_FONT,
+  TRANSITIONS_IN_MS,
+  USER_ICON_PATH,
   VIDEO_FILE_EXTENSIONS,
 } from "@/lib/constants";
 import { FileActions } from "./useFolder";
@@ -34,7 +41,12 @@ import { useProcesses } from "@/contexts/process";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import useFile from "./useFile";
 import { useFileSystem } from "@/contexts/fileSystem";
-import { getExtension, getFormattedSize, isYouTubeUrl } from "@/lib/utils";
+import {
+  bufferToUrl,
+  getExtension,
+  getFormattedSize,
+  isYouTubeUrl,
+} from "@/lib/utils";
 import { truncateName } from "./functions";
 import sizes from "@/lib/sizes";
 import extensions from "../extensions";
@@ -48,6 +60,7 @@ import { spotlightEffect } from "@/lib/spotlightEffect";
 import { DownIcon } from "../../FileExplorer/Navigation/Icons";
 import FileManager from "../FileManager/FileManager";
 import useFileDrop from "./useFileDrop";
+import { toCanvas } from "html-to-image";
 
 type FileEntryProps = {
   fileActions: FileActions;
@@ -242,6 +255,158 @@ const FileEntry = ({
     url,
     urlExt,
   ]);
+
+  useEffect(() => {
+    if (!isLoadingFileManager && isVisible && !isIconCached.current && fs) {
+      const updateIcon = async (): Promise<void> => {
+        const cachedIconPath = join(
+          ICON_CACHE,
+          `${path}${ICON_CACHE_EXTENSION}`,
+        );
+        if (icon.startsWith("blob:") || icon.startsWith("data:")) {
+          if (icon.startsWith("data:image/jpeg;base64,")) return;
+          isIconCached.current = true;
+          if (
+            urlExt !== ".ico" &&
+            !url.startsWith(ICON_PATH) &&
+            !url.startsWith(USER_ICON_PATH) &&
+            !(await exists(cachedIconPath)) &&
+            iconRef.current instanceof HTMLImageElement
+          ) {
+            const cacheIcon = async (
+              retryCanvasDraw?: boolean,
+            ): Promise<void> => {
+              if (!(iconRef.current instanceof HTMLImageElement)) return;
+              const nextQueueItem = (): Promise<void> => {
+                cacheQueue.shift();
+                return cacheQueue[0]?.();
+              };
+              let generatedIcon = "";
+              if (
+                iconRef.current.currentSrc.startsWith("data:image/gif;base64,")
+              ) {
+                generatedIcon = iconRef.current.currentSrc;
+              } else {
+                const {
+                  clientHeight,
+                  clientWidth,
+                  naturalHeight,
+                  naturalWidth,
+                } = iconRef.current;
+                const naturalAspectRatio = naturalWidth / naturalHeight;
+                const clientAspectRatio = clientWidth / clientHeight;
+                let height: number | undefined;
+                let width: number | undefined;
+                if (naturalAspectRatio !== clientAspectRatio) {
+                  if (naturalWidth > naturalHeight) {
+                    height = clientHeight / naturalAspectRatio;
+                  } else {
+                    width = clientWidth * naturalAspectRatio;
+                  }
+                }
+                let iconCanvas: HTMLCanvasElement | undefined;
+                try {
+                  iconCanvas = await toCanvas(iconRef.current, {
+                    height,
+                    skipAutoScale: true,
+                    style: {
+                      objectPosition: height
+                        ? "top"
+                        : width
+                          ? "left"
+                          : undefined,
+                    },
+                    width,
+                  });
+                } catch (error) {
+                  // Ignore failure to capture
+                  console.error(error);
+                }
+                if (iconCanvas && retryCanvasDraw) {
+                  generatedIcon = iconCanvas.toDataURL("image/png");
+                } else {
+                  setTimeout(() => cacheIcon(true), TRANSITIONS_IN_MS.WINDOW);
+                }
+              }
+              if (generatedIcon) {
+                cacheQueue.push(async () => {
+                  const baseCachedPath = dirname(cachedIconPath);
+                  await mkdirRecursive(baseCachedPath);
+                  const cachedIcon = Buffer.from(
+                    generatedIcon.replace(/data:.*;base64,/, ""),
+                    "base64",
+                  );
+                  await writeFile(cachedIconPath, cachedIcon, true);
+                  setInfo((info) => ({
+                    ...info,
+                    icon: bufferToUrl(cachedIcon),
+                  }));
+                  updateFolder(baseCachedPath, basename(cachedIconPath));
+                  return nextQueueItem();
+                });
+              }
+              if (cacheQueue.length === 1) await cacheQueue[0]();
+            };
+            if (iconRef.current.complete) {
+              cacheIcon();
+            } else {
+              iconRef.current.addEventListener(
+                "load",
+                () => cacheIcon(),
+                ONE_TIME_PASSIVE_EVENT,
+              );
+            }
+          }
+        } else if (!isShortcut || typeof getIcon === "function" || isYTUrl) {
+          const cachedIconUrl = await getCachedIconUrl(fs, cachedIconPath);
+          if (cachedIconUrl) {
+            isIconCached.current = true;
+            setInfo((info) => ({ ...info, icon: cachedIconUrl }));
+          } else if (
+            !isDynamicIconLoaded.current &&
+            buttonRef.current &&
+            typeof getIcon === "function"
+          ) {
+            getIconAbortController.current = new AbortController();
+            await getIcon(getIconAbortController.current.signal);
+            isDynamicIconLoaded.current =
+              !getIconAbortController.current.signal.aborted;
+          }
+        }
+      };
+      updateIcon();
+    }
+    if (!isVisible && getIconAbortController.current) {
+      getIconAbortController.current.abort();
+    }
+  }, [
+    exists,
+    fs,
+    getIcon,
+    icon,
+    isLoadingFileManager,
+    isShortcut,
+    isVisible,
+    isYTUrl,
+    mkdirRecursive,
+    path,
+    setInfo,
+    updateFolder,
+    url,
+    urlExt,
+    writeFile,
+  ]);
+
+  useEffect(
+    () => () => {
+      try {
+        getIconAbortController.current?.abort();
+      } catch {
+        // Failed to abort getIcon
+      }
+    },
+    [],
+  );
 
   useLayoutEffect(() => {
     if (buttonRef.current && fileManagerRef.current) {

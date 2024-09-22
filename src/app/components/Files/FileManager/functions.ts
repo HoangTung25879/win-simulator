@@ -613,7 +613,6 @@ export const getInfoWithExtension = (
           fs.readFile(path, (error, contents = Buffer.from("")) => {
             if (!error && contents.length > 0 && !signal.aborted) {
               const imageIcon = new Image();
-
               imageIcon.addEventListener(
                 "load",
                 () => getInfoByFileExtension(imageIcon.src),

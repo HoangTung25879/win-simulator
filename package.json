@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev -p 3002",
-    "clean": "rm -rf public/.index",
+    "clean": "rm -rf public/.index/",
     "build": "next build",
     "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "build:prebuild": "node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && npm run build:fs",
