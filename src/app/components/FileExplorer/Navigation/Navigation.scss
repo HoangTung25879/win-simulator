@@ -1,5 +1,5 @@
 .navigation {
-  background-color: rgb(25, 25, 25);
+  background-color: var(--navigation-bar-background);
   display: flex;
   height: var(--file-explorer-nav-bar-height);
   button {
@@ -7,7 +7,7 @@
     margin: 11px 9px;
     width: 16px;
     svg {
-      color: #fff;
+      color: var(--navigation-bar-button);
       fill: currentColor;
       height: 16px;
       transition: color 0.35s ease;
@@ -38,11 +38,10 @@
     }
     &:disabled {
       svg {
-        color: rgb(140, 140, 140);
-
+        color: var(--navigation-bar-button-disabled);
         &:hover,
         &:active {
-          color: rgb(140, 140, 140);
+          color: var(--navigation-bar-button-disabled);
         }
       }
     }
@@ -51,7 +50,7 @@
     background-position: 2px 5px;
     background-repeat: no-repeat;
     background-size: 16px;
-    border: 1px solid rgb(83, 83, 83);
+    border: 1px solid var(--navigation-bar-border);
     display: flex;
     margin: 7px 12px 6px 5px;
     padding: 0 22px 2px 25px;
@@ -59,9 +58,9 @@
     width: 100%;
     height: var(--file-explorer-nav-input-height);
     input {
-      background-color: rgb(25, 25, 25);
-      border-right: 1px solid rgb(21, 21, 21);
-      color: #fff;
+      background-color: var(--navigation-bar-background);
+      border-right: 1px solid var(--navigation-bar-border);
+      color: var(--navigation-bar-text);
       font-size: 12px;
       font-weight: 400;
       height: calc(var(--file-explorer-nav-input-height) - 2px);
@@ -76,7 +75,7 @@
       top: 3px;
     }
     .refresh {
-      background-color: rgb(25, 25, 25);
+      background-color: var(--navigation-bar-background);
       display: flex;
       height: calc(var(--file-explorer-nav-input-height) - 2px);
       margin: 0;
@@ -90,12 +89,12 @@
       width: 24px;
 
       &:hover {
-        background-color: rgb(27, 41, 49);
+        background-color: var(--navigation-bar-button-hover);
         border: 1px solid rgb(34, 114, 153);
       }
 
       &:active {
-        background-color: rgb(28, 57, 71);
+        background-color: var(--navigation-bar-button-hover);
         border: 1px solid rgb(38, 160, 218);
       }
 
@@ -106,7 +105,7 @@
     }
   }
   .file-search-bar {
-    border: 1px solid rgb(83, 83, 83);
+    border: 1px solid var(--navigation-bar-border);
     display: flex;
     height: var(--file-explorer-nav-input-height);
     margin: 7px 12px 6px 0;
@@ -120,11 +119,11 @@
     }
     input {
       appearance: none;
-      background-color: rgb(25, 25, 25);
-      color: #fff;
+      background-color: var(--navigation-bar-background);
+      color: var(--navigation-bar-text);
       font-size: 12px;
       font-weight: 400;
-      height: calc(var(--file-explorer-nav-input-height) - 2px);
+      height: var(--file-explorer-nav-input-height);
       padding-bottom: 1px;
       padding-left: 8px;
       text-overflow: ellipsis;

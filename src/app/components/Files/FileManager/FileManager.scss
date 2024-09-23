@@ -143,11 +143,11 @@
 
 .status-bar {
   align-items: center;
-  background-color: rgb(51, 51, 51);
-  color: rgb(247, 247, 247);
+  background-color: var(--status-bar-background);
+  color: var(--status-bar-text);
   display: flex;
   font-size: 0.75rem;
-  font-weight: 200;
+  font-weight: 400;
   height: var(--file-explorer-status-bar-height);
   padding: 0 5px;
   position: relative;

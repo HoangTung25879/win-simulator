@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import { UNKNOWN_SIZE } from "@/contexts/fileSystem/core";
 import { getFormattedSize, haltEvent } from "@/lib/utils";
 import { join } from "path";
+import { useProcesses } from "@/contexts/process";
+import colors from "@/lib/colors";
 
 type StatusBarProps = {
+  id?: string;
   count: number;
   directory: string;
   fileDrop: FileDrop;
@@ -17,11 +20,16 @@ type StatusBarProps = {
 const UNCALCULATED_SIZE = -2;
 
 const StatusBar = ({
+  id,
   count,
   directory,
   fileDrop,
   selected,
 }: StatusBarProps) => {
+  const {
+    processes: { [id || ""]: process },
+  } = useProcesses();
+  const { statusbarColor, textColor } = process || {};
   const { exists, lstat, stat } = useFileSystem();
   const [selectedSize, setSelectedSize] = useState(UNKNOWN_SIZE);
 
@@ -50,6 +58,13 @@ const StatusBar = ({
 
   return (
     <footer
+      style={
+        {
+          "--status-bar-background":
+            statusbarColor || colors.statusBar.background,
+          "--status-bar-text": textColor || colors.statusBar.text,
+        } as React.CSSProperties
+      }
       className="status-bar"
       onContextMenuCapture={haltEvent}
       {...fileDrop}

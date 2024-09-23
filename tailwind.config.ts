@@ -36,7 +36,7 @@ const config: Config = {
         taskbar: {
           active: "hsla(0, 0%, 20%, 70%)",
           activeForeground: "hsla(0, 0%, 40%, 70%)",
-          background: "rgba(25, 25, 25, 1)",
+          background: "hsla(0, 0%, 10%, 70%)",
           button: {
             color: "#FFF",
           },
@@ -48,16 +48,29 @@ const config: Config = {
         },
         text: "rgba(255, 255, 255, 90%)",
         titleBar: {
-          background: "rgb(0, 0, 0)",
-          backgroundHover: "rgb(26, 26, 26)",
-          backgroundInactive: "rgb(43, 43, 43)",
+          background: "rgb(25, 25, 25)",
+          button: "rgb(255, 255, 255)",
           buttonInactive: "rgb(128, 128, 128)",
+          buttonHover: "rgb(39, 39, 39)",
           closeHover: "rgb(232, 17, 35)",
           text: "rgb(255, 255, 255)",
           textInactive: "rgb(170, 170, 170)",
+          border: "rgb(43, 43, 43)",
+        },
+        statusBar: {
+          background: "rgb(51, 51, 51)",
+          text: "rgb(247, 247, 247)",
+        },
+        navigationBar: {
+          background: "rgb(25, 25, 25)",
+          button: "rgb(255, 255, 255)",
+          buttonHover: "rgb(27, 41, 49)",
+          buttonDisabled: "rgb(140, 140, 140)",
+          text: "rgb(255, 255, 255)",
+          border: "rgb(83, 83, 83)",
         },
         window: {
-          background: "#808080",
+          background: "rgb(39, 39, 39)",
           outline: "hsla(0, 0%, 25%, 75%)",
           outlineInactive: "hsla(0, 0%, 30%, 100%)",
           shadow: "0 0 14px 0 rgba(0, 0, 0, 50%)",

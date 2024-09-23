@@ -22,6 +22,17 @@ export type RelativePosition = {
 type BaseProcessArguments = {
   allowResizing?: boolean;
   autoSizing?: boolean;
+  titlebarColor?: string;
+  titlebarButtonColor?: string;
+  titlebarButtonHoverColor?: string;
+  titlebarBorderColor?: string;
+  navigationbarColor?: string;
+  navigationbarButtonDisabledColor?: string;
+  navigationbarButtonColor?: string;
+  navigationbarButtonHoverColor?: string;
+  navigationbarBorderColor?: string;
+  statusbarColor?: string;
+  textColor?: string;
   backgroundColor?: string;
   dependantLibs?: string[];
   hideMaximizeButton?: boolean;
@@ -41,6 +52,10 @@ type DialogProcessArguments = {
   shortcutPath?: string;
 };
 
+type SettingProcessArguments = {
+  settingType?: "background";
+};
+
 type MediaPlayerProcessArguments = {
   pause?: () => void;
   paused?: (callback?: (paused: boolean) => void) => boolean;
@@ -48,7 +63,10 @@ type MediaPlayerProcessArguments = {
 };
 
 export type ProcessArguments = Prettify<
-  BaseProcessArguments & DialogProcessArguments & MediaPlayerProcessArguments
+  BaseProcessArguments &
+    DialogProcessArguments &
+    MediaPlayerProcessArguments &
+    SettingProcessArguments
 >;
 
 export type Process = Prettify<

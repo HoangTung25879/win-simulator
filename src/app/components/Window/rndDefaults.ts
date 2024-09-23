@@ -26,7 +26,7 @@ export const RESIZING_ENABLED = {
 };
 
 const rndDefaults: RndProps = {
-  cancel: ".cancel",
+  cancel: ".cancel", // add cancel to html tag it will be ignored rnd
   dragHandleClassName: "handle",
   enableUserSelectHack: false,
   minHeight: `${MIN_WINDOW_HEIGHT}px`,

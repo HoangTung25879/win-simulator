@@ -59,14 +59,23 @@ button {
   --taskbar-hover: hsla(0, 0%, 25%, 70%);
   --taskbar-peek-border: hsla(0, 0%, 50%, 50%);
   --text: rgba(255, 255, 255, 90%);
-  --title-bar-background: rgb(0, 0, 0);
-  --title-bar-background-hover: rgb(26, 26, 26);
-  --title-bar-background-inactive: rgb(43, 43, 43);
+  --title-bar-background: rgb(25, 25, 25);
+  --title-bar-button: rgb(255, 255, 255);
   --title-bar-button-inactive: rgb(128, 128, 128);
+  --title-bar-button-hover: rgb(39, 39, 39);
   --title-bar-close-hover: rgb(232, 17, 35);
   --title-bar-text: rgb(255, 255, 255);
   --title-bar-text-inactive: rgb(170, 170, 170);
-  --window-background: #808080;
+  --title-bar-border: rgb(43, 43, 43);
+  --status-bar-background: rgb(51, 51, 51);
+  --status-bar-text: rgb(247, 247, 247);
+  --navigation-bar-background: rgb(25, 25, 25);
+  --navigation-bar-button: rgb(255, 255, 255);
+  --navigation-bar-button-hover: rgb(27, 41, 49);
+  --navigation-bar-button-disabled: rgb(140, 140, 140);
+  --navigation-bar-text: rgb(255, 255, 255);
+  --navigation-bar-border: rgb(83, 83, 83);
+  --window-background: rgb(39, 39, 39);
   --window-outline: hsla(0, 0%, 25%, 75%);
   --window-outline-inactive: hsla(0, 0%, 30%, 100%);
   --window-shadow: 0 0 14px 0 rgba(0, 0, 0, 50%);
@@ -132,7 +141,7 @@ button {
   --title-bar-icon-size: 16px;
   /* Window */
   --window-cascade-offset: 26px;
-  --window-outline: 1px;
+  --window-outline-size: 1px;
 }
 
 @media (prefers-color-scheme: dark) {

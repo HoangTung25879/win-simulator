@@ -39,10 +39,12 @@ const Window = ({ children, id }: WindowProps) => {
   return (
     <RndWrapper id={id} zIndex={zIndex}>
       <motion.section
+        style={
+          {
+            "--window-background": backgroundColor || colors.window.background,
+          } as React.CSSProperties
+        }
         className={clsx("window-section", isForeground ? "is-foreground" : "")}
-        style={{
-          backgroundColor: backgroundColor || colors.window.background,
-        }}
         {...focusableProps}
         {...windowTransitions}
       >

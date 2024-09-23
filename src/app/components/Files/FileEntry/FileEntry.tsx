@@ -61,8 +61,10 @@ import { DownIcon } from "../../FileExplorer/Navigation/Icons";
 import FileManager from "../FileManager/FileManager";
 import useFileDrop from "./useFileDrop";
 import { toCanvas } from "html-to-image";
+import colors from "@/lib/colors";
 
 type FileEntryProps = {
+  id?: string;
   fileActions: FileActions;
   fileManagerId?: string;
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
@@ -89,6 +91,7 @@ const focusing: string[] = [];
 const cacheQueue: (() => Promise<void>)[] = [];
 
 const FileEntry = ({
+  id,
   fileActions,
   fileManagerId,
   fileManagerRef,
@@ -110,7 +113,11 @@ const FileEntry = ({
   view,
 }: FileEntryProps) => {
   const { blurEntry, focusEntry } = focusFunctions;
-  const { url: changeUrl } = useProcesses();
+  const {
+    url: changeUrl,
+    processes: { [id || ""]: process },
+  } = useProcesses();
+  const { textColor } = process || {};
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
@@ -454,6 +461,11 @@ const FileEntry = ({
     <>
       <motion.button
         ref={buttonRef}
+        style={
+          {
+            "--file-entry-text": textColor || colors.fileEntry.text,
+          } as React.CSSProperties
+        }
         onMouseOver={() => createTooltip().then(setTooltip)}
         title={tooltip}
         aria-label={name}

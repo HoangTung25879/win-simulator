@@ -4,12 +4,13 @@
   overflow: hidden;
   position: absolute;
   width: 100%;
+  background-color: var(--window-background);
   box-shadow: var(--window-shadow-inactive);
   outline: var(--window-outline-size) solid var(--window-outline-inactive);
   .window-titlebar {
-    background-color: var(--title-bar-background-inactive);
-    border-bottom: 1px solid var(--title-bar-background-inactive);
+    background-color: var(--title-bar-background);
     height: var(--title-bar-height);
+    border-bottom: 1px solid var(--title-bar-border);
     display: flex;
     position: relative;
     top: 0;
@@ -46,7 +47,6 @@
     nav {
       display: flex;
       button {
-        border-left: 1px solid var(--title-bar-background-inactive);
         width: var(--title-bar-button-width);
         box-sizing: content-box;
         display: flex;
@@ -64,19 +64,22 @@
           }
         }
         &:hover {
-          background-color: var(--title-bar-background-hover);
+          background-color: var(--title-bar-button-hover);
           svg {
-            fill: var(--title-bar-text);
+            fill: var(--title-bar-button);
           }
           &.close {
             background: var(--title-bar-close-hover);
             transition: background-color 0.25s ease;
+            svg {
+              fill: #fff;
+            }
           }
         }
         &:active {
-          background-color: rgb(51, 51, 51);
+          background-color: var(--title-bar-button-hover);
           &.close {
-            background-color: rgb(139, 10, 20);
+            background-color: var(--title-bar-close-hover);
           }
         }
         &:disabled {
@@ -91,16 +94,13 @@
     }
   }
   .window-titlebar.is-foreground {
-    background-color: var(--title-bar-background);
-    border-bottom: var(--title-bar-background);
     > button {
       color: var(--title-bar-text);
     }
     nav {
       button {
-        border-left: var(--title-bar-background);
         svg {
-          fill: var(--title-bar-text);
+          fill: var(--title-bar-button);
         }
         &:disabled {
           svg {
@@ -116,5 +116,5 @@
 }
 .window-section.is-foreground {
   box-shadow: var(--window-shadow);
-  outline: var(--window-outline-size) solid var(--window-outline);
+  outline: 2px solid var(--window-outline);
 }

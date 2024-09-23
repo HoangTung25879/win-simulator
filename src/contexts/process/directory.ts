@@ -33,20 +33,37 @@ enum AllProcess {
   VideoPlayer = "VideoPlayer",
   Vim = "Vim",
   Webamp = "Webamp",
+  Settings = "Settings",
 }
+
+const defaultProcessStyle = {
+  backgroundColor: "rgb(255, 255, 255)",
+  titlebarColor: "rgb(255, 255, 255)",
+  titlebarButtonColor: "rgb(0,0,0)",
+  titlebarButtonHoverColor: "rgb(229, 229, 229)",
+  textColor: "rgb(0,0,0)",
+};
 
 const directory: Processes = {
   FileExplorer: {
     Component: dynamic(
       () => import("@/app/components/FileExplorer/FileExplorer"),
     ),
-    backgroundColor: "#202020",
     defaultSize: {
       height: 450,
       width: 600,
     },
     icon: FOLDER_ICON,
     title: "File Explorer",
+    //* light theme, default is black theme
+    titlebarBorderColor: "rgb(220 209 209)",
+    navigationbarColor: "#fff",
+    navigationbarButtonColor: "rgb(128, 128, 128)",
+    navigationbarButtonHoverColor: "rgb(229, 243, 251)",
+    navigationbarButtonDisabledColor: "rgb(223, 223, 223)",
+    navigationbarBorderColor: "rgb(220 209 209)",
+    statusbarColor: "rgb(255, 255, 255)",
+    ...defaultProcessStyle,
   },
   Photos: {
     Component: dynamic(() => import("@/app/components/Apps/Photos/Photos")),
@@ -58,6 +75,16 @@ const directory: Processes = {
     hideTitlebarIcon: true,
     icon: "/System/Icons/photos.png",
     title: "Photos",
+  },
+  Settings: {
+    Component: dynamic(() => import("@/app/components/Settings/Settings")),
+    defaultSize: {
+      height: 450,
+      width: 600,
+    },
+    icon: "/System/Icons/settings.png",
+    title: "Settings",
+    ...defaultProcessStyle,
   },
 };
 

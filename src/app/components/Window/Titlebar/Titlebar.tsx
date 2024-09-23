@@ -28,6 +28,11 @@ const Titlebar = ({ id }: TitlebarProps) => {
     allowResizing = true,
     closing,
     componentWindow,
+    titlebarColor,
+    titlebarButtonColor,
+    titlebarButtonHoverColor,
+    titlebarBorderColor,
+    textColor,
     hideMaximizeButton,
     hideMinimizeButton,
     hideTitlebarIcon,
@@ -59,6 +64,16 @@ const Titlebar = ({ id }: TitlebarProps) => {
 
   return (
     <header
+      style={
+        {
+          "--title-bar-background": titlebarColor || colors.titleBar.background,
+          "--title-bar-text": textColor || colors.titleBar.text,
+          "--title-bar-button": titlebarButtonColor || colors.titleBar.button,
+          "--title-bar-button-hover":
+            titlebarButtonHoverColor || colors.titleBar.buttonHover,
+          "--title-bar-border": titlebarBorderColor || colors.titleBar.border,
+        } as React.CSSProperties
+      }
       className={clsx(
         "window-titlebar",
         isForeground ? "is-foreground" : "",
@@ -90,7 +105,7 @@ const Titlebar = ({ id }: TitlebarProps) => {
           <figcaption>{title}</figcaption>
         </figure>
       </button>
-      <nav>
+      <nav className="cancel">
         {!hideMinimizeButton && (
           <button
             className="minimize"

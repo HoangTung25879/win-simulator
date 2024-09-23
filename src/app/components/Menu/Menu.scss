@@ -12,6 +12,7 @@
   position: fixed;
   font-size: 0.75rem;
   .menu-item {
+    width: 100%;
     &.disabled {
       color: rgb(109, 109, 109);
       pointer-events: none;
@@ -22,6 +23,7 @@
       margin: 3px 8px;
     }
     .item-button {
+      width: 100%;
       display: flex;
       padding: 3px 0;
 

@@ -68,7 +68,7 @@ const RenameBox = ({
 
   return (
     <textarea
-      className={clsx("rename-box", !isDesktop && "--dark")}
+      className={clsx("rename-box")}
       ref={inputRef}
       defaultValue={name}
       onBlurCapture={saveRename}

@@ -235,6 +235,7 @@ const FileManager = ({
                   {...rest}
                 >
                   <FileEntry
+                    id={id}
                     fileActions={fileActions}
                     fileManagerId={id}
                     fileManagerRef={fileManagerRef}
@@ -263,6 +264,7 @@ const FileManager = ({
       )}
       {isFileExplorer && (
         <StatusBar
+          id={id}
           count={loading ? 0 : fileKeys.length}
           directory={url}
           fileDrop={fileDrop}

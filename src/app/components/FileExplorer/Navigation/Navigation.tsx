@@ -19,6 +19,7 @@ import { MenuState } from "@/contexts/menu/useMenuContextState";
 import AddressBar from "./AddressBar";
 import SearchBar from "./SearchBar";
 import "./Navigation.scss";
+import colors from "@/lib/colors";
 
 type NavigationProps = {
   hideSearch: boolean;
@@ -32,7 +33,15 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
     const {
       url: changeUrl,
       processes: {
-        [id]: { url = "" },
+        [id]: {
+          url = "",
+          navigationbarColor,
+          navigationbarButtonDisabledColor,
+          navigationbarButtonColor,
+          navigationbarButtonHoverColor,
+          navigationbarBorderColor,
+          textColor,
+        },
       },
     } = useProcesses();
     const { contextMenu, menu, setMenu } = useMenu();
@@ -80,7 +89,25 @@ const Navigation = forwardRef<HTMLInputElement, NavigationProps>(
     useResizeObserver(navRef.current, resizeCallback);
 
     return (
-      <div className="navigation">
+      <div
+        style={
+          {
+            "--navigation-bar-background":
+              navigationbarColor || colors.navigationBar.background,
+            "--navigation-bar-button-disabled":
+              navigationbarButtonDisabledColor ||
+              colors.navigationBar.buttonDisabled,
+            "--navigation-bar-button":
+              navigationbarButtonColor || colors.navigationBar.button,
+            "--navigation-bar-button-hover":
+              navigationbarButtonHoverColor || colors.navigationBar.buttonHover,
+            "--navigation-bar-text": textColor || colors.navigationBar.text,
+            "--navigation-bar-border":
+              navigationbarBorderColor || colors.navigationBar.border,
+          } as React.CSSProperties
+        }
+        className="navigation"
+      >
         <button
           disabled={!canGoBack}
           onClick={() => moveHistory(-1)}
