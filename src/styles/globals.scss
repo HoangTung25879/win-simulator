@@ -16,6 +16,15 @@
   user-select: none;
 }
 
+body,
+html {
+  font-family: "Segoe UI";
+}
+
+html {
+  background-color: black;
+}
+
 button {
   cursor: default;
 }
@@ -129,10 +138,6 @@ button {
 @media (prefers-color-scheme: dark) {
   :root {
   }
-}
-
-body {
-  font-family: "Segoe UI";
 }
 
 @layer utilities {

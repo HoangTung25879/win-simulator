@@ -22,6 +22,10 @@ export type WindowState = {
 
 export type WindowStates = Record<string, WindowState>;
 
+export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
+
+export type WallpaperImage = "VANTA WAVES" | "VANTA CLOUDS" | string;
+
 type SortOrder = [string[], SortBy?, boolean?];
 
 export type SortOrders = Record<string, SortOrder>;
@@ -34,15 +38,14 @@ export type IconPosition = {
 export type IconPositions = Record<string, IconPosition>;
 
 export type SessionData = {
-  // clockSource: ClockSource;
   cursor: string;
   iconPositions: IconPositions;
   recentFiles: RecentFiles;
   runHistory: string[];
   sortOrders: SortOrders;
   // themeName: ThemeName;
-  // wallpaperFit: WallpaperFit;
-  // wallpaperImage: string;
+  wallpaperFit: WallpaperFit;
+  wallpaperImage: WallpaperImage;
   windowStates: WindowStates;
 };
 
@@ -63,6 +66,7 @@ export type SessionContextState = Prettify<
       sortBy?: SortBy,
       ascending?: boolean,
     ) => void;
+    setWallpaper: (image: string, fit?: WallpaperFit) => void;
     setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
     stackOrder: string[];
     updateRecentFiles: (url: string, pid: string, title?: string) => void;

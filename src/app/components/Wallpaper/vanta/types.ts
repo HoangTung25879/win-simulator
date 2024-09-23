@@ -64,12 +64,3 @@ export type VantaObject = {
   WAVES: (settings: VantaSettings) => VantaEffect;
   current: VantaEffect;
 };
-
-declare global {
-  interface Window {
-    THREE: unknown;
-    VANTA: VantaObject;
-    DEBUG_DISABLE_WALLPAPER?: boolean;
-    WallpaperDestroy?: () => void;
-  }
-}

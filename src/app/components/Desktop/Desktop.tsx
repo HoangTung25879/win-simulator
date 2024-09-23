@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import "./Desktop.scss";
-import useWallpaper from "@/hooks/useWallpaper";
+import useWallpaper from "../Wallpaper/useWallpaper";
 import { DESKTOP_PATH, FOCUSABLE_ELEMENT } from "@/lib/constants";
 import FileManager from "../Files/FileManager/FileManager";
 

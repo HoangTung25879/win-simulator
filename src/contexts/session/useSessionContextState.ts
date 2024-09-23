@@ -12,6 +12,8 @@ import {
   SessionContextState,
   SessionData,
   SortOrders,
+  WallpaperFit,
+  WallpaperImage,
   WindowStates,
 } from "./types";
 import {
@@ -47,6 +49,9 @@ const useSessionContextState = (): SessionContextState => {
   const [iconPositions, setIconPositions] = useState(
     Object.create(null) as IconPositions,
   );
+  const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fit");
+  const [wallpaperImage, setWallpaperImage] =
+    useState<WallpaperImage>("VANTA WAVES");
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const [haltSession, setHaltSession] = useState(false);
@@ -64,6 +69,8 @@ const useSessionContextState = (): SessionContextState => {
       iconPositions,
       runHistory,
       recentFiles,
+      wallpaperFit,
+      wallpaperImage,
     });
   }, [
     sessionLoaded,
@@ -75,6 +82,8 @@ const useSessionContextState = (): SessionContextState => {
     iconPositions,
     runHistory,
     recentFiles,
+    wallpaperFit,
+    wallpaperImage,
   ]);
 
   const updateRecentFiles = useCallback(
@@ -120,6 +129,14 @@ const useSessionContextState = (): SessionContextState => {
     [],
   );
 
+  const setWallpaper = useCallback(
+    (image: string, fit?: WallpaperFit): void => {
+      if (fit) setWallpaperFit(fit);
+      setWallpaperImage(image);
+    },
+    [],
+  );
+
   const setSortOrder = useCallback(
     (
       directory: string,
@@ -150,13 +167,10 @@ const useSessionContextState = (): SessionContextState => {
       if (typeof positions === "function") {
         return setIconPositions(positions);
       }
-
       const [firstIcon] = Object.keys(positions) || [];
       const isDesktop = firstIcon && DESKTOP_PATH === dirname(firstIcon);
-
       if (isDesktop) {
         const desktopGrid = document.getElementById(DESKTOP_GRID_ID);
-
         if (desktopGrid instanceof HTMLOListElement) {
           try {
             const { [DESKTOP_PATH]: [desktopFileOrder = []] = [] } =
@@ -187,20 +201,58 @@ const useSessionContextState = (): SessionContextState => {
           }
         }
       }
-
       return setIconPositions(positions);
     },
     [readdir, sortOrders],
   );
 
   useEffect(() => {
+    if (!loadingDebounceRef.current && sessionLoaded && !haltSession) {
+      const updateSessionFile = (): void => {
+        writeFile(
+          SESSION_FILE,
+          JSON.stringify({
+            cursor,
+            iconPositions,
+            recentFiles,
+            runHistory,
+            sortOrders,
+            windowStates,
+            wallpaperFit,
+            wallpaperImage,
+          }),
+          true,
+        );
+      };
+      if (
+        "requestIdleCallback" in window &&
+        typeof window.requestIdleCallback === "function"
+      ) {
+        requestIdleCallback(updateSessionFile);
+      } else {
+        updateSessionFile();
+      }
+    }
+  }, [
+    cursor,
+    haltSession,
+    iconPositions,
+    recentFiles,
+    runHistory,
+    sessionLoaded,
+    sortOrders,
+    windowStates,
+    writeFile,
+    wallpaperFit,
+    wallpaperImage,
+  ]);
+
+  useEffect(() => {
     if (!initializedSession.current && rootFs) {
       const initSession = async (): Promise<void> => {
         initializedSession.current = true;
-
         try {
           let session: SessionData;
-
           try {
             session =
               (await lstat(SESSION_FILE)).blocks <= 0
@@ -213,6 +265,9 @@ const useSessionContextState = (): SessionContextState => {
           }
 
           if (session.cursor) setCursor(session.cursor);
+          if (session.wallpaperImage) {
+            setWallpaper(session.wallpaperImage, session.wallpaperFit);
+          }
           if (
             session.sortOrders &&
             Object.keys(session.sortOrders).length > 0
@@ -227,13 +282,11 @@ const useSessionContextState = (): SessionContextState => {
               const defaultIconPositions = Object.entries(
                 DEFAULT_SESSION.iconPositions,
               );
-
               Object.keys({
                 ...DEFAULT_SESSION.iconPositions,
                 ...session.iconPositions,
               }).forEach((iconPath) => {
                 const sessionIconPosition = session.iconPositions?.[iconPath];
-
                 if (sessionIconPosition) {
                   const [conflictingDefaultIconPath] =
                     defaultIconPositions.find(
@@ -243,7 +296,6 @@ const useSessionContextState = (): SessionContextState => {
                           gridColumnStart &&
                         sessionIconPosition.gridRowStart === gridRowStart,
                     ) || [];
-
                   if (
                     conflictingDefaultIconPath &&
                     session.iconPositions?.[conflictingDefaultIconPath]
@@ -273,6 +325,9 @@ const useSessionContextState = (): SessionContextState => {
           ) {
             setWindowStates(session.windowStates);
           }
+          if (session.runHistory && session.runHistory.length > 0) {
+            setRunHistory(session.runHistory);
+          }
           if (session.recentFiles && session.recentFiles.length > 0) {
             setRecentFiles(session.recentFiles);
           } else if (!Array.isArray(session.recentFiles)) {
@@ -283,21 +338,17 @@ const useSessionContextState = (): SessionContextState => {
             deletePath(SESSION_FILE);
           }
         }
-
         loadingDebounceRef.current = window.setTimeout(() => {
           loadingDebounceRef.current = 0;
           window.sessionIsWriteable = true;
         }, TRANSITIONS_IN_MS.WINDOW * 2);
-
         setSessionLoaded(true);
       };
-
       initSession();
     }
-  }, [lstat, readFile, rootFs]);
+  }, [deletePath, lstat, readFile, rootFs, setWallpaper]);
 
   return {
-    // clockSource,
     cursor,
     foregroundId,
     iconPositions,
@@ -306,7 +357,6 @@ const useSessionContextState = (): SessionContextState => {
     removeFromStack,
     runHistory,
     sessionLoaded,
-    // setClockSource,
     setCursor,
     setForegroundId,
     setHaltSession,
@@ -314,14 +364,14 @@ const useSessionContextState = (): SessionContextState => {
     setRunHistory,
     setSortOrder,
     // setThemeName,
-    // setWallpaper,
+    setWallpaper,
     setWindowStates,
     sortOrders,
     stackOrder,
     // themeName,
     updateRecentFiles,
-    // wallpaperFit,
-    // wallpaperImage,
+    wallpaperFit,
+    wallpaperImage,
     windowStates,
   };
 };

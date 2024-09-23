@@ -19,13 +19,14 @@ const useResizeObserver = (
   }, [callback]);
 
   useEffect(() => {
-    if (element instanceof HTMLElement) {
-      resizeObserver?.observe(element);
+    if (element instanceof HTMLElement && resizeObserver) {
+      resizeObserver.observe(element);
     }
 
     return () => {
-      if (element instanceof HTMLElement) {
-        resizeObserver?.unobserve(element);
+      if (element instanceof HTMLElement && resizeObserver) {
+        resizeObserver.unobserve(element);
+        resizeObserver.disconnect();
       }
     };
   }, [element, resizeObserver]);
