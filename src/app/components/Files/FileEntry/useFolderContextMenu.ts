@@ -18,9 +18,10 @@ import {
   isSafari,
   updateIconPositions,
 } from "@/lib/utils";
-import { DESKTOP_PATH } from "@/lib/constants";
+import { DESKTOP_PATH, MENU_SEPERATOR } from "@/lib/constants";
 import fixWebmDuration from "fix-webm-duration";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
+import { AllProcess } from "@/contexts/process/directory";
 
 const CAPTURE_FPS = 30;
 const MIME_TYPE_VIDEO_WEBM = "video/webm";
@@ -267,7 +268,14 @@ const useFolderContextMenu = (
         action: () => updateFolder(url),
         label: "Refresh",
       };
-      return [SORT_BY, REFRESH];
+      const PERSONALIZE: MenuItem = {
+        label: "Personalize",
+        action: () => {
+          open(AllProcess.Settings, { settingType: "background" });
+        },
+        icon: "/System/Icons/personalized.png",
+      };
+      return [SORT_BY, REFRESH, MENU_SEPERATOR, PERSONALIZE];
     });
   }, [
     addToFolder,

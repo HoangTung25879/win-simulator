@@ -5,6 +5,7 @@ import {
   MenuItem,
 } from "@/contexts/menu/useMenuContextState";
 import { useProcesses } from "@/contexts/process";
+import { AllProcess } from "@/contexts/process/directory";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
 import { useSession } from "@/contexts/session";
 import { MENU_SEPERATOR } from "@/lib/constants";
@@ -44,7 +45,7 @@ const useTaskbarContextMenu = (onStartButton = false): ContextMenuCapture => {
             // },
             // MENU_SEPERATOR,
             {
-              action: () => open("FileExplorer"),
+              action: () => open(AllProcess.FileExplorer),
               label: "File Explorer",
             },
             // {

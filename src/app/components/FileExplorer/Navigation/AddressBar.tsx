@@ -4,8 +4,8 @@ import { useFileSystem } from "@/contexts/fileSystem";
 import { useProcesses } from "@/contexts/process";
 import { ROOT_NAME } from "@/lib/constants";
 import { basename } from "path";
-import { forwardRef, useState } from "react";
-import Icon from "../../Icon/Icon";
+import { forwardRef, useEffect, useState } from "react";
+import Icon from "../../Common/Icon/Icon";
 import useAddressBarContextMenu from "../useAddressBarContextMenu";
 import { RefreshIcon } from "./Icons";
 
@@ -26,6 +26,17 @@ const AddressBar = forwardRef<HTMLInputElement, AddressBarProps>(
     const displayName = basename(url) || ROOT_NAME;
     const [addressBar, setAddressBar] = useState(displayName);
 
+    useEffect(() => {
+      if (inputRef.current) {
+        if (addressBar === url) {
+          inputRef.current.select();
+        } else if (addressBar === displayName) {
+          window.getSelection()?.removeAllRanges();
+        } else if (document.activeElement !== inputRef.current) {
+          setAddressBar(displayName);
+        }
+      }
+    }, [addressBar, displayName, url]);
     return (
       <div className="address-bar">
         <Icon alt={displayName} imgSize={16} src={icon} />

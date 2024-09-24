@@ -24,7 +24,7 @@ import {
 import { getExtension } from "@/lib/utils";
 import extensions from "../extensions";
 import { isMountedFolder } from "@/contexts/fileSystem/utils";
-import processDirectory from "@/contexts/process/directory";
+import processDirectory, { AllProcess } from "@/contexts/process/directory";
 
 const useFileContextMenu = (
   url: string,
@@ -130,7 +130,7 @@ const useFileContextMenu = (
                 }
                 setForegroundId(activePid);
               } else {
-                open("Properties", {
+                open(AllProcess.Properties, {
                   shortcutPath: isShortcut ? path : undefined,
                   url: isShortcut ? path : url,
                 });
@@ -163,7 +163,8 @@ const useFileContextMenu = (
           const isFolder = urlExtension === "" || urlExtension === ".zip";
 
           menuItems.unshift({
-            action: () => open("FileExplorer", { url: dirname(url) }, ""),
+            action: () =>
+              open(AllProcess.FileExplorer, { url: dirname(url) }, ""),
             label: `Open ${isFolder ? "folder" : "file"} location`,
           });
         }

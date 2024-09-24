@@ -5,6 +5,7 @@ import { useProcesses } from "@/contexts/process";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
 import { PROCESS_DELIMITER, SHORTCUT_EXTENSION } from "@/lib/constants";
 import { getExtension } from "@/lib/utils";
+import { AllProcess } from "@/contexts/process/directory";
 
 export type Operation = "Copying" | "Extracting" | "Moving";
 
@@ -67,7 +68,7 @@ const useTransferDialog = (): Dialog => {
             }
           }
 
-          open("Transfer", { fileReaders, url });
+          open(AllProcess.Transfer, { fileReaders, url });
         }
       },
     }),

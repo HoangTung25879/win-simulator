@@ -3,7 +3,7 @@ import { useProcesses } from "@/contexts/process";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
 import { useSession } from "@/contexts/session";
 import { useCallback } from "react";
-import processDirectory from "@/contexts/process/directory";
+import processDirectory, { AllProcess } from "@/contexts/process/directory";
 import { FOLDER_BACK_ICON, PROCESS_DELIMITER } from "@/lib/constants";
 import { basename, extname } from "path";
 import { isYouTubeUrl } from "@/lib/utils";
@@ -35,7 +35,7 @@ const useFile = (url: string, path: string): UseFile => {
         setForegroundId(activePid);
       } else {
         open(
-          pid || "OpenWith",
+          pid || AllProcess.OpenWith,
           { url: runUrl },
           singleton || icon === FOLDER_BACK_ICON || preferProcessIcon
             ? processIcon

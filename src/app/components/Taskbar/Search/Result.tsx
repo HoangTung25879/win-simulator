@@ -13,7 +13,7 @@ import { isYouTubeUrl, makeBoldString } from "@/lib/utils";
 import { getModifiedTime } from "../../Files/FileManager/functions";
 import dayjs from "dayjs";
 import { getShortcutInfo } from "@/contexts/fileSystem/utils";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 import { RightArrowIcon } from "./Icons";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { SEARCH_PARENT_CLASS } from "./SearchMenu";

@@ -13,7 +13,7 @@ import colors from "@/lib/colors";
 import sizes from "@/lib/sizes";
 import { MenuState } from "@/contexts/menu/useMenuContextState";
 import { PREVENT_SCROLL } from "@/lib/constants";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 import { CloseIcon, MaximizedIcon, MaximizeIcon, MinimizeIcon } from "./Icon";
 
 type TitlebarProps = {

@@ -116,5 +116,5 @@
 }
 .window-section.is-foreground {
   box-shadow: var(--window-shadow);
-  outline: 2px solid var(--window-outline);
+  outline: var(--window-outline-size) solid var(--window-outline);
 }

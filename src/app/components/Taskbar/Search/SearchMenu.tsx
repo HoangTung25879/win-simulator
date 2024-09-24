@@ -29,7 +29,7 @@ import { getProcessByFileExtension } from "../../Files/FileManager/functions";
 import clsx from "clsx";
 import { CloseIcon } from "../../Window/Titlebar/Icon";
 import directory from "@/contexts/process/directory";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 import { GamesIcon } from "./Icons";
 import ResultSection from "./ResultSection";
 import ResultDetails from "./ResultDetails";

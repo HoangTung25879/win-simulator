@@ -10,7 +10,7 @@ import "./PeekWindow.scss";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { CloseIcon } from "../../Window/Titlebar/Icon";
 import useWindowPeek from "./useWindowPeek";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 
 type PeekWindowProps = {
   id: string;

@@ -15,7 +15,7 @@ import {
   getCachedIconUrl,
   getModifiedTime,
 } from "../FileManager/functions";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 import useFileInfo from "./useFileInfo";
 import { FocusEntryFunctions } from "./useFocusableEntries";
 import { SelectionRect } from "../FileManager/Selection/useSelection";

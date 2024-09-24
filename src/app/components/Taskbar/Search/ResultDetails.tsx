@@ -8,7 +8,7 @@ import { fileType, getResultInfo, ResultInfo } from "./functions";
 import { ROOT_NAME, SHORTCUT_EXTENSION, UNKNOWN_ICON } from "@/lib/constants";
 import { basename, dirname, extname } from "path";
 import { useSession } from "@/contexts/session";
-import Icon from "../../Icon/Icon";
+import Icon from "../../Common/Icon/Icon";
 import { isYouTubeUrl } from "@/lib/utils";
 import { getModifiedTime } from "../../Files/FileManager/functions";
 import dayjs from "dayjs";
