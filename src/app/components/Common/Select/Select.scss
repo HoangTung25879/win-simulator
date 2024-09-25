@@ -1,0 +1,51 @@
+.select-wrapper {
+  $select-width: 250px;
+  $select-height: 32px;
+  $border-width: 2px;
+  font-size: 1rem;
+  position: relative;
+  .select-downshift {
+    .select-input {
+      margin-top: 0.5rem;
+      background-color: transparent;
+      width: $select-width;
+      height: $select-height;
+      outline: $border-width solid rgb(153, 153, 153);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1rem;
+      svg {
+        width: 1rem;
+      }
+      &:hover {
+        outline: $border-width solid rgb(102, 102, 102);
+      }
+    }
+  }
+  .select-menu {
+    position: absolute;
+    width: $select-width;
+    background-color: rgb(242, 242, 242);
+    outline: $border-width solid rgb(209, 209, 209);
+    padding: 6px 2px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 3px;
+    li {
+      display: flex;
+      align-items: center;
+      height: $select-height;
+      padding: 0 calc(1rem - 2px);
+      &.--selected {
+        background-color: rgb(166, 216, 255);
+        &:hover {
+          background-color: rgb(118, 185, 237);
+        }
+      }
+      &:hover {
+        background-color: rgb(218, 218, 218);
+      }
+    }
+  }
+}

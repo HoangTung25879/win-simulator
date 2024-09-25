@@ -3,7 +3,7 @@
 import { useProcesses } from "@/contexts/process";
 import { useSession } from "@/contexts/session";
 import useWindowActions from "../../Window/useWindowActions";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import usePeekWindowTransition from "../usePeekWindowTransition";
 import { motion } from "framer-motion";
 import "./PeekWindow.scss";
@@ -11,6 +11,7 @@ import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { CloseIcon } from "../../Window/Titlebar/Icon";
 import useWindowPeek from "./useWindowPeek";
 import Icon from "../../Common/Icon/Icon";
+import clsx from "clsx";
 
 type PeekWindowProps = {
   id: string;
@@ -34,6 +35,7 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
   } = process || {};
   const { setForegroundId } = useSession();
   const { onClose } = useWindowActions(id);
+  const [isVisibleClose, setIsVisibleClose] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const showControls = useMemo(
     () => Boolean(play && pause && paused),
@@ -69,16 +71,18 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
         ref={peekRef}
         className="peek-window"
         onClick={onClick}
+        onMouseEnter={() => setIsVisibleClose(true)}
+        onMouseLeave={() => setIsVisibleClose(false)}
         {...peekTransition}
         {...FOCUSABLE_ELEMENT}
       >
         <div className="title">
-          <div className="flex gap-1">
+          <div className="title-text">
             {!hideTitlebarIcon && <Icon alt={title} imgSize={16} src={icon} />}
             {title}
           </div>
           <button
-            className="close"
+            className={clsx("close", !isVisibleClose && "!invisible")}
             onClick={onClose}
             aria-label="Close"
             title="Close"

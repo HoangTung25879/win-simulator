@@ -324,6 +324,8 @@ const FileEntry = ({
                           : undefined,
                     },
                     width,
+                    //* Fix nextjs image issue https://github.com/bubkoo/html-to-image/issues/377
+                    includeQueryParams: true,
                   });
                 } catch (error) {
                   // Ignore failure to capture

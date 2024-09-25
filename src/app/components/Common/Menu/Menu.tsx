@@ -46,9 +46,7 @@ const Menu = ({ subMenu }: MenuProps) => {
     ) {
       return;
     }
-
     offsetCalculated.current = { x, y };
-
     const {
       height = 0,
       width = 0,
@@ -56,29 +54,23 @@ const Menu = ({ subMenu }: MenuProps) => {
       y: menuY = 0,
     } = menuRef.current?.getBoundingClientRect() || {};
     const [vh, vw] = [window.innerHeight, window.innerWidth];
-
     const newOffset = { x: 0, y: 0 };
-
     if (!staticX) {
       const subMenuOffscreenX = isSubMenu && menuX + width > vw;
-
       newOffset.x =
         Math.round(Math.max(0, x + width - vw)) +
         (subMenuOffscreenX ? Math.round(width + (subMenu?.x || 0)) : 0);
-
       const adjustedOffsetX =
         subMenuOffscreenX && menuX - newOffset.x < 0
           ? newOffset.x - (newOffset.x - menuX)
           : 0;
       if (adjustedOffsetX > 0) newOffset.x = adjustedOffsetX;
     }
-
     if (!staticY) {
       const bottomOffset = y + height > vh ? vh - y : 0;
       const topAdjustedBottomOffset =
         bottomOffset + height > vh ? 0 : bottomOffset;
       const subMenuOffscreenY = isSubMenu && menuY + height > vh;
-
       newOffset.y =
         Math.round(Math.max(0, y + height - (vh - topAdjustedBottomOffset))) +
         (subMenuOffscreenY ? Math.round(height + (subMenu?.y || 0)) : 0);

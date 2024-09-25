@@ -1,0 +1,17 @@
+$header-height: 42px;
+.settings-window {
+  width: 100%;
+  height: calc(100% - var(--title-bar-height) - $header-height);
+  .settings-main {
+    padding: 12px 24px;
+  }
+}
+.settings-header {
+  display: flex;
+  align-items: center;
+  height: $header-height !important;
+  padding: 0 8px;
+  text-transform: capitalize;
+  font-size: 1.25rem;
+  margin-top: -1px;
+}

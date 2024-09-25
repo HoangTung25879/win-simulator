@@ -1,7 +1,7 @@
 import { Props as RndProps, HandleStyles } from "react-rnd";
 
-export const MIN_WINDOW_HEIGHT = 30;
-export const MIN_WINDOW_WIDTH = 166;
+export const MIN_WINDOW_HEIGHT = 250;
+export const MIN_WINDOW_WIDTH = 400;
 
 export const RESIZING_DISABLED = {
   bottom: false,

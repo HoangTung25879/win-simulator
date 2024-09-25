@@ -63,13 +63,14 @@
       }
     }
     .all-tab {
-      @include dark-scrollbar(13, -2, -1);
-      @include thin-scrollbar;
+      overflow: auto;
+      scrollbar-gutter: stable;
+      // @include dark-scrollbar(13, -2, -1);
+      // @include thin-scrollbar;
 
       display: flex;
       color: #fff;
       height: calc(100% - var(--search-header-height));
-      overflow: hidden;
       place-content: space-evenly;
       place-items: start;
       position: absolute;
@@ -139,6 +140,47 @@
               &::before {
                 border-top: none;
               }
+            }
+          }
+        }
+      }
+      .recent-file {
+        ol {
+          display: flex;
+          flex-flow: row wrap;
+          gap: 5px;
+          max-height: 97px;
+          overflow-y: hidden;
+          padding-top: 9px;
+          li {
+            background-color: rgba(60, 60, 60, 85%);
+            border: 1px solid rgba(75, 75, 75, 85%);
+            border-radius: 15px;
+            display: flex;
+            padding: 4px 10px;
+            place-content: center;
+            place-items: center;
+            white-space: nowrap;
+            h2 {
+              bottom: 1px;
+              display: block;
+              font-size: 12px;
+              font-weight: 400;
+              height: 16px;
+              max-width: 235px;
+              overflow: hidden;
+              padding-top: 1px;
+              place-items: center;
+              position: relative;
+              text-overflow: ellipsis;
+            }
+            img {
+              height: 16px;
+              margin-right: 5px;
+              width: 16px;
+            }
+            &:hover {
+              background-color: rgba(80, 80, 80, 85%);
             }
           }
         }
@@ -265,8 +307,8 @@
       top: var(--search-header-height);
       width: 100%;
       .list-result {
-        @include dark-scrollbar(13, -2, -1);
-        @include thin-scrollbar;
+        // @include dark-scrollbar(13, -2, -1);
+        // @include thin-scrollbar;
         background-color: rgba(40, 40, 40, 95%);
         overflow-y: auto;
         scrollbar-gutter: auto;
@@ -380,19 +422,20 @@
         }
       }
       .result-details {
-        @include dark-scrollbar(13, -2, -1);
-        @include thin-scrollbar;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-gutter: auto;
+        // @include dark-scrollbar(13, -2, -1);
+        // @include thin-scrollbar;
         background-color: rgba(20, 20, 20, 95%);
         border: 8px solid rgba(30, 30, 30, 95%);
         border-bottom: none;
         box-sizing: content-box;
         display: flex;
         flex-direction: column;
-        overflow-x: hidden;
         padding-top: 20px;
         place-items: center;
         position: relative;
-        scrollbar-gutter: auto;
         width: 100%;
 
         img {

@@ -8,6 +8,7 @@ import { SessionProvider } from "@/contexts/session";
 import { SearchInputProvider } from "@/contexts/search";
 import AppsLoader from "./components/Apps/AppsLoader";
 import { FullScreenProvider } from "@/contexts/fullScreen";
+import "simplebar-react/dist/simplebar.min.css";
 
 export default function Page() {
   const ChildrenComponent = () => (

@@ -19,11 +19,14 @@
     align-items: center;
     color: var(--text);
     font-size: var(--taskbar-entry-font-size);
+    .title-text {
+      display: flex;
+      gap: 0.25rem;
+    }
     .close {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: rgb(40, 40, 40);
       height: 32px;
       width: 32px;
       svg {

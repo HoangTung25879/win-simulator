@@ -244,3 +244,25 @@ $right-icon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9h
     width: 13px;
   }
 }
+
+.simplebar-scrollbar {
+  &::before {
+    background: rgb(193, 193, 193);
+  }
+}
+.simplebar-track.simplebar-vertical {
+  width: 0.5rem !important;
+  transition: width 0s ease-out 2s;
+  &.simplebar-hover {
+    width: 1rem !important;
+    transition: none;
+  }
+}
+.simplebar-track.simplebar-horizontal {
+  height: 0.5rem !important;
+  transition: height 0s ease-out 2s;
+  &.simplebar-hover {
+    height: 1rem !important;
+    transition: none;
+  }
+}

@@ -2,7 +2,9 @@
 
 .file-manager {
   &.--scrollable {
-    @include dark-scrollbar();
+    // @include dark-scrollbar();
+    overflow: auto;
+    scrollbar-gutter: stable;
   }
   &.icon-view {
     height: 100%;

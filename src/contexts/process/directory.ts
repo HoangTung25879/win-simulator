@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { Processes } from "./types";
 import { FOLDER_ICON } from "@/lib/constants";
 
-enum AllProcess {
+export enum AllProcess {
   BoxedWine = "BoxedWine",
   Browser = "Browser",
   ClassiCube = "ClassiCube",
@@ -82,9 +82,16 @@ const directory: Processes = {
       height: 450,
       width: 600,
     },
+    hideTitlebarIcon: true,
+    singleton: true,
     icon: "/System/Icons/settings.png",
     title: "Settings",
-    ...defaultProcessStyle,
+    textColor: "rgb(0,0,0)",
+    backgroundColor: "rgb(255, 255, 255)",
+    titlebarColor: "rgb(230, 230, 230)",
+    titlebarButtonColor: "rgb(0,0,0)",
+    titlebarButtonHoverColor: "rgb(204,204,204)",
+    titlebarBorderColor: "rgb(230, 230, 230)",
   },
 };
 
