@@ -670,3 +670,14 @@ export const toggleShowDesktop = (
     );
   }
 };
+
+export const generatePeekElementId = (id: string) => `peek-${id}`;
+export const generateTaskbarElementId = (id: string) => `taskbar-${id}`;
+export const generateWindowElementId = (id: string) => `window-${id}`;
+
+export const getPeekElement = (id: string) =>
+  document.getElementById(generatePeekElementId(id));
+export const getTaskbarElement = (id: string) =>
+  document.getElementById(generateTaskbarElementId(id));
+export const getWindowElement = (id: string) =>
+  document.getElementById(generateWindowElementId(id));

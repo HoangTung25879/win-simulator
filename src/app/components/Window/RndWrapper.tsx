@@ -26,25 +26,11 @@ const reRouteFocus =
 
 const RndWrapper = ({ children, id, zIndex }: RndWrapperProps) => {
   const {
-    linkElement,
     processes: { [id]: process },
   } = useProcesses();
-  const { Component, componentWindow, maximized, minimized } = process || {};
+  const { maximized, minimized } = process || {};
   const rndRef = useRef<Rnd | null>(null);
   const rndProps = useRnd(id);
-
-  const linkComponentWindow = useCallback(
-    (rndEntry: Rnd) => {
-      rndRef.current = rndEntry;
-      const rndWindowElements =
-        rndEntry?.resizableElement?.current?.children || [];
-      const [windowContainer] = rndWindowElements as HTMLElement[];
-      if (Component && !componentWindow && windowContainer) {
-        linkElement(id, "componentWindow", windowContainer);
-      }
-    },
-    [Component, componentWindow, id, linkElement],
-  );
 
   useEffect(() => {
     if (!maximized) {
@@ -60,7 +46,6 @@ const RndWrapper = ({ children, id, zIndex }: RndWrapperProps) => {
 
   return (
     <Rnd
-      ref={linkComponentWindow}
       style={{
         pointerEvents: minimized ? "none" : undefined,
         zIndex,

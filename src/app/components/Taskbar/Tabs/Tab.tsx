@@ -3,7 +3,7 @@
 import { useSession } from "@/contexts/session";
 import useNextFocusable from "../../Window/useNextFocusable";
 import { useProcesses } from "@/contexts/process";
-import { useCallback, useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
 import useTaskbarTabTransition from "../useTaskbarTabTransition";
 import useTitlebarContextMenu from "../../Window/Titlebar/useTitlebarContextMenu";
@@ -11,6 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Icon from "../../Common/Icon/Icon";
 import colors from "@/lib/colors";
 import dynamic from "next/dynamic";
+import { generateTaskbarElementId, getTaskbarElement } from "@/lib/utils";
 
 const PeekWindow = dynamic(
   () => import("@/app/components/Taskbar/PeekWindow/PeekWindow"),
@@ -36,12 +37,12 @@ const Tab = ({ icon, id, title }: TabProps) => {
   const tabTransition = useTaskbarTabTransition();
   const tabContextMenu = useTitlebarContextMenu(id);
 
-  const linkTaskbarEntry = useCallback(
-    (taskbarEntry: HTMLButtonElement | HTMLDivElement | null) => {
-      if (taskbarEntry) linkElement(id, "taskbarEntry", taskbarEntry);
-    },
-    [id, linkElement],
-  );
+  useEffect(() => {
+    const taskbarEntry = getTaskbarElement(id);
+    if (taskbarEntry) {
+      linkElement(id, "taskbarEntry", taskbarEntry);
+    }
+  }, [id]);
 
   const hidePeek = (): void => setIsPeekVisible(false);
 
@@ -76,7 +77,7 @@ const Tab = ({ icon, id, title }: TabProps) => {
         {isPeekVisible && <PeekWindow id={id} />}
       </AnimatePresence>
       <button
-        ref={linkTaskbarEntry}
+        id={generateTaskbarElementId(id)}
         onClick={onClick}
         aria-label={title}
         title={title}

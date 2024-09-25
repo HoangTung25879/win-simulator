@@ -8,10 +8,16 @@ import RndWrapper from "./RndWrapper";
 import colors from "@/lib/colors";
 import { motion } from "framer-motion";
 import useWindowTransitions from "./useWindowTransitions";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Titlebar from "./Titlebar/Titlebar";
 import "./Window.scss";
 import clsx from "clsx";
+import {
+  generatePeekElementId,
+  generateWindowElementId,
+  getPeekElement,
+  getWindowElement,
+} from "@/lib/utils";
 
 type WindowProps = ComponentProcessProps & {
   children: React.ReactNode;
@@ -28,17 +34,22 @@ const Window = ({ children, id }: WindowProps) => {
   const { zIndex, ...focusableProps } = useFocusable(id);
   const windowTransitions = useWindowTransitions(id);
   const isForeground = id === foregroundId;
-  const linkViewportEntry = useCallback(
-    (viewportEntry: HTMLDivElement) => {
-      if (Component && !peekElement && viewportEntry) {
-        linkElement(id, "peekElement", viewportEntry);
-      }
-    },
-    [Component, id, linkElement, peekElement],
-  );
+
+  useEffect(() => {
+    const viewportEntry = getPeekElement(id);
+    const windowContainer = getWindowElement(id);
+    if (viewportEntry) {
+      linkElement(id, "peekElement", viewportEntry);
+    }
+    if (windowContainer) {
+      linkElement(id, "componentWindow", windowContainer);
+    }
+  }, [id]);
+
   return (
     <RndWrapper id={id} zIndex={zIndex}>
       <motion.section
+        id={generateWindowElementId(id)}
         style={
           {
             "--window-background": backgroundColor || colors.window.background,
@@ -49,8 +60,8 @@ const Window = ({ children, id }: WindowProps) => {
         {...windowTransitions}
       >
         <div
+          id={generatePeekElementId(id)}
           className="h-[inherit] w-[inherit] bg-inherit"
-          ref={linkViewportEntry}
         >
           {!hideTitlebar && <Titlebar id={id} />}
           {children}
