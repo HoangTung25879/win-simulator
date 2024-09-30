@@ -13,6 +13,7 @@ import { isYouTubeUrl } from "@/lib/utils";
 import { getModifiedTime } from "../../Files/FileManager/functions";
 import dayjs from "dayjs";
 import { OpenFolderIcon, OpenIcon } from "./Icons";
+import SubIcons from "../../Common/Icon/SubIcons";
 
 type ResultDetailsProps = {
   openApp: (pid: string, args?: ProcessArguments) => void;
@@ -69,6 +70,14 @@ const ResultDetails = ({ openApp, setActiveItem, url }: ResultDetailsProps) => {
     stats && (
       <div ref={elementRef} className="result-details">
         <Icon displaySize={64} imgSize={96} src={info?.icon} />
+        <SubIcons
+          icon={info?.icon}
+          imgSize={64}
+          name={name}
+          showShortcutIcon={false}
+          subIcons={info?.subIcons}
+          view="icon"
+        />
         <h1 onClick={openFile}>{name}</h1>
         <h2>
           {fileType(stats, extension, isYTUrl, isAppShortcut, isNostrUrl)}

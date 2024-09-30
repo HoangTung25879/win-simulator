@@ -63,7 +63,14 @@ export const openProcess =
       );
 
       if (currentPid) {
-        return setProcessSettings(currentPid, { url })(currentProcesses);
+        const { minimized } = currentProcesses[processId];
+        const settings: Partial<Process> = {
+          url,
+          ...(minimized && {
+            minimized: !minimized,
+          }),
+        };
+        return setProcessSettings(currentPid, settings)(currentProcesses);
       }
     }
 
@@ -84,6 +91,7 @@ export const openProcess =
             ...processDirectory[processId],
             ...(typeof icon === "string" && { icon }),
             ...processArguments,
+            staticPeekImage: true,
           },
         }
       : currentProcesses;

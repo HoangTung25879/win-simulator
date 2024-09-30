@@ -13,10 +13,13 @@ export type SelectItem = {
 };
 type SelectProps = {
   options: SelectItem[];
-  defaultValue?: SelectItem;
+  value?: SelectItem;
   title: string;
   placeholder?: string;
   scrollContainer?: HTMLDivElement | null;
+  onChange: (value: any) => void;
+  optionFormatter?: (option: SelectItem) => string;
+  valueFormatter?: (value: string) => string;
 };
 
 const selectPlaceholder = "Select something";
@@ -25,6 +28,10 @@ const Select = ({
   title,
   placeholder,
   scrollContainer,
+  onChange,
+  value,
+  optionFormatter,
+  valueFormatter,
 }: SelectProps) => {
   const {
     isOpen,
@@ -37,7 +44,9 @@ const Select = ({
   } = useSelect({
     items: options,
     defaultSelectedItem: options[1],
-    // isOpen: true,
+    selectedItem: value,
+    onSelectedItemChange: ({ selectedItem: newSelectedItem }) =>
+      onChange(newSelectedItem),
   });
   const [offset, setOffset] = useState(0);
   const menuRef = useRef<HTMLUListElement | null>(null);
@@ -78,16 +87,16 @@ const Select = ({
       setOffset(0);
     }
   }, [selectedItem, isOpen, scrollContainer]);
-
+  const selectedValue = selectedItem
+    ? selectedItem.value
+    : placeholder || selectPlaceholder;
   return (
     <div className="select-wrapper">
       <div className="select-downshift">
         <label {...getLabelProps()}>{title}</label>
         <div className="select-input" {...getToggleButtonProps()}>
           <span>
-            {selectedItem
-              ? selectedItem.value
-              : placeholder || selectPlaceholder}
+            {valueFormatter ? valueFormatter(selectedValue) : selectedValue}
           </span>
           <DownIcon />
         </div>
@@ -106,7 +115,9 @@ const Select = ({
               key={item.id}
               {...getItemProps({ item, index })}
             >
-              <span>{item.label}</span>
+              <span>
+                {optionFormatter ? optionFormatter(item) : item.label}
+              </span>
             </li>
           ))}
       </ul>

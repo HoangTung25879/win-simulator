@@ -4,19 +4,17 @@ import { cleanUpBufferUrl } from "@/lib/utils";
 import Image from "next/image";
 import React, { forwardRef, memo, useEffect, useMemo, useState } from "react";
 
-interface IconProps {
-  alt?: string;
+export type IconProps = {
   imgSize: number;
-  src: string;
   displaySize?: number;
   eager?: boolean;
   moving?: boolean;
-}
+};
 
 const Icon = forwardRef<
   HTMLImageElement,
   IconProps & React.ImgHTMLAttributes<HTMLImageElement>
->(({ alt, imgSize, src, displaySize = 0, eager, moving }, ref) => {
+>(({ alt, imgSize, src, displaySize = 0, eager, moving, style = {} }, ref) => {
   const [loaded, setLoaded] = useState(false);
   const [failedUrl, setFailedUrl] = useState<string>();
 
@@ -59,6 +57,7 @@ const Icon = forwardRef<
           opacity: `${moving ? 0.5 : 1}`,
           top: offset || undefined,
           visibility: loaded ? "visible" : "hidden",
+          ...style,
         }}
         onError={({ target }) => {
           const { currentSrc = "" } = (target as HTMLImageElement) || {};

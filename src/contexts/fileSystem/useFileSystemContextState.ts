@@ -247,32 +247,30 @@ const useFileSystemContextState = (): FileSystemContextState => {
   const mountEmscriptenFs = useCallback(
     async (FS: EmscriptenFS, fsName?: string) =>
       new Promise<string>((resolve, reject) => {
-        import("../../../public/System/BrowserFS/extrafs.min.js").then(
-          (ExtraFS) => {
-            const {
-              FileSystem: { Emscripten },
-            } = ExtraFS as typeof IBrowserFS;
-            Emscripten?.Create({ FS }, (error, newFs) => {
-              const emscriptenFS =
-                newFs as unknown as ExtendedEmscriptenFileSystem;
-              if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
-                reject(new Error("Error while mounting Emscripten FS."));
-                return;
-              }
-              const dbName =
-                fsName ||
-                `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${
-                  emscriptenFS._FS?.DB_STORE_NAME
-                }`;
-              try {
-                rootFs?.mount?.(join("/", dbName), newFs);
-              } catch {
-                // Ignore error during mounting
-              }
-              resolve(dbName);
-            });
-          },
-        );
+        import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+          const {
+            FileSystem: { Emscripten },
+          } = ExtraFS as typeof IBrowserFS;
+          Emscripten?.Create({ FS }, (error, newFs) => {
+            const emscriptenFS =
+              newFs as unknown as ExtendedEmscriptenFileSystem;
+            if (error || !newFs || !emscriptenFS._FS?.DB_NAME) {
+              reject(new Error("Error while mounting Emscripten FS."));
+              return;
+            }
+            const dbName =
+              fsName ||
+              `${emscriptenFS._FS?.DB_NAME().replace(/\/+$/, "")}${
+                emscriptenFS._FS?.DB_STORE_NAME
+              }`;
+            try {
+              rootFs?.mount?.(join("/", dbName), newFs);
+            } catch {
+              // Ignore error during mounting
+            }
+            resolve(dbName);
+          });
+        });
       }),
     [rootFs],
   );
@@ -298,30 +296,26 @@ const useFileSystemContextState = (): FileSystemContextState => {
 
       return new Promise((resolve, reject) => {
         if (handle instanceof FileSystemDirectoryHandle) {
-          import("../../../public/System/BrowserFS/extrafs.min.js").then(
-            (ExtraFS) => {
-              const {
-                FileSystem: { FileSystemAccess },
-              } = ExtraFS as IFileSystemAccess;
-              FileSystemAccess?.Create({ handle }, (error, newFs) => {
-                if (error || !newFs) {
-                  reject(
-                    new Error("Error while mounting FileSystemAccess FS."),
-                  );
-                  return;
-                }
-                const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
-                const mappedName =
-                  removeInvalidFilenameCharacters(handle.name).trim() ||
-                  (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
-                rootFs?.mount?.(join(directory, mappedName), newFs);
-                resolve(systemDirectory ? directory : mappedName);
-                import("./utils").then(({ addFileSystemHandle }) =>
-                  addFileSystemHandle(directory, handle, mappedName),
-                );
-              });
-            },
-          );
+          import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+            const {
+              FileSystem: { FileSystemAccess },
+            } = ExtraFS as IFileSystemAccess;
+            FileSystemAccess?.Create({ handle }, (error, newFs) => {
+              if (error || !newFs) {
+                reject(new Error("Error while mounting FileSystemAccess FS."));
+                return;
+              }
+              const systemDirectory = SYSTEM_DIRECTORIES.has(directory);
+              const mappedName =
+                removeInvalidFilenameCharacters(handle.name).trim() ||
+                (systemDirectory ? "" : DEFAULT_MAPPED_NAME);
+              rootFs?.mount?.(join(directory, mappedName), newFs);
+              resolve(systemDirectory ? directory : mappedName);
+              import("./utils").then(({ addFileSystemHandle }) =>
+                addFileSystemHandle(directory, handle, mappedName),
+              );
+            });
+          });
         } else {
           reject(new Error("Unsupported FileSystemDirectoryHandle type."));
         }
@@ -347,19 +341,17 @@ const useFileSystemContextState = (): FileSystemContextState => {
           }
         };
 
-        import("../../../public/System/BrowserFS/extrafs.min.js").then(
-          (ExtraFS) => {
-            const {
-              FileSystem: { IsoFS, ZipFS },
-            } = ExtraFS as typeof IBrowserFS;
+        import("public/System/BrowserFS/extrafs.min.js").then((ExtraFS) => {
+          const {
+            FileSystem: { IsoFS, ZipFS },
+          } = ExtraFS as typeof IBrowserFS;
 
-            if (isIso) {
-              IsoFS?.Create({ data: fileData }, createFs);
-            } else {
-              ZipFS?.Create({ zipData: fileData }, createFs);
-            }
-          },
-        );
+          if (isIso) {
+            IsoFS?.Create({ data: fileData }, createFs);
+          } else {
+            ZipFS?.Create({ zipData: fileData }, createFs);
+          }
+        });
       });
     },
     [readFile, rootFs],

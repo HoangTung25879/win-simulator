@@ -17,6 +17,7 @@ import Icon from "../../Common/Icon/Icon";
 import { RightArrowIcon } from "./Icons";
 import { useIsVisible } from "@/hooks/useIsVisible";
 import { SEARCH_PARENT_CLASS } from "./SearchMenu";
+import SubIcons from "../../Common/Icon/SubIcons";
 
 type ResultProps = {
   active?: boolean;
@@ -44,7 +45,6 @@ const Result = ({
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const [hovered, setHovered] = useState(false);
-  const elementRef = useRef<HTMLLIElement | null>(null);
   const isVisible = useIsVisible(elementRef, `.${SEARCH_PARENT_CLASS}`);
   const extension = extname(info?.url || url);
   const baseName = basename(url, SHORTCUT_EXTENSION);
@@ -64,16 +64,38 @@ const Result = ({
   const isAppShortcut = info?.pid
     ? url === info.url && extname(url) === SHORTCUT_EXTENSION
     : false;
+  const elementRef = useRef<HTMLLIElement | null>(null);
+  const abortController = useRef<AbortController>();
 
   useEffect(() => {
     const activeEntry = details || hovered;
     if (!stats && activeEntry) stat(url).then(setStats);
-    if ((activeEntry || isVisible) && info === INITIAL_INFO) {
-      getResultInfo(fs, url).then((resultsInfo) => {
-        if (resultsInfo) setInfo(resultsInfo);
-      });
+    if (abortController.current) {
+      if (!isVisible) {
+        abortController.current.abort();
+        abortController.current = undefined;
+      }
+    } else if ((activeEntry || isVisible) && info === INITIAL_INFO) {
+      abortController.current = new AbortController();
+      getResultInfo(fs, url, abortController.current.signal).then(
+        (resultsInfo) => {
+          if (resultsInfo) setInfo(resultsInfo);
+          abortController.current = undefined;
+        },
+      );
     }
   }, [details, fs, hovered, info, isVisible, stat, stats, url]);
+
+  useEffect(
+    () => () => {
+      try {
+        abortController.current?.abort();
+      } catch {
+        // Failed to abort getResultInfo
+      }
+    },
+    [],
+  );
 
   return (
     <li
@@ -104,6 +126,14 @@ const Result = ({
           displaySize={details ? 32 : 16}
           imgSize={details ? 32 : 16}
           src={info?.icon}
+        />
+        <SubIcons
+          icon={info?.icon}
+          imgSize={details ? 32 : 16}
+          name={name}
+          showShortcutIcon={false}
+          subIcons={info?.subIcons}
+          view="icon"
         />
         <figcaption>
           <h1

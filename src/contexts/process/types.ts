@@ -83,6 +83,7 @@ export type Process = Prettify<
       preferProcessIcon?: boolean;
       singleton?: boolean;
       title: string;
+      staticPeekImage?: boolean;
     }
 >;
 

@@ -1,5 +1,5 @@
 import { ONE_TIME_PASSIVE_EVENT } from "@/lib/constants";
-import index from "../../../public/.index/fs.9p.json";
+import index from "public/.index/fs.9p.json";
 import { openDB } from "idb";
 
 type BFSFS = { [key: string]: BFSFS | null };

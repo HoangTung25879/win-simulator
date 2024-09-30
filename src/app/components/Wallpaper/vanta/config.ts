@@ -28,7 +28,17 @@ export const baseConfig: VantaConfig = {
   type: "WAVES",
 };
 
-export const vantaWavesConfig: VantaConfig = baseConfig;
+export const vantaWavesConfig: VantaConfig = {
+  ...baseConfig,
+  type: "WAVES",
+  shininess: 30,
+  waveHeight: 26,
+  waveSpeed: 0.7,
+  color: "hsl(122, 84%, 15%)",
+  hue: 122,
+  saturation: 84,
+  lightness: 15,
+};
 
 export const vantaCloudsConfig: VantaConfig = {
   ...baseConfig,

@@ -1,4 +1,4 @@
-import * as BrowserFS from "../../../public/System/BrowserFS/browserfs.min.js";
+import * as BrowserFS from "public/System/BrowserFS/browserfs.min.js";
 import MountableFileSystem from "browserfs/dist/node/backend/MountableFileSystem";
 import { FSModule } from "browserfs/dist/node/core/FS";
 import Stats, { FileType } from "browserfs/dist/node/core/node_fs_stats";

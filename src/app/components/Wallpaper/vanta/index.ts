@@ -1,30 +1,21 @@
 import { loadFiles } from "@/lib/utils";
 import { disableControls, libs } from "./config";
-import { WallpaperConfig } from "../types";
+import { WallpaperConfig, WallpaperFunc } from "../types";
 import { VantaConfig } from "./types";
 
-const vanta = (
-  el: HTMLElement | null,
+const Vanta: WallpaperFunc = (
+  elementCanvas?: HTMLCanvasElement,
   config?: WallpaperConfig,
   fallback?: () => void,
 ): void => {
-  const { VANTA: { current: currentEffect } = {} } = window;
-
-  try {
-    currentEffect?.destroy();
-  } catch {
-    // Failed to cleanup effect
-  }
-
-  if (!el || typeof WebGLRenderingContext === "undefined") return;
-
+  if (!elementCanvas || typeof WebGLRenderingContext === "undefined") return;
   loadFiles(libs, true).then(() => {
     const { VANTA } = window;
     const EFFECT = VANTA?.[config?.type!];
     if (EFFECT) {
       try {
         EFFECT({
-          el,
+          canvas: elementCanvas,
           ...disableControls,
           ...(config as VantaConfig),
         });
@@ -36,4 +27,4 @@ const vanta = (
   });
 };
 
-export default vanta;
+export default Vanta;

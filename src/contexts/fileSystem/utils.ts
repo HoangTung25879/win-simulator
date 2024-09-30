@@ -19,7 +19,7 @@ import {
 import { basename, dirname, extname, join } from "path";
 import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
 import ini from "ini";
-import shortcutCache from "../../../public/.index/shortcutCache.json";
+import shortcutCache from "public/.index/shortcutCache.json";
 import {
   MOUNTABLE_EXTENSIONS,
   SYSTEM_FILES,

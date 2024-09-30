@@ -24,7 +24,7 @@ import {
   SYSTEM_FILES,
   TRANSITIONS_IN_MS,
 } from "@/lib/constants";
-import defaultSession from "../../../public/session.json";
+import defaultSession from "public/session.json";
 import { dirname, extname } from "path";
 import { updateIconPositionsIfEmpty } from "@/lib/utils";
 import { SortBy } from "@/app/components/Files/FileEntry/useSortBy";
@@ -51,7 +51,8 @@ const useSessionContextState = (): SessionContextState => {
   );
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fit");
   const [wallpaperImage, setWallpaperImage] =
-    useState<WallpaperImage>("VANTA WAVES");
+    useState<WallpaperImage>("SYNTHWAVE");
+  const [wallpaperColor, setWallpaperColor] = useState("rgba(255, 140, 0)");
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const [haltSession, setHaltSession] = useState(false);
@@ -220,6 +221,7 @@ const useSessionContextState = (): SessionContextState => {
             windowStates,
             wallpaperFit,
             wallpaperImage,
+            wallpaperColor,
           }),
           true,
         );
@@ -245,6 +247,7 @@ const useSessionContextState = (): SessionContextState => {
     writeFile,
     wallpaperFit,
     wallpaperImage,
+    wallpaperColor,
   ]);
 
   useEffect(() => {
@@ -267,6 +270,9 @@ const useSessionContextState = (): SessionContextState => {
           if (session.cursor) setCursor(session.cursor);
           if (session.wallpaperImage) {
             setWallpaper(session.wallpaperImage, session.wallpaperFit);
+          }
+          if (session.wallpaperColor) {
+            setWallpaperColor(session.wallpaperColor);
           }
           if (
             session.sortOrders &&
@@ -373,6 +379,8 @@ const useSessionContextState = (): SessionContextState => {
     wallpaperFit,
     wallpaperImage,
     windowStates,
+    setWallpaperColor,
+    wallpaperColor,
   };
 };
 

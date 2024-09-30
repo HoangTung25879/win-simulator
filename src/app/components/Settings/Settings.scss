@@ -1,9 +1,47 @@
 $header-height: 42px;
+$canvas-width: 450px;
+$canvas-height: 250px;
 .settings-window {
   width: 100%;
   height: calc(100% - var(--title-bar-height) - $header-height);
+  overflow: auto;
+  .simplebar-content {
+    height: 100%;
+  }
   .settings-main {
     padding: 12px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: 100%;
+    .canvas-background-preview {
+      position: relative;
+      canvas {
+        width: $canvas-width;
+        height: $canvas-height;
+      }
+      .start-menu-preview {
+        height: calc($canvas-height / 2.5);
+        width: calc($canvas-width / 4.5);
+        position: absolute;
+        left: 0;
+        bottom: 12px;
+        background-color: hsla(0, 0%, 10%, 70%);
+      }
+      .taskbar-preview {
+        width: $canvas-width;
+        height: 12px;
+        position: absolute;
+        bottom: 0;
+        background-color: hsla(0, 0%, 10%, 70%);
+      }
+    }
+    .color-picker {
+      font-size: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
   }
 }
 .settings-header {
@@ -11,7 +49,6 @@ $header-height: 42px;
   align-items: center;
   height: $header-height !important;
   padding: 0 8px;
-  text-transform: capitalize;
   font-size: 1.25rem;
   margin-top: -1px;
 }

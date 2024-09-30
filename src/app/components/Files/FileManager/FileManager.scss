@@ -73,6 +73,9 @@
   &.list-view {
     margin-top: 7px;
     width: 100%;
+    img:not(:first-of-type) {
+      position: absolute;
+    }
     &.start-menu-view {
       $column-space: 14px;
       margin-top: 0;

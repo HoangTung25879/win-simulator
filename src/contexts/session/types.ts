@@ -24,7 +24,18 @@ export type WindowStates = Record<string, WindowState>;
 
 export type WallpaperFit = "center" | "fill" | "fit" | "stretch" | "tile";
 
-export type WallpaperImage = "VANTA WAVES" | "VANTA CLOUDS" | string;
+export type WallpaperImage =
+  | "VANTA WAVES"
+  | "VANTA CLOUDS"
+  | "SYNTHWAVE"
+  | "SOLID COLOR"
+  | "AMBIENT SWIRL"
+  | "AMBIENT SHIFT"
+  | "AMBIENT COALESCE"
+  | "FALLING FOOD FIESTA"
+  | "GALAXY SPIRAL"
+  | "MATRIX RAIN"
+  | (string & {});
 
 type SortOrder = [string[], SortBy?, boolean?];
 
@@ -46,6 +57,7 @@ export type SessionData = {
   // themeName: ThemeName;
   wallpaperFit: WallpaperFit;
   wallpaperImage: WallpaperImage;
+  wallpaperColor: string;
   windowStates: WindowStates;
 };
 
@@ -70,5 +82,6 @@ export type SessionContextState = Prettify<
     setIconPositions: React.Dispatch<React.SetStateAction<IconPositions>>;
     stackOrder: string[];
     updateRecentFiles: (url: string, pid: string, title?: string) => void;
+    setWallpaperColor: (color: string) => void;
   }
 >;

@@ -33,13 +33,15 @@ export type VantaConfig = Prettify<
     waveHeight: number;
     waveSpeed: number;
     ww: number;
+    zoom?: number;
     //* CLOUDS
     speed?: number;
   }
 >;
 
 type MainThreadRenderProps = {
-  el: HTMLElement;
+  el?: HTMLElement;
+  canvas?: HTMLCanvasElement;
 };
 
 type RenderProps = MainThreadRenderProps | OffscreenRenderProps;
@@ -62,5 +64,5 @@ export type VantaEffect = {
 export type VantaObject = {
   CLOUDS: (settings: VantaSettings) => VantaEffect;
   WAVES: (settings: VantaSettings) => VantaEffect;
-  current: VantaEffect;
+  current: VantaEffect | undefined;
 };

@@ -62,6 +62,8 @@ import FileManager from "../FileManager/FileManager";
 import useFileDrop from "./useFileDrop";
 import { toCanvas } from "html-to-image";
 import colors from "@/lib/colors";
+import { FileEntryIconSize } from "./constants";
+import SubIcons from "../../Common/Icon/SubIcons";
 
 type FileEntryProps = {
   id?: string;
@@ -493,9 +495,15 @@ const FileEntry = ({
             alt={name}
             eager={loadIconImmediately}
             moving={pasteList[path] === "move"}
-            {...(view === "icon"
-              ? { imgSize: 48 }
-              : { displaySize: 24, imgSize: 48 })}
+            {...FileEntryIconSize[view]}
+          />
+          <SubIcons
+            icon={icon}
+            isDesktop={isDesktop}
+            name={name}
+            showShortcutIcon={Boolean(hideShortcutIcon || stats.systemShortcut)}
+            subIcons={subIcons}
+            view={view}
           />
           {renaming ? (
             <RenameBox

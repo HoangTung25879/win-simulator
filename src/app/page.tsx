@@ -8,6 +8,7 @@ import { SessionProvider } from "@/contexts/session";
 import { SearchInputProvider } from "@/contexts/search";
 import AppsLoader from "./components/Apps/AppsLoader";
 import { FullScreenProvider } from "@/contexts/fullScreen";
+import { WallpaperProvider } from "@/contexts/wallpaper";
 import "simplebar-react/dist/simplebar.min.css";
 
 export default function Page() {
@@ -26,7 +27,9 @@ export default function Page() {
           <FileSystemProvider>
             <SessionProvider>
               <MenuProvider>
-                <ChildrenComponent />
+                <WallpaperProvider>
+                  <ChildrenComponent />
+                </WallpaperProvider>
               </MenuProvider>
             </SessionProvider>
           </FileSystemProvider>

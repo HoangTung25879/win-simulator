@@ -9,13 +9,14 @@ const FPS = 30;
 const renderFrame = async (
   previewElement: HTMLElement,
   animate: React.MutableRefObject<boolean>,
+  staticPeekImage = true,
   callback: (url: string) => void,
 ): Promise<void> => {
   if (!animate.current) return;
   const { peekMaxWidth } = sizes.taskbar.entry;
   const nextFrame = (): number =>
     window.requestAnimationFrame(() =>
-      renderFrame(previewElement, animate, callback),
+      renderFrame(previewElement, animate, staticPeekImage, callback),
     );
   let dataCanvas: HTMLCanvasElement | undefined;
   try {
@@ -28,6 +29,7 @@ const renderFrame = async (
         inset: "0",
         ...spacing,
       },
+      skipFonts: true,
       ...(previewElement.clientWidth > peekMaxWidth && {
         canvasHeight: Math.round(
           (peekMaxWidth / previewElement.clientWidth) *
@@ -48,14 +50,16 @@ const renderFrame = async (
   if (dataCanvas && dataCanvas.width > 0 && dataCanvas.height > 0) {
     const dataUrl = dataCanvas.toDataURL();
     callback(dataUrl);
-    window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
+    if (!staticPeekImage) {
+      window.setTimeout(nextFrame, MILLISECONDS_IN_SECOND / FPS);
+    }
   }
 };
 const useWindowPeek = (id: string): string => {
   const {
     processes: { [id]: process },
   } = useProcesses();
-  const { peekElement, componentWindow } = process || {};
+  const { peekElement, componentWindow, staticPeekImage } = process || {};
   const [imageSrc, setImageSrc] = useState("");
   const previewTimer = useRef<number>();
   const animate = useRef(true);
@@ -66,9 +70,9 @@ const useWindowPeek = (id: string): string => {
       previewTimer.current = window.setTimeout(
         () =>
           window.requestAnimationFrame(() =>
-            renderFrame(previewElement, animate, setImageSrc),
+            renderFrame(previewElement, animate, staticPeekImage, setImageSrc),
           ),
-        document.querySelector(".peek-window") ? 0 : MILLISECONDS_IN_SECOND / 2,
+        document.querySelector(".peek-window") ? 0 : MILLISECONDS_IN_SECOND / 3,
       );
       animate.current = true;
     }

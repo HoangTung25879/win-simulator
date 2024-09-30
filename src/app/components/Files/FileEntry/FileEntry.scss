@@ -9,6 +9,11 @@
         flex-direction: column;
         margin-bottom: -2px;
         place-items: center;
+        img {
+          &:not(:first-of-type) {
+            position: absolute;
+          }
+        }
         figcaption {
           color: var(--file-entry-text);
           font-size: 0.75rem;

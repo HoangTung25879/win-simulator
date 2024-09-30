@@ -4,7 +4,6 @@ import { useProcesses } from "@/contexts/process";
 import { ComponentProcessProps } from "../RenderComponent";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFileSystem } from "@/contexts/fileSystem";
-import { throttle } from "throttle-debounce";
 import {
   ExitFullscreenIcon,
   FullscreenIcon,
@@ -30,6 +29,7 @@ import { useFullScreen } from "@/contexts/fullScreen";
 import { IMAGE_FILE_EXTENSIONS } from "@/lib/constants";
 import "./Photos.scss";
 import useResizeObserver from "@/hooks/useResizeObserver";
+import { throttle } from "es-toolkit";
 
 type PhotosProps = {} & ComponentProcessProps;
 
@@ -41,9 +41,9 @@ const GetScale = ({
 }: {
   setScale: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const throttleSetScale = throttle(100, (scale: number) => {
+  const throttleSetScale = throttle((scale: number) => {
     setScale(scale);
-  });
+  }, 100);
   useTransformEffect(({ state }) => {
     throttleSetScale(Number(state.scale.toFixed(2)));
     return () => {
