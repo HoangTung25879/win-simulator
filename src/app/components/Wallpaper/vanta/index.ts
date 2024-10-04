@@ -11,7 +11,7 @@ const Vanta: WallpaperFunc = (
   if (!elementCanvas || typeof WebGLRenderingContext === "undefined") return;
   loadFiles(libs, true).then(() => {
     const { VANTA } = window;
-    const EFFECT = VANTA?.[config?.type!];
+    const EFFECT = VANTA?.[(config as VantaConfig).type];
     if (EFFECT) {
       try {
         EFFECT({

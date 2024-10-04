@@ -12,6 +12,7 @@ import { CloseIcon } from "../../Window/Titlebar/Icon";
 import useWindowPeek from "./useWindowPeek";
 import Icon from "../../Common/Icon/Icon";
 import clsx from "clsx";
+import Image from "next/image";
 
 type PeekWindowProps = {
   id: string;
@@ -90,7 +91,7 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
             <CloseIcon />
           </button>
         </div>
-        <img
+        <Image
           className="peek-image"
           alt={title}
           decoding="async"

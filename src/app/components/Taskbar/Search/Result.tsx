@@ -45,7 +45,6 @@ const Result = ({
   const [stats, setStats] = useState<Stats>();
   const [info, setInfo] = useState<ResultInfo>(INITIAL_INFO);
   const [hovered, setHovered] = useState(false);
-  const isVisible = useIsVisible(elementRef, `.${SEARCH_PARENT_CLASS}`);
   const extension = extname(info?.url || url);
   const baseName = basename(url, SHORTCUT_EXTENSION);
   const isYTUrl = info?.url ? isYouTubeUrl(info.url) : false;
@@ -66,6 +65,7 @@ const Result = ({
     : false;
   const elementRef = useRef<HTMLLIElement | null>(null);
   const abortController = useRef<AbortController>();
+  const isVisible = useIsVisible(elementRef, `.${SEARCH_PARENT_CLASS}`);
 
   useEffect(() => {
     const activeEntry = details || hovered;

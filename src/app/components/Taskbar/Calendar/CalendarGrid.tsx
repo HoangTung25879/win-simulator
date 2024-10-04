@@ -82,13 +82,13 @@ const CalendarGrid = ({
                 ref={(element: HTMLButtonElement) => {
                   if (vType !== "today") spotlightEffect(element, true, 1.5);
                 }}
-                onClick={() => handleClickDate(vDate)}
+                onClick={() => handleClickDate(vDate as Date)}
                 key={`${vDay}${vType}`}
                 className={clsx(
                   "date",
                   vType,
                   mode !== "week" && "--large",
-                  mode === "week" && isSameDate(vDate, selectedDate)
+                  mode === "week" && isSameDate(vDate as Date, selectedDate)
                     ? "--selected"
                     : "",
                 )}
