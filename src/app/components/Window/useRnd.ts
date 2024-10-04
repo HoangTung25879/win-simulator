@@ -17,7 +17,6 @@ import rndDefaults, {
 
 const enableIframeCapture = (enable = true): void =>
   document.querySelectorAll("iframe").forEach((iframe) => {
-    // eslint-disable-next-line no-param-reassign
     iframe.style.pointerEvents = enable ? "initial" : "none";
   });
 
