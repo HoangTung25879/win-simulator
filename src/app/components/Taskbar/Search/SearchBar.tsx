@@ -8,6 +8,7 @@ import { SEARCH_BUTTON_TITLE } from "../functions";
 import useTaskbarContextMenu from "../useTaskbarContextMenu";
 import clsx from "clsx";
 import { SEARCH_PARENT_CLASS } from "./SearchMenu";
+import { LABEL_MENU_TRIGGER } from "../Taskbar";
 
 type SearchBarProps = {
   startMenuVisible: boolean;
@@ -43,11 +44,18 @@ const SearchBar = ({
         }
       }}
       title={SEARCH_BUTTON_TITLE}
-      aria-label="searchBar"
+      aria-label={LABEL_MENU_TRIGGER.searchMenu}
       {...useTaskbarContextMenu()}
     >
-      <SearchIcon aria-label="searchBar" />
-      {startMenuVisible && <span className="blinking-cursor">|</span>}
+      <SearchIcon aria-label={LABEL_MENU_TRIGGER.searchMenu} />
+      {startMenuVisible && (
+        <span
+          aria-label={LABEL_MENU_TRIGGER.searchMenu}
+          className="blinking-cursor"
+        >
+          |
+        </span>
+      )}
       <input
         ref={inputRef}
         onChange={(e) => {
@@ -74,7 +82,7 @@ const SearchBar = ({
         autoComplete="off"
         autoCorrect="off"
         spellCheck="false"
-        aria-label="searchBar"
+        aria-label={LABEL_MENU_TRIGGER.searchMenu}
       />
     </div>
   );

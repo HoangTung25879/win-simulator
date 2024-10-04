@@ -4,6 +4,8 @@ If you return an SVG element, react will traverse over the entire returned react
 https://github.com/jwagner/analog-film-emulator/blob/master/src/image-processing.js
 
 -Todo (necessary):
+Update github linkedin
+File drop
 Make notification for unsupport file
 Make video player
 Make pdf viewer

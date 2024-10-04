@@ -18,6 +18,12 @@ export const IDS_MENU = {
   calendar: "calendar",
 };
 
+export const LABEL_MENU_TRIGGER = {
+  startMenu: "startMenuTrigger",
+  searchMenu: "searchMenuTrigger",
+  calendar: "calendarTrigger",
+};
+
 const Taskbar = () => {
   const [calendarVisible, setCalendarVisible] = useState(false);
   const [startMenuVisible, setStartMenuVisible] = useState(false);
@@ -57,18 +63,24 @@ const Taskbar = () => {
       Object.values(IDS_MENU).forEach((id) => {
         const menuElement = document.getElementById(id);
         if (menuElement && !menuElement.contains(elementClicked)) {
-          if (id === IDS_MENU.startMenu) {
+          if (
+            id === IDS_MENU.startMenu &&
+            elementClicked?.ariaLabel !== LABEL_MENU_TRIGGER.startMenu
+          ) {
             toggleStartMenu(false);
             return;
           }
           if (
             id === IDS_MENU.searchMenu &&
-            elementClicked?.ariaLabel !== "searchBar"
+            elementClicked?.ariaLabel !== LABEL_MENU_TRIGGER.searchMenu
           ) {
             toggleSearch(false);
             return;
           }
-          if (id === IDS_MENU.calendar) {
+          if (
+            id === IDS_MENU.calendar &&
+            elementClicked?.ariaLabel !== LABEL_MENU_TRIGGER.calendar
+          ) {
             toggleCalendar(false);
             return;
           }
