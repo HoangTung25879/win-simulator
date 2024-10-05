@@ -93,6 +93,20 @@ const directory: Processes = {
     titlebarButtonHoverColor: "rgb(204,204,204)",
     titlebarBorderColor: "rgb(230, 230, 230)",
   },
+  Transfer: {
+    Component: dynamic(
+      () => import("@/app/components/Dialogs/Transfer/Transfer"),
+    ),
+    allowResizing: false,
+    backgroundColor: "#FFF",
+    defaultSize: {
+      height: 163,
+      width: 400,
+    },
+    dialogProcess: true,
+    icon: "/System/Icons/copying.png",
+    title: "",
+  },
 };
 
 export default directory;

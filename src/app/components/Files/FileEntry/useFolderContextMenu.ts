@@ -101,20 +101,16 @@ const useFolderContextMenu = (
   const captureScreen = useCallback(async () => {
     if (currentMediaRecorder && currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
-
       try {
         currentMediaRecorder.requestData();
         currentMediaStream.getTracks().forEach((track) => track.stop());
       } catch {
         // Ignore errors with MediaRecorder
       }
-
       currentMediaRecorder = undefined;
       currentMediaStream = undefined;
-
       if (wasActive) return;
     }
-
     const isFirefoxOrSafari = isFirefox() || isSafari();
     const displayMediaOptions: DisplayMediaStreamOptions &
       MediaStreamConstraints = {
@@ -129,33 +125,26 @@ const useFolderContextMenu = (
         systemAudio: "include",
       }),
     };
-
     currentMediaStream =
       await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
     const supportsWebm = MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM);
     const fileName = `Screen Capture ${generatePrettyTimestamp()}.${
       supportsWebm ? "webm" : "mp4"
     }`;
-
     currentMediaRecorder = new MediaRecorder(currentMediaStream, {
       bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
       mimeType: supportsWebm ? MIME_TYPE_VIDEO_WEBM : MIME_TYPE_VIDEO_MP4,
     });
-
     const capturePath = join(DESKTOP_PATH, fileName);
     const startTime = Date.now();
     let hasCapturedData = false;
-
     currentMediaRecorder.start();
     currentMediaRecorder.addEventListener("dataavailable", async (event) => {
       const { data } = event;
-
       if (data?.size) {
         const bufferData = await blobToBuffer(data);
-
         await writeFile(
           capturePath,
           hasCapturedData
@@ -163,7 +152,6 @@ const useFolderContextMenu = (
             : bufferData,
           hasCapturedData,
         );
-
         if (
           supportsWebm &&
           !isFirefoxOrSafari &&
@@ -184,7 +172,6 @@ const useFolderContextMenu = (
         } else {
           updateFolder(DESKTOP_PATH, fileName);
         }
-
         hasCapturedData = true;
       }
     });
@@ -233,9 +220,9 @@ const useFolderContextMenu = (
       const targetElement = target as HTMLElement;
       const ADD_FILE = {
         action: () =>
-          addToFolder().then((files) =>
-            updateDesktopIconPositions(files, event),
-          ),
+          addToFolder().then((files) => {
+            updateDesktopIconPositions(files, event);
+          }),
         label: "Add file(s)",
       };
       const FS_COMMANDS = [ADD_FILE];
@@ -275,7 +262,20 @@ const useFolderContextMenu = (
         },
         icon: "/System/Icons/personalized.png",
       };
-      return [SORT_BY, REFRESH, MENU_SEPERATOR, PERSONALIZE];
+      const CAPTURE_SCREEN: MenuItem = {
+        action: captureScreen,
+        label: currentMediaStream?.active
+          ? "Stop screen capture"
+          : "Capture screen",
+      };
+      return [
+        SORT_BY,
+        REFRESH,
+        CAPTURE_SCREEN,
+        MENU_SEPERATOR,
+        ...FS_COMMANDS,
+        PERSONALIZE,
+      ];
     });
   }, [
     addToFolder,
