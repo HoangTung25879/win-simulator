@@ -83,5 +83,7 @@ export type SessionContextState = Prettify<
     stackOrder: string[];
     updateRecentFiles: (url: string, pid: string, title?: string) => void;
     setWallpaperColor: (color: string) => void;
+    hideDesktopIcon: boolean;
+    setHideDesktopIcon: React.Dispatch<React.SetStateAction<boolean>>;
   }
 >;

@@ -18,7 +18,7 @@ import {
   isSafari,
   updateIconPositions,
 } from "@/lib/utils";
-import { DESKTOP_PATH, MENU_SEPERATOR } from "@/lib/constants";
+import { DESKTOP_PATH, FOLDER_ICON, MENU_SEPERATOR } from "@/lib/constants";
 import fixWebmDuration from "fix-webm-duration";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
 import { AllProcess } from "@/contexts/process/directory";
@@ -26,6 +26,7 @@ import { AllProcess } from "@/contexts/process/directory";
 const CAPTURE_FPS = 30;
 const MIME_TYPE_VIDEO_WEBM = "video/webm";
 const MIME_TYPE_VIDEO_MP4 = "video/mp4";
+const NEW_FOLDER = "New folder";
 
 let currentMediaStream: MediaStream | undefined;
 let currentMediaRecorder: MediaRecorder | undefined;
@@ -61,11 +62,11 @@ const useFolderContextMenu = (
   const {
     iconPositions,
     // setForegroundId,
-    // setWallpaper: setSessionWallpaper,
     setIconPositions,
     sortOrders,
     // updateRecentFiles,
-    // wallpaperImage,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   } = useSession();
   const { minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
@@ -268,12 +269,42 @@ const useFolderContextMenu = (
           ? "Stop screen capture"
           : "Capture screen",
       };
+      const PASTE: MenuItem = {
+        action: () => pasteToFolder(event),
+        disabled: Object.keys(pasteList).length === 0,
+        label: "Paste",
+      };
+      const NEW: MenuItem = {
+        label: "New",
+        menu: [
+          {
+            action: () => newEntry(NEW_FOLDER, undefined, event),
+            icon: FOLDER_ICON,
+            label: "Folder",
+          },
+        ],
+      };
+      const VIEW: MenuItem = {
+        label: "View",
+        menu: [
+          {
+            action: () => setHideDesktopIcon(!hideDesktopIcon),
+            label: "Show desktop icons",
+            checked: !hideDesktopIcon,
+          },
+        ],
+      };
       return [
+        VIEW,
         SORT_BY,
         REFRESH,
-        CAPTURE_SCREEN,
         MENU_SEPERATOR,
+        PASTE,
+        CAPTURE_SCREEN,
         ...FS_COMMANDS,
+        MENU_SEPERATOR,
+        NEW,
+        MENU_SEPERATOR,
         PERSONALIZE,
       ];
     });
@@ -283,7 +314,6 @@ const useFolderContextMenu = (
     captureScreen,
     contextMenu,
     exists,
-    // hasWebGPU,
     isAscending,
     isDesktop,
     isStartMenu,
@@ -296,15 +326,15 @@ const useFolderContextMenu = (
     processesRef,
     rootFs?.mntMap,
     // setForegroundId,
-    // setWallpaper,
     sortBy,
     updateDesktopIconPositions,
     updateFolder,
     // updateRecentFiles,
     updateSorting,
     url,
-    // wallpaperImage,
     writeFile,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   ]);
 };
 

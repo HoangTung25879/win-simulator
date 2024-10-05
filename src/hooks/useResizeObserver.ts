@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const useResizeObserver = (
   element?: HTMLElement | null,
   callback?: ResizeObserverCallback,
+  debouncing = true,
 ): void => {
   const [resizeObserver, setResizeObserver] = useState<ResizeObserver>();
 
@@ -12,7 +13,9 @@ const useResizeObserver = (
     if (callback) {
       setResizeObserver(
         new ResizeObserver(
-          debounce(callback, TRANSITIONS_IN_SECONDS.WINDOW * 1000),
+          debouncing
+            ? debounce(callback, TRANSITIONS_IN_SECONDS.WINDOW * 1000)
+            : callback,
         ),
       );
     }

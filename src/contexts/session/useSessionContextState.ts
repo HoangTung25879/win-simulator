@@ -57,6 +57,7 @@ const useSessionContextState = (): SessionContextState => {
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const [haltSession, setHaltSession] = useState(false);
+  const [hideDesktopIcon, setHideDesktopIcon] = useState(false);
   const initializedSession = useRef(false);
   const loadingDebounceRef = useRef(0);
 
@@ -382,6 +383,8 @@ const useSessionContextState = (): SessionContextState => {
     windowStates,
     setWallpaperColor,
     wallpaperColor,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   };
 };
 

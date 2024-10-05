@@ -28,6 +28,7 @@ import Loading from "./Loading";
 import Empty from "./Empty";
 import useFileDrop from "../FileEntry/useFileDrop";
 import StatusBar from "./StatusBar";
+import { useSession } from "@/contexts/session";
 
 type FileManagerProps = {
   allowMovingDraggableEntries?: boolean;
@@ -78,6 +79,7 @@ const FileManager = ({
       skipFsWatcher,
       skipSorting,
     });
+  const { hideDesktopIcon } = useSession();
   const { lstat, mountFs, rootFs } = useFileSystem();
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions);
@@ -228,6 +230,7 @@ const FileManager = ({
                     isLoading && "!invisible",
                     "list-file",
                     isSelecting && "selecting",
+                    hideDesktopIcon && isDesktop && "hide-desktop-icon",
                   )}
                   {...(!readOnly &&
                     draggableEntry(url, file, renaming === file))}
