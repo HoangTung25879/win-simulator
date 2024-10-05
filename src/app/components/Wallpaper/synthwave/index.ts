@@ -13,8 +13,6 @@ const Synthwave: WallpaperFunc = (
     const ctx = elementCanvas.getContext("2d", {
       alpha: false,
     }) as CanvasRenderingContext2D;
-    elementCanvas.width = window.innerWidth;
-    elementCanvas.height = window.innerHeight;
     SYNTHWAVE.render = renderer(ctx, elementCanvas.width, elementCanvas.height);
     const start = performance.now();
     const tick = () => {

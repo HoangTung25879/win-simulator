@@ -1,8 +1,8 @@
-import { VantaConfig } from "@/app/components/Wallpaper/vanta/types";
+import { WallpaperConfig } from "@/app/components/Wallpaper/types";
 
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
-  config?: Partial<VantaConfig>;
+  config?: WallpaperConfig;
   devicePixelRatio: number;
 };
 

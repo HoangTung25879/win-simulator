@@ -5,7 +5,12 @@ import MatrixRain from "./matrixRain";
 import { AnimationConfig, AnimationType } from "./types";
 
 if (typeof window == "object" && !window.ANIMATION) window.ANIMATION = {};
-const Ambient: WallpaperFunc = (
+const map: Record<AnimationType, AnimationRenderer> = {
+  fallingFoodFiesta: FallingFoodFiesta,
+  galaxySpiral: GalaxySpiral,
+  matrixRain: MatrixRain,
+};
+const Animation: WallpaperFunc = (
   elementCanvas?: HTMLCanvasElement,
   config?: WallpaperConfig,
   fallback?: () => void,
@@ -16,17 +21,10 @@ const Ambient: WallpaperFunc = (
     const ctx = elementCanvas.getContext("2d", {
       alpha: false,
     }) as CanvasRenderingContext2D;
-    elementCanvas.width = window.innerWidth;
-    elementCanvas.height = window.innerHeight;
-    const map: Record<AnimationType, AnimationRenderer> = {
-      fallingFoodFiesta: FallingFoodFiesta,
-      galaxySpiral: GalaxySpiral,
-      matrixRain: MatrixRain,
-    };
-    const ambientRenderer: AnimationRenderer = map[
+    const animationRenderer: AnimationRenderer = map[
       (config as AnimationConfig).type
     ] as AnimationRenderer;
-    ANIMATION.render = ambientRenderer(
+    ANIMATION.render = animationRenderer(
       ctx,
       elementCanvas.width,
       elementCanvas.height,
@@ -43,4 +41,4 @@ const Ambient: WallpaperFunc = (
   }
 };
 
-export default Ambient;
+export default Animation;

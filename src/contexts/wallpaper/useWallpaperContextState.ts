@@ -8,6 +8,7 @@ import {
 import {
   WALLPAPER_CONFIG,
   WALLPAPER_PATHS,
+  WALLPAPER_PATHS_WORKERS,
 } from "@/app/components/Wallpaper/constants";
 import { WallpaperConfig } from "@/app/components/Wallpaper/types";
 import { VantaObject } from "@/app/components/Wallpaper/vanta/types";
@@ -15,6 +16,8 @@ import { useFileSystem } from "@/contexts/fileSystem";
 import { useSession } from "@/contexts/session";
 import { throttle } from "es-toolkit";
 import useResizeObserver from "@/hooks/useResizeObserver";
+import useWorker from "@/hooks/useWorker";
+import { DEFAULT_WALLPAPER } from "../session/useSessionContextState";
 
 declare global {
   interface Window {
@@ -32,6 +35,8 @@ declare global {
     WallpaperDestroy?: () => void;
   }
 }
+
+type WallpaperMessage = { message: string; type: string };
 
 export const BASE_CANVAS_SELECTOR = ":scope > canvas";
 export const BASE_VIDEO_SELECTOR = ":scope > video";
@@ -56,6 +61,11 @@ const useWallpaperContextState = (): WallpaperContextState => {
     wallpaperColor,
   } = useSession();
   const wallpaperTimerRef = useRef<number>();
+  const failedOffscreenContext = useRef(false);
+  const wallpaperWorker = useWorker<void>(
+    WALLPAPER_PATHS_WORKERS[wallpaperImage],
+    undefined,
+  );
 
   const handleResize = useCallback(() => {
     if (!desktopRef.current || !WALLPAPER_PATHS[wallpaperImage]) return;
@@ -76,6 +86,8 @@ const useWallpaperContextState = (): WallpaperContextState => {
       canvasRef.current = null;
     }
     canvasRef.current = document.createElement("canvas");
+    canvasRef.current.width = window.innerWidth;
+    canvasRef.current.height = window.innerHeight;
     document.querySelector(".desktop")?.appendChild(canvasRef.current);
 
     const { VANTA, SYNTHWAVE, ANIMATION } = window;
@@ -97,13 +109,43 @@ const useWallpaperContextState = (): WallpaperContextState => {
   }, []);
 
   const loadWallpaper = useCallback(
-    throttle(() => {
+    throttle((keepCanvas?: boolean) => {
       if (!desktopRef.current) return;
       resetWallpaper();
       let config: WallpaperConfig | undefined =
         WALLPAPER_CONFIG[wallpaperImage];
-      if (WALLPAPER_PATHS[wallpaperImage]) {
-        const fallbackWallpaper = (): void => setWallpaper("SOLID COLOR");
+
+      if (
+        !failedOffscreenContext.current &&
+        typeof window.OffscreenCanvas === "function" &&
+        wallpaperWorker.current
+      ) {
+        const workerConfig = { config, devicePixelRatio: 1 };
+        if (keepCanvas) {
+          wallpaperWorker.current.postMessage(workerConfig);
+        } else {
+          const offscreen =
+            canvasRef.current?.transferControlToOffscreen() as OffscreenCanvas;
+          wallpaperWorker.current.postMessage(
+            { canvas: offscreen, ...workerConfig },
+            [offscreen],
+          );
+          wallpaperWorker.current.addEventListener(
+            "message",
+            ({ data }: { data: WallpaperMessage }) => {
+              if (data.type === "[error]") {
+                if (data.message.includes("getContext")) {
+                  failedOffscreenContext.current = true;
+                  loadWallpaper();
+                } else {
+                  setWallpaper(DEFAULT_WALLPAPER);
+                }
+              }
+            },
+          );
+        }
+      } else if (WALLPAPER_PATHS[wallpaperImage]) {
+        const fallbackWallpaper = (): void => setWallpaper(DEFAULT_WALLPAPER);
         WALLPAPER_PATHS[wallpaperImage]()
           .then(({ default: wallpaper }) =>
             wallpaper?.(
@@ -116,7 +158,7 @@ const useWallpaperContextState = (): WallpaperContextState => {
       } else if (wallpaperImage === "SOLID COLOR") {
         desktopRef.current.style.backgroundColor = wallpaperColor;
       } else {
-        setWallpaper("SOLID COLOR");
+        setWallpaper(DEFAULT_WALLPAPER);
       }
     }, 50),
     [wallpaperImage, wallpaperColor, wallpaperFit],
