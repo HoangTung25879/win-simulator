@@ -13,7 +13,7 @@
   font-size: 0.75rem;
   .menu-item {
     width: 100%;
-    &.disabled {
+    &.--disabled {
       color: rgb(109, 109, 109);
       pointer-events: none;
     }
