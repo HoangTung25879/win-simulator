@@ -22,6 +22,27 @@ html {
 }
 
 html {
+  height: -webkit-fill-available;
+  height: -moz-available;
+  &::before,
+  &::after {
+    background-blend-mode: var(--background-blend-mode);
+    background-position: center;
+    content: "";
+    height: 100%;
+    position: absolute;
+    transition: opacity 1.25s ease-in-out;
+    width: 100%;
+    z-index: -1;
+  }
+  &::before {
+    background: var(--before-background);
+    opacity: var(--before-background-opacity);
+  }
+  &::after {
+    background: var(--after-background);
+    opacity: var(--after-background-opacity);
+  }
 }
 
 button {

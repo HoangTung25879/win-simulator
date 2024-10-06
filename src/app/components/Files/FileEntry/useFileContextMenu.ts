@@ -14,12 +14,15 @@ import { useFileSystem } from "@/contexts/fileSystem";
 import { useMenu } from "@/contexts/menu";
 import { useCallback, useMemo } from "react";
 import {
+  CURSOR_FILE_EXTENSIONS,
   DESKTOP_PATH,
+  IMAGE_FILE_EXTENSIONS,
   MENU_SEPERATOR,
   MOUNTABLE_EXTENSIONS,
   PROCESS_DELIMITER,
   ROOT_SHORTCUT,
   SHORTCUT_EXTENSION,
+  VIDEO_FILE_EXTENSIONS,
 } from "@/lib/constants";
 import { getExtension } from "@/lib/utils";
 import extensions from "../extensions";
@@ -46,7 +49,8 @@ const useFileContextMenu = (
 ): ContextMenuCapture => {
   const { minimize, open, url: changeUrl } = useProcesses();
   const processesRef = useProcessesRef();
-  const { setCursor, setForegroundId, updateRecentFiles } = useSession();
+  const { setCursor, setForegroundId, updateRecentFiles, setWallpaper } =
+    useSession();
   const baseName = basename(path);
   const isFocusedEntry = focusedEntries.includes(baseName);
   const openFile = useFile(url, path);
@@ -117,36 +121,76 @@ const useFileContextMenu = (
             label: "Delete",
           },
           { action: () => setRenaming(baseName), label: "Rename" },
-          MENU_SEPERATOR,
-          {
-            action: () => {
-              const activePid = Object.keys(processesRef.current).find(
-                (p) => p === `Properties${PROCESS_DELIMITER}${url}`,
-              );
-
-              if (activePid) {
-                if (processesRef.current[activePid].minimized) {
-                  minimize(activePid);
-                }
-                setForegroundId(activePid);
-              } else {
-                open(AllProcess.Properties, {
-                  shortcutPath: isShortcut ? path : undefined,
-                  url: isShortcut ? path : url,
-                });
-              }
-            },
-            label: "Properties",
-          },
+          // MENU_SEPERATOR,
+          // {
+          //   action: () => {
+          //     const activePid = Object.keys(processesRef.current).find(
+          //       (p) => p === `Properties${PROCESS_DELIMITER}${url}`,
+          //     );
+          //     if (activePid) {
+          //       if (processesRef.current[activePid].minimized) {
+          //         minimize(activePid);
+          //       }
+          //       setForegroundId(activePid);
+          //     } else {
+          //       open(AllProcess.Properties, {
+          //         shortcutPath: isShortcut ? path : undefined,
+          //         url: isShortcut ? path : url,
+          //       });
+          //     }
+          //   },
+          //   label: "Properties",
+          // },
         );
 
         if (path) {
           if (path === join(DESKTOP_PATH, ROOT_SHORTCUT)) {
+            //Map directory
           } else {
+            //Convert to
           }
         }
-
         menuItems.unshift(MENU_SEPERATOR);
+      }
+      const hasBackgroundVideoExtension =
+        VIDEO_FILE_EXTENSIONS.has(pathExtension);
+      if (
+        hasBackgroundVideoExtension ||
+        (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
+          !CURSOR_FILE_EXTENSIONS.has(pathExtension) &&
+          pathExtension !== ".svg")
+      ) {
+        menuItems.unshift({
+          label: "Set as background",
+          ...(hasBackgroundVideoExtension
+            ? {
+                action: () => setWallpaper(path),
+              }
+            : {
+                menu: [
+                  {
+                    action: () => setWallpaper(path, "fill"),
+                    label: "Fill",
+                  },
+                  {
+                    action: () => setWallpaper(path, "fit"),
+                    label: "Fit",
+                  },
+                  {
+                    action: () => setWallpaper(path, "stretch"),
+                    label: "Stretch",
+                  },
+                  {
+                    action: () => setWallpaper(path, "tile"),
+                    label: "Tile",
+                  },
+                  {
+                    action: () => setWallpaper(path, "center"),
+                    label: "Center",
+                  },
+                ],
+              }),
+        });
       }
 
       if (pid) {
@@ -231,7 +275,7 @@ const useFileContextMenu = (
     setCursor,
     setForegroundId,
     setRenaming,
-    // setWallpaper,
+    setWallpaper,
     stats,
     unMapFs,
     updateFolder,

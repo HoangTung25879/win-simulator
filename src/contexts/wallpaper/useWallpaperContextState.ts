@@ -6,6 +6,7 @@ import {
   useState,
 } from "react";
 import {
+  bgPositionSize,
   WALLPAPER_CONFIG,
   WALLPAPER_PATHS,
   WALLPAPER_PATHS_WORKERS,
@@ -18,6 +19,8 @@ import { throttle } from "es-toolkit";
 import useResizeObserver from "@/hooks/useResizeObserver";
 import useWorker from "@/hooks/useWorker";
 import { DEFAULT_WALLPAPER } from "../session/useSessionContextState";
+import { bufferToUrl, getExtension, isBeforeBg } from "@/lib/utils";
+import { VIDEO_FILE_EXTENSIONS } from "@/lib/constants";
 
 declare global {
   interface Window {
@@ -80,6 +83,9 @@ const useWallpaperContextState = (): WallpaperContextState => {
   useResizeObserver(desktopRef.current, handleResize);
 
   const resetWallpaper = useCallback(() => {
+    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
+    document.documentElement.style.removeProperty("--after-background");
+    document.documentElement.style.removeProperty("--before-background");
     // create new canvas
     if (canvasRef.current) {
       canvasRef.current.remove();
@@ -88,7 +94,7 @@ const useWallpaperContextState = (): WallpaperContextState => {
     canvasRef.current = document.createElement("canvas");
     canvasRef.current.width = window.innerWidth;
     canvasRef.current.height = window.innerHeight;
-    document.querySelector(".desktop")?.appendChild(canvasRef.current);
+    document.querySelector(".desktop")?.append(canvasRef.current);
 
     const { VANTA, SYNTHWAVE, ANIMATION } = window;
     if (VANTA?.current) {
@@ -105,7 +111,6 @@ const useWallpaperContextState = (): WallpaperContextState => {
       ANIMATION.requestId = undefined;
       ANIMATION.render = undefined;
     }
-    desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
   }, []);
 
   const loadWallpaper = useCallback(
@@ -164,11 +169,71 @@ const useWallpaperContextState = (): WallpaperContextState => {
     [wallpaperImage, wallpaperColor, wallpaperFit],
   );
 
-  useEffect(() => {
-    if (sessionLoaded && !window.DEBUG_DISABLE_WALLPAPER) {
+  const loadFileWallpaper = useCallback(async () => {
+    resetWallpaper();
+    let wallpaperUrl = "";
+    let newWallpaperFit = wallpaperFit;
+    if (await exists(wallpaperImage)) {
+      const fileData = await readFile(wallpaperImage);
+      wallpaperUrl = bufferToUrl(fileData);
+    }
+    if (wallpaperUrl) {
+      if (VIDEO_FILE_EXTENSIONS.has(getExtension(wallpaperImage))) {
+        const video = document.createElement("video");
+        video.src = wallpaperUrl;
+        video.autoplay = true;
+        video.controls = false;
+        video.disablePictureInPicture = true;
+        video.disableRemotePlayback = true;
+        video.loop = true;
+        video.muted = true;
+        video.playsInline = true;
+        video.style.position = "absolute";
+        video.style.inset = "0";
+        video.style.width = "100%";
+        video.style.height = "100%";
+        video.style.objectFit = "cover";
+        video.style.objectPosition = "center center";
+        video.style.zIndex = "-1";
+        desktopRef.current?.append(video);
+      } else {
+        const repeat = newWallpaperFit === "tile" ? "repeat" : "no-repeat";
+        const isAfterNextBackground = isBeforeBg();
+        document.documentElement.style.setProperty(
+          `--${isAfterNextBackground ? "after" : "before"}-background`,
+          `url(${CSS.escape(
+            wallpaperUrl,
+          )}) ${bgPositionSize[newWallpaperFit]} ${repeat} fixed border-box border-box #000`,
+        );
+        document.documentElement.style.setProperty(
+          "--after-background-opacity",
+          isAfterNextBackground ? "1" : "0",
+        );
+        document.documentElement.style.setProperty(
+          "--before-background-opacity",
+          isAfterNextBackground ? "0" : "1",
+        );
+      }
+    } else {
       loadWallpaper();
     }
-  }, [loadWallpaper, sessionLoaded, triggerAfterHotReload]);
+  }, [loadWallpaper, readFile, resetWallpaper, wallpaperImage]);
+
+  useEffect(() => {
+    if (sessionLoaded && !window.DEBUG_DISABLE_WALLPAPER) {
+      if (wallpaperImage && !WALLPAPER_PATHS_WORKERS[wallpaperImage]) {
+        loadFileWallpaper().catch(loadWallpaper);
+      } else {
+        loadWallpaper();
+      }
+    }
+  }, [
+    loadFileWallpaper,
+    loadWallpaper,
+    sessionLoaded,
+    triggerAfterHotReload,
+    wallpaperImage,
+  ]);
 
   return { desktopRef, canvasRef, setTriggerAfterHotReload };
 };

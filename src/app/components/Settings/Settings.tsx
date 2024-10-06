@@ -7,7 +7,7 @@ import "./Settings.scss";
 import { useEffect, useMemo, useRef } from "react";
 import SimpleBar from "simplebar-react";
 import { useSession } from "@/contexts/session";
-import { WallpaperImage } from "@/contexts/session/types";
+import { WallpaperFit, WallpaperImage } from "@/contexts/session/types";
 import { startCase } from "es-toolkit";
 import { useWallpaper } from "@/contexts/wallpaper";
 import { haltEvent } from "@/lib/utils";
@@ -20,6 +20,12 @@ interface WallpaperOption extends SelectItem {
   id: string;
   label: WallpaperImage;
   value: WallpaperImage;
+}
+
+interface WallpaperFitOption extends SelectItem {
+  id: string;
+  label: WallpaperFit;
+  value: WallpaperFit;
 }
 
 const wallPaperOptions: WallpaperOption[] = [
@@ -75,6 +81,34 @@ const wallPaperOptions: WallpaperOption[] = [
   },
 ];
 
+const wallpaperFitOptions: WallpaperFitOption[] = [
+  {
+    id: "1",
+    label: "fill",
+    value: "fill",
+  },
+  {
+    id: "2",
+    label: "fit",
+    value: "fit",
+  },
+  {
+    id: "3",
+    label: "stretch",
+    value: "stretch",
+  },
+  {
+    id: "4",
+    label: "tile",
+    value: "tile",
+  },
+  {
+    id: "5",
+    label: "center",
+    value: "center",
+  },
+];
+
 const Settings = ({ id }: SettingsProps) => {
   const {
     processes: { [id]: process },
@@ -92,9 +126,42 @@ const Settings = ({ id }: SettingsProps) => {
   const canvasPreview = useRef<HTMLCanvasElement | null>(null);
   const contextCanvas = useRef<CanvasRenderingContext2D | null>(null);
   const animated = useRef(false);
+
+  const isPicture = useMemo(
+    () => !wallPaperOptions.find((item) => item.value === wallpaperImage),
+    [wallpaperImage],
+  );
+
+  const formattedWallpaperOptions: WallpaperOption[] = useMemo(() => {
+    const result: WallpaperOption[] = [...wallPaperOptions];
+    if (isPicture) {
+      result.push({
+        id: String(wallPaperOptions.length + 1),
+        label: "Picture",
+        value: "Picture",
+      });
+    }
+    return result;
+  }, [wallpaperImage]);
+
+  const formattedValue: WallpaperOption | undefined = useMemo(() => {
+    return formattedWallpaperOptions.find((item) =>
+      isPicture ? item.value === "Picture" : item.value === wallpaperImage,
+    );
+  }, [wallpaperImage, wallpaperFit]);
+
+  const formattedFitValue: WallpaperFitOption | undefined = useMemo(() => {
+    return wallpaperFitOptions.find((item) => item.value === wallpaperFit);
+  }, [wallpaperFit]);
+
   const onChangeSelect = (item: WallpaperOption) => {
     if (item.value === wallpaperImage) return;
     setWallpaper(item.value);
+  };
+
+  const onChangeSelectFit = (item: WallpaperFitOption) => {
+    if (item.value === wallpaperFit) return;
+    setWallpaper(wallpaperImage, item.value);
   };
 
   const copyFrame = (
@@ -126,7 +193,8 @@ const Settings = ({ id }: SettingsProps) => {
   };
 
   useEffect(() => {
-    if (wallpaperImage === "SOLID COLOR") {
+    if (isPicture) {
+    } else if (wallpaperImage === "SOLID COLOR") {
       const ctx = canvasPreview.current?.getContext("2d");
       if (ctx) {
         ctx.fillStyle = wallpaperColor;
@@ -159,10 +227,6 @@ const Settings = ({ id }: SettingsProps) => {
     };
   }, [wallpaperImage, wallpaperFit, wallpaperColor]);
 
-  const formattedValue: WallpaperOption | undefined = useMemo(() => {
-    return wallPaperOptions.find((item) => item.value === wallpaperImage);
-  }, [wallpaperImage, wallpaperFit]);
-
   return (
     <>
       <div
@@ -187,7 +251,7 @@ const Settings = ({ id }: SettingsProps) => {
             <Select
               scrollContainer={wrapperRef.current}
               value={formattedValue}
-              options={wallPaperOptions}
+              options={formattedWallpaperOptions}
               title="Background"
               onChange={onChangeSelect}
               valueFormatter={(value) => {
@@ -204,6 +268,21 @@ const Settings = ({ id }: SettingsProps) => {
                   }}
                 />
               </div>
+            )}
+            {isPicture && (
+              <Select
+                scrollContainer={wrapperRef.current}
+                value={formattedFitValue}
+                options={wallpaperFitOptions}
+                title="Choose a fit"
+                onChange={onChangeSelectFit}
+                optionFormatter={(item) => {
+                  return startCase(item.label);
+                }}
+                valueFormatter={(value) => {
+                  return startCase(value);
+                }}
+              />
             )}
           </div>
         </div>

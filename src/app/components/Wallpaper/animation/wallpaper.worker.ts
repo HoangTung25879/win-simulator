@@ -40,8 +40,6 @@ globalThis.addEventListener(
         ANIMATION.requestId = undefined;
         ANIMATION.render = undefined;
       }
-
-      console.log("ZODAY");
       if (!canvas) return;
       try {
         const ctx = canvas.getContext("2d", {

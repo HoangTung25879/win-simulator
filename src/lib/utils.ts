@@ -681,3 +681,8 @@ export const getTaskbarElement = (id: string) =>
   document.getElementById(generateTaskbarElementId(id));
 export const getWindowElement = (id: string) =>
   document.getElementById(generateWindowElementId(id));
+
+export const isBeforeBg = (): boolean =>
+  document.documentElement.style.getPropertyValue(
+    "--before-background-opacity",
+  ) === "1";

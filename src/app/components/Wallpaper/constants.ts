@@ -1,6 +1,14 @@
-import { WallpaperImage } from "@/contexts/session/types";
+import { WallpaperFit, WallpaperImage } from "@/contexts/session/types";
 import { WallpaperConfig, WallpaperFunc } from "./types";
 import { vantaCloudsConfig, vantaWavesConfig } from "./vanta/config";
+
+export const bgPositionSize: Record<WallpaperFit, string> = {
+  center: "center center",
+  fill: "center center / cover",
+  fit: "center center / contain",
+  stretch: "center center / 100% 100%",
+  tile: "50% 50%",
+};
 
 export const WALLPAPER_CONFIG: Record<
   Exclude<WallpaperImage, "SYNTHWAVE" | "SOLID COLOR">,
