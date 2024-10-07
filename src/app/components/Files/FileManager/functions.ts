@@ -752,7 +752,6 @@ export const getInfoWithExtension = (
                   //     if (signal.aborted) return;
                   //     const firstFrame = index === 0;
                   //     await getFrame(frame, firstFrame);
-                  //     console.log("GETFRAME", frame, firstFrame, capturePoint);
                   //     if (firstFrame && frame === capturePoint) {
                   //       getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
                   //     }

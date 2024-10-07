@@ -56,6 +56,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
         hideLoading
         hideShortcutIcons
         isStartMenu
+        toggleStartMenu={toggleStartMenu}
         loadIconsImmediately
         readOnly
         skipFsWatcher

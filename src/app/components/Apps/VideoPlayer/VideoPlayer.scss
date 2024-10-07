@@ -3,7 +3,28 @@
   height: 100%;
   width: 100%;
   .vjs-control-bar {
+    &:not(.no-interaction) {
+      display: flex !important;
+      opacity: 100% !important;
+    }
+    .no-interaction {
+      display: none !important;
+      opacity: 0% !important;
+      pointer-events: none !important;
+    }
     .vjs-playback-rate {
     }
+  }
+  .vjs-youtube,
+  .vjs-fullscreen.vjs-user-inactive {
+    .vjs-control-bar {
+      opacity: 0% !important;
+    }
+  }
+  video {
+    background-image: url("/System/Icons/vlc.png");
+    background-position: center calc(50% - 15px);
+    background-repeat: no-repeat;
+    padding-bottom: 30px;
   }
 }

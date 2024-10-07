@@ -72,7 +72,8 @@ type FileEntryProps = {
   fileManagerRef: React.MutableRefObject<HTMLOListElement | null>;
   focusFunctions: FocusEntryFunctions;
   focusedEntries: string[];
-  hasNewFolderIcon?: boolean;
+  isStartMenu?: boolean;
+  toggleStartMenu?: (showMenu?: boolean) => void;
   hideShortcutIcon?: boolean;
   isDesktop?: boolean;
   isHeading?: boolean;
@@ -111,7 +112,8 @@ const FileEntry = ({
   selectionRect,
   setRenaming,
   stats,
-  hasNewFolderIcon,
+  isStartMenu,
+  toggleStartMenu,
   view,
 }: FileEntryProps) => {
   const { blurEntry, focusEntry } = focusFunctions;
@@ -123,10 +125,12 @@ const FileEntry = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const isVisible = useIsVisible(buttonRef, fileManagerRef, isDesktop);
   const [{ comment, getIcon, icon, pid, subIcons, url }, setInfo] = useFileInfo(
-    path,
-    stats.isDirectory(),
-    hasNewFolderIcon,
-    isDesktop || isVisible,
+    {
+      path,
+      isDirectory: stats.isDirectory(),
+      hasNewFolderIcon: isStartMenu,
+      isVisible: isDesktop || isVisible,
+    },
   );
   const fileContextMenu = useFileContextMenu(
     url,
@@ -249,6 +253,7 @@ const FileEntry = ({
     } else if (openInFileExplorer && isListView) {
       setShowInFileManager((currentState) => !currentState);
     } else {
+      if (isStartMenu) toggleStartMenu?.(false);
       openFile(pid, isDynamicIcon ? undefined : icon);
     }
   }, [

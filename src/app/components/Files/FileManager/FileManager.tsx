@@ -39,6 +39,7 @@ type FileManagerProps = {
   id?: string;
   isDesktop?: boolean;
   isStartMenu?: boolean;
+  toggleStartMenu?: (showMenu?: boolean) => void;
   isFileExplorer?: boolean;
   loadIconsImmediately?: boolean;
   readOnly?: boolean;
@@ -57,6 +58,7 @@ const FileManager = ({
   id,
   isDesktop,
   isStartMenu,
+  toggleStartMenu,
   isFileExplorer,
   loadIconsImmediately,
   readOnly,
@@ -244,7 +246,8 @@ const FileManager = ({
                     fileManagerRef={fileManagerRef}
                     focusFunctions={focusFunctions}
                     focusedEntries={focusedEntries}
-                    hasNewFolderIcon={isStartMenu}
+                    isStartMenu={isStartMenu}
+                    toggleStartMenu={toggleStartMenu}
                     hideShortcutIcon={hideShortcutIcons}
                     isDesktop={isDesktop}
                     isHeading={isDesktop && files[file].systemShortcut}
