@@ -107,6 +107,25 @@ const directory: Processes = {
     icon: "/System/Icons/copying.png",
     title: "",
   },
+  VideoPlayer: {
+    Component: dynamic(
+      () => import("@/app/components/Apps/VideoPlayer/VideoPlayer"),
+    ),
+    autoSizing: true,
+    backgroundColor: "#000",
+    defaultSize: {
+      height: 390,
+      width: 640,
+    },
+    maximized: true,
+    icon: "/System/Icons/vlc.png",
+    libs: [
+      "/System/Video.js/video-js.min.css",
+      "/System/Video.js/video.min.js",
+      "/System/Video.js/Youtube.min.js",
+    ],
+    title: "Video Player",
+  },
 };
 
 export default directory;

@@ -1,0 +1,21 @@
+.loading {
+  cursor: wait;
+  height: 100%;
+  width: 100%;
+  &::before {
+    color: #fff;
+    content: "Working on it...";
+    display: flex;
+    font-size: 12px;
+    justify-content: center;
+    mix-blend-mode: difference;
+    padding-top: 18px;
+  }
+  &.file-explorer-loading {
+    height: calc(
+      100% - var(--file-explorer-nav-bar-height) - var(
+          --file-explorer-status-bar-height
+        )
+    );
+  }
+}

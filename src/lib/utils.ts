@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import { Position } from "react-rnd";
 import sizes from "./sizes";
 import { Processes } from "@/contexts/process/types";
+import GIF from "gif.js";
 
 export const pxToNum = (value: number | string = 0): number =>
   typeof value === "number" ? value : Number.parseFloat(value);
@@ -140,6 +141,13 @@ export const haltEvent = (
     // Ignore failured to halt event
   }
 };
+
+export const blobToBase64 = (blob: Blob): Promise<string> =>
+  new Promise((resolve) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(blob);
+    fileReader.onloadend = () => resolve(fileReader.result as string);
+  });
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
   new Blob([buffer], type ? { type } : undefined);
@@ -686,3 +694,44 @@ export const isBeforeBg = (): boolean =>
   document.documentElement.style.getPropertyValue(
     "--before-background-opacity",
   ) === "1";
+
+type GIFWithWorkers = GIF & { freeWorkers: Worker[] };
+
+export const getGifJs = async (): Promise<GIFWithWorkers> => {
+  const { default: GIFInstance } = await import("gif.js.optimized");
+  return new GIFInstance({
+    quality: 10,
+    workerScript: "System/Gif.js/gif.worker.js",
+    workers: Math.max(Math.floor(navigator.hardwareConcurrency / 4), 1),
+  }) as GIFWithWorkers;
+};
+
+// Retrieving the pixel data from the canvas.
+// Checking if any pixel has a value other than 0 (fully transparent) or 255 (fully opaque)
+export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
+  if (!(canvas instanceof HTMLCanvasElement)) return false;
+  if (canvas.width === 0 || canvas.height === 0) return false;
+
+  const { data: pixels = [] } =
+    canvas
+      .getContext("2d", { willReadFrequently: true })
+      ?.getImageData(0, 0, canvas.width, canvas.height) || {};
+
+  if (pixels.length === 0) return false;
+
+  const bwPixels: Record<number, number> = { 0: 0, 255: 0 };
+
+  for (const pixel of pixels) {
+    if (pixel !== 0 && pixel !== 255) return true;
+
+    bwPixels[pixel] += 1;
+  }
+
+  const isBlankCanvas =
+    bwPixels[0] === pixels.length ||
+    bwPixels[255] === pixels.length ||
+    (bwPixels[255] + bwPixels[0] === pixels.length &&
+      bwPixels[0] / 3 === bwPixels[255]);
+
+  return !isBlankCanvas;
+};

@@ -28,7 +28,6 @@ const Icon = forwardRef<
     };
   }, [displaySize, imgSize]);
   const { height, offset, width } = dimensionProps;
-
   useEffect(
     () => () => {
       if (loaded && src?.startsWith("blob:")) cleanUpBufferUrl(src);
@@ -49,7 +48,7 @@ const Icon = forwardRef<
         fetchPriority={eager ? "high" : "auto"}
         className="pointer-events-none aspect-square object-contain"
         style={{
-          left: offset || undefined,
+          left: displaySize || undefined,
           maxHeight: `${height}px`,
           maxWidth: `${width}px`,
           minHeight: `${height}px`,

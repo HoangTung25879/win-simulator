@@ -42,6 +42,41 @@
     }
   }
 
+  .controls {
+    display: flex;
+    place-content: center;
+    width: 100%;
+    margin-bottom: 4px;
+    button {
+      background-color: rgb(70, 70, 70);
+      border: 1px solid rgb(46, 46, 46);
+      display: flex;
+      height: 27px;
+      place-content: center;
+      place-items: center;
+      width: 27px;
+
+      &:active {
+        background-color: rgb(61, 96, 153) !important;
+        border: 1px solid rgb(49, 77, 122) !important;
+      }
+
+      &:hover {
+        background-color: rgb(54, 101, 179);
+        border: 1px solid rgb(43, 81, 143);
+      }
+
+      svg {
+        fill: #fff;
+        height: 16px;
+        margin-left: 1px;
+        pointer-events: none;
+        user-select: none;
+        width: 16px;
+      }
+    }
+  }
+
   .peek-image {
     height: var(--taskbar-entry-peek-image-height);
     margin: var(--taskbar-entry-peek-image-margin);

@@ -24,11 +24,11 @@ import useFileKeyboardShortcuts, {
 } from "../FileEntry/useFileKeyboardShortcuts";
 import { requestPermission } from "@/contexts/fileSystem/utils";
 import { getExtension, haltEvent } from "@/lib/utils";
-import Loading from "./Loading";
 import Empty from "./Empty";
 import useFileDrop from "../FileEntry/useFileDrop";
 import StatusBar from "./StatusBar";
 import { useSession } from "@/contexts/session";
+import Loading from "../../Common/Loading/Loading";
 
 type FileManagerProps = {
   allowMovingDraggableEntries?: boolean;

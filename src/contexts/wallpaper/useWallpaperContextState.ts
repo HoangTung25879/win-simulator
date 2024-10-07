@@ -73,7 +73,6 @@ const useWallpaperContextState = (): WallpaperContextState => {
   const handleResize = useCallback(() => {
     if (!desktopRef.current || !WALLPAPER_PATHS[wallpaperImage]) return;
     const desktopRect = desktopRef.current.getBoundingClientRect();
-    desktopRef.current.style.backgroundColor = "transparent";
     if (canvasRef.current) {
       canvasRef.current.style.width = `${desktopRect.width}px`;
       canvasRef.current.style.height = `${desktopRect.height}px`;
@@ -86,6 +85,7 @@ const useWallpaperContextState = (): WallpaperContextState => {
     desktopRef.current?.querySelector(BASE_VIDEO_SELECTOR)?.remove();
     document.documentElement.style.removeProperty("--after-background");
     document.documentElement.style.removeProperty("--before-background");
+    desktopRef.current!.style.backgroundColor = "transparent";
     // create new canvas
     if (canvasRef.current) {
       canvasRef.current.remove();
