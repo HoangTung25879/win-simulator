@@ -32,7 +32,7 @@ const Window = ({ children, id }: WindowProps) => {
     process || {};
   const { foregroundId } = useSession();
   const { zIndex, ...focusableProps } = useFocusable(id);
-  const windowTransitions = useWindowTransitions(id);
+  const windowTransitions = useWindowTransitions(id, true);
   const isForeground = id === foregroundId;
 
   useEffect(() => {

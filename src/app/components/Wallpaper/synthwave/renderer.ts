@@ -6,7 +6,7 @@ const simplexNoise2D = createNoise2D();
 const noise2D = fbm2d(simplexNoise2D, 2);
 
 export function renderer(
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ): (t: number) => void {

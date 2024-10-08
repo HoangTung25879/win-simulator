@@ -49,7 +49,7 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
     };
   }, []);
   return (
-    <div className="relative z-[100] border-b border-taskbar-peekBorder bg-[#393939] p-5">
+    <div className="bg-[rgb(31, 31, 31)] relative z-[100] border-b border-taskbar-peekBorder p-5">
       <div className="flex gap-2">
         <div className="text-5xl font-thin leading-10">
           {timeObj.hours}:

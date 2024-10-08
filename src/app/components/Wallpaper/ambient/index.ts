@@ -5,6 +5,11 @@ import Swirl from "./swirl";
 import { AmbientConfig, AmbientType } from "./types";
 
 if (typeof window == "object" && !window.ANIMATION) window.ANIMATION = {};
+const map: Record<AmbientType, AnimationRenderer> = {
+  shift: Shift,
+  swirl: Swirl,
+  coalesce: Coalesce,
+};
 const Ambient: WallpaperFunc = (
   elementCanvas?: HTMLCanvasElement,
   config?: WallpaperConfig,
@@ -16,13 +21,6 @@ const Ambient: WallpaperFunc = (
     const ctx = elementCanvas.getContext("2d", {
       alpha: false,
     }) as CanvasRenderingContext2D;
-    elementCanvas.width = window.innerWidth;
-    elementCanvas.height = window.innerHeight;
-    const map: Record<AmbientType, AnimationRenderer> = {
-      shift: Shift,
-      swirl: Swirl,
-      coalesce: Coalesce,
-    };
     const ambientRenderer: AnimationRenderer = map[
       (config as AmbientConfig).type
     ] as AnimationRenderer;

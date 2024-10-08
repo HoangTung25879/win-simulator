@@ -17,7 +17,7 @@ const rangeHue = 100;
 const backgroundColor = "hsla(60,50%,3%,1)";
 
 const Coalesce: AnimationRenderer = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ): (() => void) => {

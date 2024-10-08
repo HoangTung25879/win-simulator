@@ -24,7 +24,7 @@ const ICON_CACHE = `${USER_ICON_PATH}/Cache`;
 const YT_ICON_CACHE = `${ICON_CACHE}/YouTube`;
 const ICON_CACHE_EXTENSION = ".cache";
 
-const VLC_SUBICON = "/System/Icons/16x16/vlc.png";
+const VLC_SUBICON = `${ICON_PATH}/vlc.png`;
 
 const isYouTubeUrl = (url) =>
   url.includes("youtube.com/") || url.includes("youtu.be/");

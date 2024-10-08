@@ -2,6 +2,7 @@ import { get9pModifiedTime } from "@/contexts/fileSystem/core";
 import { RootFileSystem } from "@/contexts/fileSystem/useAsyncFs";
 import {
   getCachedShortcut,
+  getMimeType,
   getShortcutInfo,
   isExistingFile,
   isMountedFolder,
@@ -10,6 +11,7 @@ import { FileInfo } from "../FileEntry/useFileInfo";
 import { Files } from "../FileEntry/useFolder";
 import {
   AUDIO_FILE_EXTENSIONS,
+  BASE_2D_CONTEXT_OPTIONS,
   DYNAMIC_EXTENSION,
   DYNAMIC_PREFIX,
   FOLDER_BACK_ICON,
@@ -18,7 +20,10 @@ import {
   HEIF_IMAGE_FORMATS,
   ICON_CACHE,
   ICON_CACHE_EXTENSION,
+  ICON_GIF_FPS,
+  ICON_GIF_SECONDS,
   IMAGE_FILE_EXTENSIONS,
+  MAX_ICON_SIZE,
   MOUNTED_FOLDER_ICON,
   NEW_FOLDER_ICON,
   NON_BREAKING_HYPHEN,
@@ -30,13 +35,18 @@ import {
   SMALLEST_PNG_SIZE,
   TIFF_IMAGE_FORMATS,
   UNKNOWN_ICON_PATH,
+  VIDEO_FALLBACK_MIME_TYPE,
   VIDEO_FILE_EXTENSIONS,
 } from "@/lib/constants";
 import {
+  blobToBase64,
   bufferToUrl,
   getExtension,
+  getGifJs,
   haltEvent,
   imageToBufferUrl,
+  isCanvasDrawn,
+  isSafari,
   toSorted,
 } from "@/lib/utils";
 import { FSModule } from "browserfs/dist/node/core/FS";
@@ -66,6 +76,10 @@ type ShellClassInfo = {
   ShellClassInfo: {
     IconFile: string;
   };
+};
+
+type VideoElementWithSeek = HTMLVideoElement & {
+  seekToNextFrame: () => Promise<void>;
 };
 
 export type FileStat = Prettify<
@@ -624,126 +638,142 @@ export const getInfoWithExtension = (
         );
       } else if (AUDIO_FILE_EXTENSIONS.has(extension)) {
         getInfoByFileExtension(processDirectory.VideoPlayer.icon);
-      }
-      //  else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
-      //   subIcons.push(processDirectory.VideoPlayer.icon);
-      //   getInfoByFileExtension(processDirectory.VideoPlayer.icon, (signal) =>
-      //     fs.readFile(path, async (error, contents = Buffer.from("")) => {
-      //       if (!error) {
-      //         const video = document.createElement("video");
-      //         const canvas = document.createElement("canvas");
-      //         const context = canvas.getContext("2d", {
-      //           ...BASE_2D_CONTEXT_OPTIONS,
-      //           willReadFrequently: true,
-      //         });
-      //         const gif = await getGifJs();
-      //         let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
-      //         const getFrame = (
-      //           second: number,
-      //           firstFrame: boolean,
-      //         ): Promise<void> =>
-      //           new Promise((resolve) => {
-      //             video.currentTime = second;
+      } else if (VIDEO_FILE_EXTENSIONS.has(extension)) {
+        subIcons.push(processDirectory.VideoPlayer.icon);
+        getInfoByFileExtension(processDirectory.VideoPlayer.icon, (signal) =>
+          fs.readFile(path, async (error, contents = Buffer.from("")) => {
+            if (!error) {
+              const video = document.createElement("video");
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d", {
+                ...BASE_2D_CONTEXT_OPTIONS,
+                willReadFrequently: true,
+              });
+              //* Create gif preview of video
+              // const gif = await getGifJs();
+              // let framesRemaining = ICON_GIF_FPS * ICON_GIF_SECONDS;
+              // const getFrame = (
+              //   second: number,
+              //   firstFrame: boolean,
+              // ): Promise<void> =>
+              //   new Promise((resolve) => {
+              //     video.currentTime = second;
+              //     if ("seekToNextFrame" in video) {
+              //       (video as VideoElementWithSeek)
+              //         .seekToNextFrame?.()
+              //         .catch(() => {
+              //           // Ignore error during seekToNextFrame
+              //         });
+              //     } else if (firstFrame) {
+              //       video.load();
+              //     }
+              //     const processFrame = (): void => {
+              //       if (!context || !canvas.width || !canvas.height) return;
+              //       context.drawImage(video, 0, 0, canvas.width, canvas.height);
+              //       gif.addFrame(
+              //         context.getImageData(0, 0, canvas.width, canvas.height),
+              //         { copy: true, delay: 100 },
+              //       );
+              //       framesRemaining -= 1;
+              //       if (framesRemaining === 0) {
+              //         gif
+              //           .on("finished", (blob) => {
+              //             blobToBase64(blob).then(getInfoByFileExtension);
+              //             gif.freeWorkers.forEach((worker) =>
+              //               worker?.terminate(),
+              //             );
+              //           })
+              //           .render();
+              //       }
+              //       resolve();
+              //     };
+              //     if ("requestVideoFrameCallback" in video) {
+              //       video.requestVideoFrameCallback(processFrame);
+              //     } else {
+              //       (video as HTMLVideoElement).addEventListener(
+              //         "canplaythrough",
+              //         processFrame,
+              //         { signal, ...ONE_TIME_PASSIVE_EVENT },
+              //       );
+              //     }
+              //   });
 
-      //             if ("seekToNextFrame" in video) {
-      //               (video as VideoElementWithSeek)
-      //                 .seekToNextFrame?.()
-      //                 .catch(() => {
-      //                   // Ignore error during seekToNextFrame
-      //                 });
-      //             } else if (firstFrame) {
-      //               video.load();
-      //             }
+              //* Create thumbnail preview of video
+              const getThumbnailFrame = (split: number) => {
+                if (split <= 0) return;
+                const capturePoint = video.duration / split;
+                if (signal.aborted) return;
+                video.currentTime = capturePoint;
+                const processFrame = () => {
+                  if (!context || !canvas.width || !canvas.height) return;
+                  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                  if (isCanvasDrawn(canvas)) {
+                    getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                  } else {
+                    getThumbnailFrame(split - 2);
+                  }
+                };
+                if ("requestVideoFrameCallback" in video) {
+                  video.requestVideoFrameCallback(processFrame);
+                } else {
+                  (video as HTMLVideoElement).addEventListener(
+                    "canplaythrough",
+                    processFrame,
+                    { signal, ...ONE_TIME_PASSIVE_EVENT },
+                  );
+                }
+              };
 
-      //             const processFrame = (): void => {
-      //               if (!context || !canvas.width || !canvas.height) return;
+              video.addEventListener(
+                "loadeddata",
+                () => {
+                  canvas.height =
+                    video.videoHeight > video.videoWidth
+                      ? MAX_ICON_SIZE
+                      : (MAX_ICON_SIZE * video.videoHeight) / video.videoWidth;
+                  canvas.width =
+                    video.videoWidth > video.videoHeight
+                      ? MAX_ICON_SIZE
+                      : (MAX_ICON_SIZE * video.videoWidth) / video.videoHeight;
+                  //* Create gif preview of video
+                  // const capturePoints = [
+                  //   video.duration / 4,
+                  //   video.duration / 2,
+                  // ];
+                  // const frameStep = 4 / ICON_GIF_FPS;
+                  // const frameCount = framesRemaining / capturePoints.length;
+                  // capturePoints.forEach(async (capturePoint, index) => {
+                  //   if (signal.aborted) return;
+                  //   for (
+                  //     let frame = capturePoint;
+                  //     frame < capturePoint + frameCount * frameStep;
+                  //     frame += frameStep
+                  //   ) {
+                  //     if (signal.aborted) return;
+                  //     const firstFrame = index === 0;
+                  //     await getFrame(frame, firstFrame);
+                  //     if (firstFrame && frame === capturePoint) {
+                  //       getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                  //     }
+                  //   }
+                  // });
 
-      //               context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      //               gif.addFrame(
-      //                 context.getImageData(0, 0, canvas.width, canvas.height),
-      //                 { copy: true, delay: 100 },
-      //               );
-      //               framesRemaining -= 1;
-
-      //               if (framesRemaining === 0) {
-      //                 gif
-      //                   .on("finished", (blob) => {
-      //                     blobToBase64(blob).then(getInfoByFileExtension);
-      //                     gif.freeWorkers.forEach((worker) =>
-      //                       worker?.terminate(),
-      //                     );
-      //                   })
-      //                   .render();
-      //               }
-
-      //               resolve();
-      //             };
-
-      //             if ("requestVideoFrameCallback" in video) {
-      //               video.requestVideoFrameCallback(processFrame);
-      //             } else {
-      //               (video as HTMLVideoElement).addEventListener(
-      //                 "canplaythrough",
-      //                 processFrame,
-      //                 { signal, ...ONE_TIME_PASSIVE_EVENT },
-      //               );
-      //             }
-      //           });
-
-      //         video.addEventListener(
-      //           "loadeddata",
-      //           () => {
-      //             canvas.height =
-      //               video.videoHeight > video.videoWidth
-      //                 ? MAX_ICON_SIZE
-      //                 : (MAX_ICON_SIZE * video.videoHeight) / video.videoWidth;
-      //             canvas.width =
-      //               video.videoWidth > video.videoHeight
-      //                 ? MAX_ICON_SIZE
-      //                 : (MAX_ICON_SIZE * video.videoWidth) / video.videoHeight;
-
-      //             const capturePoints = [
-      //               video.duration / 4,
-      //               video.duration / 2,
-      //             ];
-      //             const frameStep = 4 / ICON_GIF_FPS;
-      //             const frameCount = framesRemaining / capturePoints.length;
-
-      //             capturePoints.forEach(async (capturePoint, index) => {
-      //               if (signal.aborted) return;
-
-      //               for (
-      //                 let frame = capturePoint;
-      //                 frame < capturePoint + frameCount * frameStep;
-      //                 frame += frameStep
-      //               ) {
-      //                 if (signal.aborted) return;
-
-      //                 const firstFrame = index === 0;
-
-      //                 // eslint-disable-next-line no-await-in-loop
-      //                 await getFrame(frame, firstFrame);
-
-      //                 if (firstFrame && frame === capturePoint) {
-      //                   getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
-      //                 }
-      //               }
-      //             });
-      //           },
-      //           { signal, ...ONE_TIME_PASSIVE_EVENT },
-      //         );
-
-      //         video.src = bufferToUrl(
-      //           contents,
-      //           isSafari()
-      //             ? getMimeType(path) || VIDEO_FALLBACK_MIME_TYPE
-      //             : undefined,
-      //         );
-      //       }
-      //     }),
-      //   );
-      // }
-      else {
+                  //* Create thumbnail preview of video
+                  getThumbnailFrame(6);
+                  //
+                },
+                { signal, ...ONE_TIME_PASSIVE_EVENT },
+              );
+              video.src = bufferToUrl(
+                contents,
+                isSafari()
+                  ? getMimeType(path) || VIDEO_FALLBACK_MIME_TYPE
+                  : undefined,
+              );
+            }
+          }),
+        );
+      } else {
         getInfoByFileExtension();
       }
   }

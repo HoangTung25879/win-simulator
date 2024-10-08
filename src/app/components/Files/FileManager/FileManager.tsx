@@ -24,10 +24,11 @@ import useFileKeyboardShortcuts, {
 } from "../FileEntry/useFileKeyboardShortcuts";
 import { requestPermission } from "@/contexts/fileSystem/utils";
 import { getExtension, haltEvent } from "@/lib/utils";
-import Loading from "./Loading";
 import Empty from "./Empty";
 import useFileDrop from "../FileEntry/useFileDrop";
 import StatusBar from "./StatusBar";
+import { useSession } from "@/contexts/session";
+import Loading from "../../Common/Loading/Loading";
 
 type FileManagerProps = {
   allowMovingDraggableEntries?: boolean;
@@ -38,6 +39,7 @@ type FileManagerProps = {
   id?: string;
   isDesktop?: boolean;
   isStartMenu?: boolean;
+  toggleStartMenu?: (showMenu?: boolean) => void;
   isFileExplorer?: boolean;
   loadIconsImmediately?: boolean;
   readOnly?: boolean;
@@ -56,6 +58,7 @@ const FileManager = ({
   id,
   isDesktop,
   isStartMenu,
+  toggleStartMenu,
   isFileExplorer,
   loadIconsImmediately,
   readOnly,
@@ -78,6 +81,7 @@ const FileManager = ({
       skipFsWatcher,
       skipSorting,
     });
+  const { hideDesktopIcon } = useSession();
   const { lstat, mountFs, rootFs } = useFileSystem();
   const { isSelecting, selectionRect, selectionStyling, selectionEvents } =
     useSelection(fileManagerRef, focusedEntries, focusFunctions);
@@ -228,6 +232,7 @@ const FileManager = ({
                     isLoading && "!invisible",
                     "list-file",
                     isSelecting && "selecting",
+                    hideDesktopIcon && isDesktop && "hide-desktop-icon",
                   )}
                   {...(!readOnly &&
                     draggableEntry(url, file, renaming === file))}
@@ -241,7 +246,8 @@ const FileManager = ({
                     fileManagerRef={fileManagerRef}
                     focusFunctions={focusFunctions}
                     focusedEntries={focusedEntries}
-                    hasNewFolderIcon={isStartMenu}
+                    isStartMenu={isStartMenu}
+                    toggleStartMenu={toggleStartMenu}
                     hideShortcutIcon={hideShortcutIcons}
                     isDesktop={isDesktop}
                     isHeading={isDesktop && files[file].systemShortcut}

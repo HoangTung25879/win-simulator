@@ -24,12 +24,17 @@ const INITIAL_FILE_INFO: FileInfo = {
   url: "",
 };
 
-const useFileInfo = (
-  path: string,
+const useFileInfo = ({
+  path,
   isDirectory = false,
   hasNewFolderIcon = false,
   isVisible = true,
-): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
+}: {
+  path: string;
+  isDirectory?: boolean;
+  hasNewFolderIcon?: boolean;
+  isVisible?: boolean;
+}): [FileInfo, React.Dispatch<React.SetStateAction<FileInfo>>] => {
   const [info, setInfo] = useState<FileInfo>(INITIAL_FILE_INFO);
   const updatingInfo = useRef(false);
   const updateInfo = (newInfo: FileInfo): void => {

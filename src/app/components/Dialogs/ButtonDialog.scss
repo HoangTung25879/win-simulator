@@ -1,0 +1,38 @@
+$base-line-height: 21px;
+@mixin button-dialog {
+  background-color: rgb(225, 225, 225);
+  border: 1px solid rgb(173, 173, 173);
+  color: #000;
+  display: grid;
+  font-size: 12px;
+  height: 23px;
+  line-height: $base-line-height;
+  transition: background-color 0.25s ease;
+  width: 73px;
+
+  &:focus,
+  &.focus {
+    border: 2px solid rgb(0, 120, 215);
+    line-height: calc($base-line-height - 2px);
+  }
+
+  &:hover {
+    background-color: rgb(229, 241, 251);
+    border: 1px solid rgb(0, 120, 215);
+    line-height: $base-line-height;
+  }
+
+  &:active {
+    background-color: rgb(204, 228, 247);
+    border: 1px solid rgb(0, 84, 153);
+    line-height: $base-line-height;
+    transition: none;
+  }
+
+  &:disabled {
+    background-color: rgb(204, 204, 204);
+    border: 1px solid rgb(191, 191, 191);
+    color: #808080;
+    line-height: $base-line-height;
+  }
+}

@@ -14,6 +14,8 @@
     "find-deadcode": "ts-prune --error"
   },
   "dependencies": {
+    "@types/gif.js": "^0.2.5",
+    "@types/video.js": "^7.3.58",
     "@uiw/color-convert": "^2.3.2",
     "@uiw/react-color-sketch": "^2.3.2",
     "browserfs": "^1.4.3",
@@ -23,6 +25,7 @@
     "es-toolkit": "^1.21.0",
     "fix-webm-duration": "^1.0.6",
     "framer-motion": "^11.3.8",
+    "gif.js.optimized": "^1.0.1",
     "gl-matrix": "^3.4.3",
     "html-to-image": "^1.11.11",
     "idb": "^8.0.0",
@@ -43,7 +46,7 @@
   "devDependencies": {
     "@types/ini": "^4.1.1",
     "@types/lunr": "^2.3.7",
-    "@types/node": "^20",
+    "@types/node": "^20.16.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/wicg-file-system-access": "^2023.10.5",

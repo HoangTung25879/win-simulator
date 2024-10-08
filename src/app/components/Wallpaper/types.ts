@@ -11,7 +11,7 @@ export type WallpaperFunc = (
 ) => Promise<void> | void;
 
 export type AnimationRenderer = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ) => () => void;

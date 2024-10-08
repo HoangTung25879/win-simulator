@@ -14,7 +14,7 @@ import {
   MINIMIZE_DISABLED,
   RESTORE,
   RESTORE_DISABLED,
-} from "./Icon";
+} from "./Icons";
 import { MENU_SEPERATOR } from "@/lib/constants";
 
 const useTitlebarContextMenu = (id: string): ContextMenuCapture => {

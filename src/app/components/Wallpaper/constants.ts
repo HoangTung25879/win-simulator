@@ -1,6 +1,14 @@
-import { WallpaperImage } from "@/contexts/session/types";
+import { WallpaperFit, WallpaperImage } from "@/contexts/session/types";
 import { WallpaperConfig, WallpaperFunc } from "./types";
 import { vantaCloudsConfig, vantaWavesConfig } from "./vanta/config";
+
+export const bgPositionSize: Record<WallpaperFit, string> = {
+  center: "center center",
+  fill: "center center / cover",
+  fit: "center center / contain",
+  stretch: "center center / 100% 100%",
+  tile: "50% 50%",
+};
 
 export const WALLPAPER_CONFIG: Record<
   Exclude<WallpaperImage, "SYNTHWAVE" | "SOLID COLOR">,
@@ -29,4 +37,82 @@ export const WALLPAPER_PATHS: Record<
   "FALLING FOOD FIESTA": () => import("@/app/components/Wallpaper/animation"),
   "MATRIX RAIN": () => import("@/app/components/Wallpaper/animation"),
   "GALAXY SPIRAL": () => import("@/app/components/Wallpaper/animation"),
+};
+
+export const WALLPAPER_PATHS_WORKERS: Record<
+  Exclude<WallpaperImage, "SOLID COLOR">,
+  (info?: string) => Worker
+> = {
+  "VANTA WAVES": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/vanta/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Vanta Waves)${info ? ` [${info}]` : ""}` },
+    ),
+  "VANTA CLOUDS": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/vanta/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Vanta Clouds)${info ? ` [${info}]` : ""}` },
+    ),
+  SYNTHWAVE: (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/synthwave/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Synthwave)${info ? ` [${info}]` : ""}` },
+    ),
+  "AMBIENT SWIRL": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/ambient/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Ambient Swirl)${info ? ` [${info}]` : ""}` },
+    ),
+  "AMBIENT SHIFT": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/ambient/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Ambient Shift)${info ? ` [${info}]` : ""}` },
+    ),
+  "AMBIENT COALESCE": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/ambient/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Ambient Coalesce)${info ? ` [${info}]` : ""}` },
+    ),
+  "FALLING FOOD FIESTA": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/animation/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Falling Food Fiesta)${info ? ` [${info}]` : ""}` },
+    ),
+  "MATRIX RAIN": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/animation/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Matrix Rain)${info ? ` [${info}]` : ""}` },
+    ),
+  "GALAXY SPIRAL": (info?: string): Worker =>
+    new Worker(
+      new URL(
+        "src/app/components/Wallpaper/animation/wallpaper.worker.ts",
+        import.meta.url,
+      ),
+      { name: `Wallpaper (Galaxy Spiral)${info ? ` [${info}]` : ""}` },
+    ),
 };

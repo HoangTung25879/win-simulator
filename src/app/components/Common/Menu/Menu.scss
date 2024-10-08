@@ -13,13 +13,13 @@
   font-size: 0.75rem;
   .menu-item {
     width: 100%;
-    &.disabled {
+    &.--disabled {
       color: rgb(109, 109, 109);
       pointer-events: none;
     }
     hr {
       background-color: rgb(145, 145, 145);
-      height: 1px;
+      height: 1.5px;
       margin: 3px 8px;
     }
     .item-button {

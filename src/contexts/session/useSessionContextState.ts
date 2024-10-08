@@ -32,6 +32,7 @@ import { ApiError } from "browserfs/dist/node/core/api_error";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 const KEEP_RECENT_FILES_LIST_COUNT = 10;
+export const DEFAULT_WALLPAPER: WallpaperImage = "SYNTHWAVE";
 
 const useSessionContextState = (): SessionContextState => {
   const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
@@ -51,11 +52,12 @@ const useSessionContextState = (): SessionContextState => {
   );
   const [wallpaperFit, setWallpaperFit] = useState<WallpaperFit>("fit");
   const [wallpaperImage, setWallpaperImage] =
-    useState<WallpaperImage>("SYNTHWAVE");
+    useState<WallpaperImage>(DEFAULT_WALLPAPER);
   const [wallpaperColor, setWallpaperColor] = useState("rgba(255, 140, 0)");
   const [runHistory, setRunHistory] = useState<string[]>([]);
   const [recentFiles, setRecentFiles] = useState<RecentFiles>([]);
   const [haltSession, setHaltSession] = useState(false);
+  const [hideDesktopIcon, setHideDesktopIcon] = useState(false);
   const initializedSession = useRef(false);
   const loadingDebounceRef = useRef(0);
 
@@ -381,6 +383,8 @@ const useSessionContextState = (): SessionContextState => {
     windowStates,
     setWallpaperColor,
     wallpaperColor,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   };
 };
 

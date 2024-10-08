@@ -8,9 +8,10 @@ import clsx from "clsx";
 import dayjs, { Dayjs } from "dayjs";
 import { clearInterval, setInterval } from "worker-timers";
 import sizes from "@/lib/sizes";
+import { LABEL_MENU_TRIGGER } from "../Taskbar";
 
 type ClockProps = {
-  toggleCalendar: () => void;
+  toggleCalendar: (showMenu?: boolean) => void;
 };
 const formatDate = "dddd, MMMM D, YYYY";
 
@@ -104,7 +105,6 @@ const Clock = ({ toggleCalendar }: ClockProps) => {
 
   return (
     <div
-      id="clock"
       title={date.format(formatDate)}
       className="ml-auto flex h-full flex-col items-center justify-center p-2 text-center text-xs
         text-white hover:bg-taskbar-hover"
@@ -113,10 +113,15 @@ const Clock = ({ toggleCalendar }: ClockProps) => {
       onClick={() => {
         toggleCalendar();
       }}
+      aria-label={LABEL_MENU_TRIGGER.calendar}
       {...FOCUSABLE_ELEMENT}
     >
-      <div>{date.format("h:mm A")}</div>
-      <div>{date.format("M/D/YYYY")}</div>
+      <div aria-label={LABEL_MENU_TRIGGER.calendar}>
+        {date.format("h:mm A")}
+      </div>
+      <div aria-label={LABEL_MENU_TRIGGER.calendar}>
+        {date.format("M/D/YYYY")}
+      </div>
     </div>
   );
 };

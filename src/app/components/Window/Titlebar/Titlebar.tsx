@@ -14,7 +14,7 @@ import sizes from "@/lib/sizes";
 import { MenuState } from "@/contexts/menu/useMenuContextState";
 import { PREVENT_SCROLL } from "@/lib/constants";
 import Icon from "../../Common/Icon/Icon";
-import { CloseIcon, MaximizedIcon, MaximizeIcon, MinimizeIcon } from "./Icon";
+import { CloseIcon, MaximizedIcon, MaximizeIcon, MinimizeIcon } from "./Icons";
 
 type TitlebarProps = {
   id: string;

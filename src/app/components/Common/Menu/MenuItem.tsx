@@ -104,7 +104,7 @@ const MenuItem = ({ item, resetMenu }: MenuItemProps) => {
       role="menuitem"
       ref={itemRef}
       title={tooltip}
-      className={clsx("menu-item", disabled ? "--disable" : "")}
+      className={clsx("menu-item", disabled ? "--disabled" : "")}
       {...FOCUSABLE_ELEMENT}
       {...subMenuEvents}
     >

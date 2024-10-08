@@ -21,7 +21,7 @@ const zOff = 0.0005;
 const backgroundColor = "hsla(260,40%,5%,1)";
 
 const Swirl: AnimationRenderer = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ): (() => void) => {

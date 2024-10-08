@@ -18,7 +18,7 @@ import {
   isSafari,
   updateIconPositions,
 } from "@/lib/utils";
-import { DESKTOP_PATH, MENU_SEPERATOR } from "@/lib/constants";
+import { DESKTOP_PATH, FOLDER_ICON, MENU_SEPERATOR } from "@/lib/constants";
 import fixWebmDuration from "fix-webm-duration";
 import { useProcessesRef } from "@/contexts/process/useProcessesRef";
 import { AllProcess } from "@/contexts/process/directory";
@@ -26,6 +26,7 @@ import { AllProcess } from "@/contexts/process/directory";
 const CAPTURE_FPS = 30;
 const MIME_TYPE_VIDEO_WEBM = "video/webm";
 const MIME_TYPE_VIDEO_MP4 = "video/mp4";
+const NEW_FOLDER = "New folder";
 
 let currentMediaStream: MediaStream | undefined;
 let currentMediaRecorder: MediaRecorder | undefined;
@@ -61,11 +62,11 @@ const useFolderContextMenu = (
   const {
     iconPositions,
     // setForegroundId,
-    // setWallpaper: setSessionWallpaper,
     setIconPositions,
     sortOrders,
     // updateRecentFiles,
-    // wallpaperImage,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   } = useSession();
   const { minimize, open } = useProcesses();
   const processesRef = useProcessesRef();
@@ -101,20 +102,16 @@ const useFolderContextMenu = (
   const captureScreen = useCallback(async () => {
     if (currentMediaRecorder && currentMediaStream) {
       const { active: wasActive } = currentMediaStream;
-
       try {
         currentMediaRecorder.requestData();
         currentMediaStream.getTracks().forEach((track) => track.stop());
       } catch {
         // Ignore errors with MediaRecorder
       }
-
       currentMediaRecorder = undefined;
       currentMediaStream = undefined;
-
       if (wasActive) return;
     }
-
     const isFirefoxOrSafari = isFirefox() || isSafari();
     const displayMediaOptions: DisplayMediaStreamOptions &
       MediaStreamConstraints = {
@@ -129,33 +126,26 @@ const useFolderContextMenu = (
         systemAudio: "include",
       }),
     };
-
     currentMediaStream =
       await navigator.mediaDevices.getDisplayMedia(displayMediaOptions);
-
     const [currentVideoTrack] = currentMediaStream.getVideoTracks();
     const { height, width } = currentVideoTrack.getSettings();
     const supportsWebm = MediaRecorder.isTypeSupported(MIME_TYPE_VIDEO_WEBM);
     const fileName = `Screen Capture ${generatePrettyTimestamp()}.${
       supportsWebm ? "webm" : "mp4"
     }`;
-
     currentMediaRecorder = new MediaRecorder(currentMediaStream, {
       bitsPerSecond: height && width ? height * width * CAPTURE_FPS : undefined,
       mimeType: supportsWebm ? MIME_TYPE_VIDEO_WEBM : MIME_TYPE_VIDEO_MP4,
     });
-
     const capturePath = join(DESKTOP_PATH, fileName);
     const startTime = Date.now();
     let hasCapturedData = false;
-
     currentMediaRecorder.start();
     currentMediaRecorder.addEventListener("dataavailable", async (event) => {
       const { data } = event;
-
       if (data?.size) {
         const bufferData = await blobToBuffer(data);
-
         await writeFile(
           capturePath,
           hasCapturedData
@@ -163,7 +153,6 @@ const useFolderContextMenu = (
             : bufferData,
           hasCapturedData,
         );
-
         if (
           supportsWebm &&
           !isFirefoxOrSafari &&
@@ -184,7 +173,6 @@ const useFolderContextMenu = (
         } else {
           updateFolder(DESKTOP_PATH, fileName);
         }
-
         hasCapturedData = true;
       }
     });
@@ -233,9 +221,9 @@ const useFolderContextMenu = (
       const targetElement = target as HTMLElement;
       const ADD_FILE = {
         action: () =>
-          addToFolder().then((files) =>
-            updateDesktopIconPositions(files, event),
-          ),
+          addToFolder().then((files) => {
+            updateDesktopIconPositions(files, event);
+          }),
         label: "Add file(s)",
       };
       const FS_COMMANDS = [ADD_FILE];
@@ -275,7 +263,50 @@ const useFolderContextMenu = (
         },
         icon: "/System/Icons/personalized.png",
       };
-      return [SORT_BY, REFRESH, MENU_SEPERATOR, PERSONALIZE];
+      const CAPTURE_SCREEN: MenuItem = {
+        action: captureScreen,
+        label: currentMediaStream?.active
+          ? "Stop screen capture"
+          : "Capture screen",
+      };
+      const PASTE: MenuItem = {
+        action: () => pasteToFolder(event),
+        disabled: Object.keys(pasteList).length === 0,
+        label: "Paste",
+      };
+      const NEW: MenuItem = {
+        label: "New",
+        menu: [
+          {
+            action: () => newEntry(NEW_FOLDER, undefined, event),
+            icon: FOLDER_ICON,
+            label: "Folder",
+          },
+        ],
+      };
+      const VIEW: MenuItem = {
+        label: "View",
+        menu: [
+          {
+            action: () => setHideDesktopIcon(!hideDesktopIcon),
+            label: "Show desktop icons",
+            checked: !hideDesktopIcon,
+          },
+        ],
+      };
+      return [
+        VIEW,
+        SORT_BY,
+        REFRESH,
+        MENU_SEPERATOR,
+        PASTE,
+        CAPTURE_SCREEN,
+        ...FS_COMMANDS,
+        MENU_SEPERATOR,
+        NEW,
+        MENU_SEPERATOR,
+        PERSONALIZE,
+      ];
     });
   }, [
     addToFolder,
@@ -283,7 +314,6 @@ const useFolderContextMenu = (
     captureScreen,
     contextMenu,
     exists,
-    // hasWebGPU,
     isAscending,
     isDesktop,
     isStartMenu,
@@ -296,15 +326,15 @@ const useFolderContextMenu = (
     processesRef,
     rootFs?.mntMap,
     // setForegroundId,
-    // setWallpaper,
     sortBy,
     updateDesktopIconPositions,
     updateFolder,
     // updateRecentFiles,
     updateSorting,
     url,
-    // wallpaperImage,
     writeFile,
+    hideDesktopIcon,
+    setHideDesktopIcon,
   ]);
 };
 

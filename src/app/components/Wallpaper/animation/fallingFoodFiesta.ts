@@ -1,7 +1,7 @@
 import { AnimationRenderer } from "../types";
 
 const FallingFoodFiesta: AnimationRenderer = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ) => {

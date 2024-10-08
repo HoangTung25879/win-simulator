@@ -8,11 +8,12 @@ import usePeekWindowTransition from "../usePeekWindowTransition";
 import { motion } from "framer-motion";
 import "./PeekWindow.scss";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
-import { CloseIcon } from "../../Window/Titlebar/Icon";
+import { CloseIcon } from "../../Window/Titlebar/Icons";
 import useWindowPeek from "./useWindowPeek";
 import Icon from "../../Common/Icon/Icon";
 import clsx from "clsx";
-import Image from "next/image";
+import { PauseIcon, PlayIcon } from "./Icons";
+import { haltEvent } from "@/lib/utils";
 
 type PeekWindowProps = {
   id: string;
@@ -91,7 +92,7 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
             <CloseIcon />
           </button>
         </div>
-        <Image
+        <img
           className="peek-image"
           alt={title}
           decoding="async"
@@ -99,6 +100,36 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
           src={image}
           fetchPriority="high"
         />
+        {showControls && (
+          <div className="controls">
+            {isPaused && (
+              <button
+                onClick={(event) => {
+                  haltEvent(event);
+                  play?.();
+                }}
+                aria-label="Play"
+                title="Play"
+                {...FOCUSABLE_ELEMENT}
+              >
+                <PlayIcon />
+              </button>
+            )}
+            {!isPaused && (
+              <button
+                onClick={(event) => {
+                  haltEvent(event);
+                  pause?.();
+                }}
+                aria-label="Pause"
+                title="Pause"
+                {...FOCUSABLE_ELEMENT}
+              >
+                <PauseIcon />
+              </button>
+            )}
+          </div>
+        )}
       </motion.div>
     )
   );

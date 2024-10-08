@@ -144,6 +144,12 @@
       }
     }
   }
+  .hide-desktop-icon {
+    visibility: hidden;
+    img {
+      visibility: hidden !important;
+    }
+  }
 }
 
 .status-bar {

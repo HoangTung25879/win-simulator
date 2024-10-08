@@ -79,6 +79,7 @@ const Photos = ({ id }: PhotosProps) => {
   const controlRef = useRef<ReactZoomPanPinchContentRef>(
     Object.create({}) as ReactZoomPanPinchContentRef,
   );
+  const transformTimeout = useRef<number | undefined>(undefined);
   const urlBaseName = basename(url);
 
   const loadSrc = useCallback(async (): Promise<void> => {
@@ -191,6 +192,20 @@ const Photos = ({ id }: PhotosProps) => {
       loadImage();
     }
   }, [src, url]);
+
+  useEffect(() => {
+    if (!hasInitTransform) {
+      transformTimeout.current = window.setTimeout(() => {
+        setHasInitTransform(true);
+      }, 200);
+    }
+    return () => {
+      if (transformTimeout.current) {
+        clearTimeout(transformTimeout.current);
+        transformTimeout.current = undefined;
+      }
+    };
+  }, [hasInitTransform]);
 
   useEffect(() => {
     componentWindow?.addEventListener("keydown", onKeyDown);

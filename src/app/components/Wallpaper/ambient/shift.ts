@@ -20,7 +20,7 @@ const zOff = 0.0015;
 const backgroundColor = "hsla(0,0%,5%,1)";
 
 const Shift: AnimationRenderer = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   width: number,
   height: number,
 ): (() => void) => {

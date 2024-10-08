@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import StartButtonIcon from "./StartButtonIcon";
+import WindowsIcon from "./Icons";
 import clsx from "clsx";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
-import { START_BUTTON_TITLE } from "../functions";
 import "./StartButton.scss";
 import useTaskbarContextMenu from "../useTaskbarContextMenu";
+import { START_BUTTON_TITLE } from "../functions";
+import { LABEL_MENU_TRIGGER } from "../Taskbar";
 
 type StartButtonProps = {
   toggleStartMenu: (showMenu?: boolean) => void;
@@ -20,8 +21,7 @@ const StartButton = ({
   const [isHover, setIsHover] = useState(false);
   return (
     <button
-      id="startButton"
-      aria-label={START_BUTTON_TITLE}
+      aria-label={LABEL_MENU_TRIGGER.startMenu}
       title={START_BUTTON_TITLE}
       className={clsx("start-button", startMenuVisible && "--active")}
       onMouseOver={(e) => setIsHover(true)}
@@ -32,7 +32,7 @@ const StartButton = ({
       {...useTaskbarContextMenu(true)}
       {...FOCUSABLE_ELEMENT}
     >
-      <StartButtonIcon isHover={isHover} />
+      <WindowsIcon ariaLabel={LABEL_MENU_TRIGGER.startMenu} isHover={isHover} />
     </button>
   );
 };
