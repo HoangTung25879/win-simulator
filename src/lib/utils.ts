@@ -735,3 +735,9 @@ export const isCanvasDrawn = (canvas?: HTMLCanvasElement | null): boolean => {
 
   return !isBlankCanvas;
 };
+
+let idCounter = 0;
+export const uniqueId = (prefix: string = "") => {
+  const id = ++idCounter;
+  return String(prefix) + id;
+};

@@ -1,7 +1,12 @@
+@import "../../../../styles/message.scss";
+
 .video-player {
   display: flex;
   height: 100%;
   width: 100%;
+  &.--error {
+    @include message("Drop video here", #fff, 25%);
+  }
   .vjs-control-bar {
     &:not(.no-interaction) {
       display: flex !important;

@@ -1,0 +1,52 @@
+.notification-wrapper {
+  $notification-width: 300px;
+  $notification-padding: 12px;
+  position: absolute;
+  right: $notification-padding;
+  bottom: calc(var(--taskbar-height) + $notification-padding);
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 12px;
+  height: calc(100vh - var(--taskbar-height) - 2 * $notification-padding);
+  .notification {
+    border: 1px solid var(--taskbar-peek-border);
+    background-color: rgb(31, 31, 31);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: $notification-padding;
+    padding: $notification-padding;
+    width: $notification-width;
+    .process-title {
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .process-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        svg {
+          height: 16px;
+        }
+      }
+    }
+    .close-button {
+      svg {
+        fill: rgb(200, 200, 200);
+        height: 10px;
+        &:hover {
+          fill: #fff;
+        }
+      }
+    }
+    .title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .content {
+      font-size: 14px;
+      color: rgb(163, 163, 163);
+    }
+  }
+}

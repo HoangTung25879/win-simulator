@@ -29,6 +29,7 @@ import { getMimeType } from "@/contexts/fileSystem/utils";
 import { VIDEO_FALLBACK_MIME_TYPE } from "@/lib/constants";
 import "./VideoPlayer.scss";
 import { VideoJsPlayer } from "video.js";
+import clsx from "clsx";
 
 type VideoPlayerProps = {} & ComponentProcessProps;
 
@@ -41,6 +42,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
   const { readFile } = useFileSystem();
   const { updateWindowSize } = useWindowSize(id);
   const { prependFileToTitle } = useTitle(id);
+  const [srcError, setSrcError] = useState(false);
   const [player, setPlayer] = useState<VideoJsPlayer>();
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
   const [loading, setLoading] = useState(true);
@@ -76,7 +78,6 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
       const { ytPlayer: youTubePlayer } =
         (videoPlayer as YouTubeTech).tech_ || {};
       if (youTubePlayer) setYtPlayer(youTubePlayer);
-
       const [height, width] = youTubePlayer
         ? ytQualitySizeMap[youTubePlayer.getPlaybackQuality()] ||
           DEFAULT_QUALITY_SIZE
@@ -91,28 +92,6 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
           updateWindowSize(heightWithControlBar, width);
         }
       }
-      // videoPlayer.on("play", () => {
-      //   if (initializedUrlRef.current) return;
-      //   initializedUrlRef.current = true;
-      //   const { ytPlayer: youTubePlayer } =
-      //     (videoPlayer as YouTubeTech).tech_ || {};
-      //   if (youTubePlayer) setYtPlayer(youTubePlayer);
-
-      //   const [height, width] = youTubePlayer
-      //     ? ytQualitySizeMap[youTubePlayer.getPlaybackQuality()] ||
-      //       DEFAULT_QUALITY_SIZE
-      //     : [videoPlayer.videoHeight(), videoPlayer.videoWidth()];
-      //   const [vh, vw] = [window.innerHeight, window.innerWidth];
-      //   if (height && width) {
-      //     const heightWithControlBar =
-      //       height + (youTubePlayer ? 0 : CONTROL_BAR_HEIGHT);
-      //     if (heightWithControlBar > vh || width > vw) {
-      //       updateWindowSize(vw * (heightWithControlBar / width), vw);
-      //     } else {
-      //       updateWindowSize(heightWithControlBar, width);
-      //     }
-      //   }
-      // });
       const toggleFullscreen = (): void => {
         try {
           if (videoPlayer.isFullscreen()) videoPlayer.exitFullscreen();
@@ -188,6 +167,10 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
         return videoPlayer.paused();
       });
     });
+
+    videoPlayer.on("error", () => {
+      setSrcError(true);
+    });
   }, [
     argument,
     containerRef,
@@ -212,6 +195,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
+        setSrcError(false);
         const source = await getSource();
         initializedUrlRef.current = false;
         player.src(source);
@@ -250,7 +234,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
       {loading && <Loading />}
       <div
         ref={containerRef}
-        className="video-player"
+        className={clsx("video-player", srcError && "--error")}
         style={{
           contain: "strict",
           visibility: loading ? "hidden" : "visible",

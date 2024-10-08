@@ -10,6 +10,7 @@ import AppsLoader from "./components/Apps/AppsLoader";
 import { FullScreenProvider } from "@/contexts/fullScreen";
 import { WallpaperProvider } from "@/contexts/wallpaper";
 import "simplebar-react/dist/simplebar.min.css";
+import { NotificationProvider } from "@/contexts/notification";
 
 export default function Page() {
   const ChildrenComponent = () => (
@@ -22,19 +23,21 @@ export default function Page() {
   );
   return (
     <>
-      <FullScreenProvider>
-        <ProcessProvider>
-          <FileSystemProvider>
-            <SessionProvider>
-              <MenuProvider>
-                <WallpaperProvider>
-                  <ChildrenComponent />
-                </WallpaperProvider>
-              </MenuProvider>
-            </SessionProvider>
-          </FileSystemProvider>
-        </ProcessProvider>
-      </FullScreenProvider>
+      <NotificationProvider>
+        <FullScreenProvider>
+          <ProcessProvider>
+            <FileSystemProvider>
+              <SessionProvider>
+                <MenuProvider>
+                  <WallpaperProvider>
+                    <ChildrenComponent />
+                  </WallpaperProvider>
+                </MenuProvider>
+              </SessionProvider>
+            </FileSystemProvider>
+          </ProcessProvider>
+        </FullScreenProvider>
+      </NotificationProvider>
     </>
   );
 }
