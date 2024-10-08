@@ -8,7 +8,7 @@ import usePeekWindowTransition from "../usePeekWindowTransition";
 import { motion } from "framer-motion";
 import "./PeekWindow.scss";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
-import { CloseIcon } from "../../Window/Titlebar/Icon";
+import { CloseIcon } from "../../Window/Titlebar/Icons";
 import useWindowPeek from "./useWindowPeek";
 import Icon from "../../Common/Icon/Icon";
 import clsx from "clsx";

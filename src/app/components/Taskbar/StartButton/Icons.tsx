@@ -1,9 +1,9 @@
-type StartButtonIconProps = {
-  isHover: boolean;
-  ariaLabel: string;
+type IconProps = {
+  isHover?: boolean;
+  ariaLabel?: string;
 };
 
-const StartButtonIcon = ({ isHover, ariaLabel }: StartButtonIconProps) => {
+const WindowsIcon = ({ isHover, ariaLabel }: IconProps) => {
   return (
     <svg
       aria-label={ariaLabel}
@@ -19,4 +19,4 @@ const StartButtonIcon = ({ isHover, ariaLabel }: StartButtonIconProps) => {
   );
 };
 
-export default StartButtonIcon;
+export default WindowsIcon;

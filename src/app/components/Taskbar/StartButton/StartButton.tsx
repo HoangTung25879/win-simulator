@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import StartButtonIcon from "./StartButtonIcon";
+import WindowsIcon from "./Icons";
 import clsx from "clsx";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import "./StartButton.scss";
@@ -32,10 +32,7 @@ const StartButton = ({
       {...useTaskbarContextMenu(true)}
       {...FOCUSABLE_ELEMENT}
     >
-      <StartButtonIcon
-        ariaLabel={LABEL_MENU_TRIGGER.startMenu}
-        isHover={isHover}
-      />
+      <WindowsIcon ariaLabel={LABEL_MENU_TRIGGER.startMenu} isHover={isHover} />
     </button>
   );
 };

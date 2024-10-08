@@ -12,7 +12,9 @@
   right: 0;
   bottom: var(--taskbar-height);
   color: #fff;
-  background: #393939;
+  background: rgb(31, 31, 31);
+  border: 1px solid var(--taskbar-peek-border);
+  border-bottom: none;
   z-index: 9999;
   height: fit-content !important;
   width: fit-content;

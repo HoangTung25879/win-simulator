@@ -11,7 +11,7 @@ import {
   VIDEOS_FOLDER,
 } from "@/lib/constants";
 import { haltEvent } from "@/lib/utils";
-import { Documents, Pictures, Videos } from "../StartMenu/Sidebar/SidebarIcons";
+import { Documents, Pictures, Videos } from "../StartMenu/Sidebar/Icons";
 import { useSession } from "@/contexts/session";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -27,7 +27,7 @@ import {
 } from "@/contexts/fileSystem/utils";
 import { getProcessByFileExtension } from "../../Files/FileManager/functions";
 import clsx from "clsx";
-import { CloseIcon } from "../../Window/Titlebar/Icon";
+import { CloseIcon } from "../../Window/Titlebar/Icons";
 import directory from "@/contexts/process/directory";
 import Icon from "../../Common/Icon/Icon";
 import { GamesIcon } from "./Icons";

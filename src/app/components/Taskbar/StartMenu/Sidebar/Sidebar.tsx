@@ -1,14 +1,7 @@
 "use client";
 import React from "react";
-import { useCallback, useRef, useState } from "react";
-import {
-  AllApps,
-  Documents,
-  Pictures,
-  Power,
-  Settings,
-  SideMenu,
-} from "./SidebarIcons";
+import { useRef, useState } from "react";
+import { Documents, Pictures, Power, Settings, SideMenu } from "./Icons";
 import clsx from "clsx";
 import "./Sidebar.scss";
 import { haltEvent } from "@/lib/utils";
