@@ -28,7 +28,6 @@ const nextConfig = {
   devIndicators: {
     buildActivityPosition: "top-right",
   },
-  output: "export",
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
   swcMinify: true,
