@@ -3,14 +3,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 import StartButton from "./StartButton/StartButton";
 import Clock from "./Clock/Clock";
-import Calendar from "./Calendar/Calendar";
 import { AnimatePresence } from "framer-motion";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
-import StartMenu from "./StartMenu/StartMenu";
 import Tabs from "./Tabs/Tabs";
 import SearchBar from "./Search/SearchBar";
-import SearchMenu from "./Search/SearchMenu";
 import useTaskbarContextMenu from "./useTaskbarContextMenu";
+import dynamic from "next/dynamic";
+
+const Calendar = dynamic(
+  () => import("@/app/components/Taskbar/Calendar/Calendar"),
+);
+const SearchMenu = dynamic(
+  () => import("@/app/components/Taskbar/Search/SearchMenu"),
+);
+const StartMenu = dynamic(
+  () => import("@/app/components/Taskbar/StartMenu/StartMenu"),
+);
 
 export const IDS_MENU = {
   startMenu: "startMenu",
