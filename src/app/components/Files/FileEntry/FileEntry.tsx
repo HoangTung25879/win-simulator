@@ -55,7 +55,6 @@ import dayjs from "dayjs";
 import useDoubleClick from "@/hooks/useDoubleClick";
 import clsx from "clsx";
 import useFileContextMenu from "./useFileContextMenu";
-import RenameBox from "./RenameBox";
 import { spotlightEffect } from "@/lib/spotlightEffect";
 import { DownIcon } from "../../FileExplorer/Navigation/Icons";
 import FileManager from "../FileManager/FileManager";
@@ -64,6 +63,11 @@ import { toCanvas } from "html-to-image";
 import colors from "@/lib/colors";
 import { FileEntryIconSize } from "./constants";
 import SubIcons from "../../Common/Icon/SubIcons";
+import dynamic from "next/dynamic";
+
+const RenameBox = dynamic(
+  () => import("@/app/components/Files/FileEntry/RenameBox"),
+);
 
 type FileEntryProps = {
   id?: string;

@@ -24,11 +24,19 @@ import useFileKeyboardShortcuts, {
 } from "../FileEntry/useFileKeyboardShortcuts";
 import { requestPermission } from "@/contexts/fileSystem/utils";
 import { getExtension, haltEvent } from "@/lib/utils";
-import Empty from "./Empty";
 import useFileDrop from "../FileEntry/useFileDrop";
-import StatusBar from "./StatusBar";
 import { useSession } from "@/contexts/session";
-import Loading from "../../Common/Loading/Loading";
+import dynamic from "next/dynamic";
+
+const StatusBar = dynamic(
+  () => import("@/app/components/Files/FileManager/StatusBar"),
+);
+
+const Empty = dynamic(() => import("@/app/components/Files/FileManager/Empty"));
+
+const Loading = dynamic(
+  () => import("@/app/components/Common/Loading/Loading"),
+);
 
 type FileManagerProps = {
   allowMovingDraggableEntries?: boolean;
