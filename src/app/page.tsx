@@ -12,6 +12,33 @@ import { WallpaperProvider } from "@/contexts/wallpaper";
 import "simplebar-react/dist/simplebar.min.css";
 import { NotificationProvider } from "@/contexts/notification";
 
+import localFont from "next/font/local";
+
+const SegoeUIFont = localFont({
+  src: [
+    {
+      path: "../../public/System/Font/Segoe UI.ttf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "../..//public/System/Font/Segoe UI Italic.ttf",
+      weight: "400",
+      style: "italic",
+    },
+    {
+      path: "../../public/System/Font/Segoe UI Bold.ttf",
+      weight: "700",
+      style: "normal",
+    },
+    {
+      path: "../../public/System/Font/Segoe UI Bold Italic.ttf",
+      weight: "700",
+      style: "italic",
+    },
+  ],
+});
+
 export default function Page() {
   const ChildrenComponent = () => (
     <Desktop>
@@ -23,6 +50,11 @@ export default function Page() {
   );
   return (
     <>
+      <style jsx global>{`
+        html {
+          font-family: ${SegoeUIFont.style.fontFamily};
+        }
+      `}</style>
       <NotificationProvider>
         <FullScreenProvider>
           <ProcessProvider>

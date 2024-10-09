@@ -5,7 +5,7 @@ import "../styles/globals.scss";
 
 export const metadata: Metadata = {
   title: "Tung Web Desktop",
-  description: "",
+  description: "Pham Khac Hoang Tung",
 };
 
 // dayjs.extend(CustomParseFormat);
