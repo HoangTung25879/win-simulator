@@ -7,7 +7,4 @@ https://www.npmjs.com/package/image-in-browser#documentation
 
 -Todo (necessary):
 Update github linkedin
-Make notification for unsupport file
-Make video player
 Make pdf viewer
-Empty source Video Player
