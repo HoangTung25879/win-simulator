@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "commentsForBuildScript": "https://github.com/aws-amplify/amplify-hosting/issues/3872#issuecomment-1980806305",
     "dev": "env-cmd -f env/.env-dev next dev -p 3002",
     "clean": "rm -rf public/.index/",
     "clean:window": "rmdir /s /q pulic/.index/",
-    "build": "env-cmd --verbose -f env/.env-production next build",
+    "build": "env-cmd --verbose -f env/.env-production next build && next export",
     "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "build:prebuild": "node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && npm run build:fs",
     "build:analyze": "env-cmd --verbose -f env/.env-analyze next build",
