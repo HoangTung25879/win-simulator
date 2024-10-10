@@ -126,6 +126,13 @@ const directory: Processes = {
     ],
     title: "Video Player",
   },
+  PDF: {
+    Component: dynamic(() => import("@/app/components/Apps/PDF/PDF")),
+    backgroundColor: "#525659",
+    icon: "/System/Icons/pdf.png",
+    libs: ["/Program Files/PDF.js/pdf.js"],
+    title: "PDF Viewer",
+  },
 };
 
 export default directory;
