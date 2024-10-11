@@ -8,17 +8,6 @@ import "./Notification.scss";
 
 type NotificationProps = {};
 
-// Example:
-// showNotification((notification) => (
-//   <CustomNotification
-//     notification={notification}
-//     processIcon={<WindowsIcon />}
-//     processTitle="System"
-//     title="Cannot open file"
-//     content="The file format is not supported yet."
-//   />
-// ));
-
 const Notification = ({}: NotificationProps) => {
   const { notifications, startPause, endPause, dismissNotification } =
     useNotification();

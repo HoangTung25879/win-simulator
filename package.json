@@ -17,8 +17,6 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^14.2.15",
-    "@types/gif.js": "^0.2.5",
-    "@types/video.js": "^7.3.58",
     "@uiw/color-convert": "^2.3.2",
     "@uiw/react-color-sketch": "^2.3.2",
     "browserfs": "^1.4.3",
@@ -36,7 +34,6 @@
     "ini": "^4.1.3",
     "lunr": "^2.3.9",
     "next": "14.2.3",
-    "pdfjs-dist": "^4.7.76",
     "prettier-plugin-classnames": "^0.7.0",
     "prettier-plugin-merge": "^0.7.0",
     "react": "^18",
@@ -49,11 +46,13 @@
     "worker-timers": "^8.0.2"
   },
   "devDependencies": {
+    "@types/gif.js": "^0.2.5",
     "@types/ini": "^4.1.1",
     "@types/lunr": "^2.3.7",
     "@types/node": "^20.16.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/video.js": "^7.3.58",
     "@types/wicg-file-system-access": "^2023.10.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",

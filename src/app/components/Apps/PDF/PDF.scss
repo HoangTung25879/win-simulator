@@ -1,0 +1,20 @@
+.pdfjs-wrapper {
+  height: 100%;
+  &.drop {
+    &::before {
+      color: #000;
+      content: "Drop PDF file here";
+      display: flex;
+      font-size: 16px;
+      font-weight: 600;
+      height: calc(100% - var(--title-bar-height) - 32px - 32px);
+      place-content: center;
+      place-items: center;
+      position: absolute;
+      top: calc(var(--title-bar-height) + 32px + 32px);
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+  }
+}

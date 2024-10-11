@@ -1,19 +1,26 @@
 "use client";
 
 import toast, {
-  Message,
   Toast,
   ToastOptions,
   useToaster,
 } from "@/app/components/Common/Notification/react-hot-toast";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import NotificationSound from "./notification-sound.mp3";
+import CustomNotification from "@/app/components/Common/Notification/CustomNotification";
+import WindowsIcon from "@/app/components/Taskbar/StartButton/Icons";
 
+type ShowNotificationOptions = {
+  processTitle?: string;
+  title?: string;
+  content?: string;
+  opts?: ToastOptions;
+};
 type NotificationContextState = {
   notifications: Toast[];
   startPause: () => void;
   endPause: () => void;
-  showNotification: (message: Message, opts?: ToastOptions) => void;
+  showNotification: (options: ShowNotificationOptions) => void;
   dismissNotification: (id?: string) => void;
 };
 
@@ -31,9 +38,25 @@ const useNotificationContextState = (): NotificationContextState => {
   );
 
   const showNotification = useCallback(
-    (message: Message, opts?: ToastOptions) => {
+    ({
+      processTitle = "System",
+      title = "Cannot open file",
+      content = "The file format is not supported yet.",
+      opts,
+    }: ShowNotificationOptions) => {
       canPlayAudio.current && audioRef.current?.play();
-      toast(message, opts);
+      toast(
+        (notification) => (
+          <CustomNotification
+            notification={notification}
+            processIcon={<WindowsIcon />}
+            processTitle={processTitle}
+            title={title}
+            content={content}
+          />
+        ),
+        opts,
+      );
     },
     [],
   );

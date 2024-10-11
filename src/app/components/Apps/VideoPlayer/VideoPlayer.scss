@@ -4,8 +4,11 @@
   display: flex;
   height: 100%;
   width: 100%;
-  &.--error {
-    @include message("Drop video here", #fff, 25%);
+  &.drop {
+    @include message("Drop video here", #fff, 15%);
+    .vjs-big-play-button {
+      opacity: 0;
+    }
   }
   .vjs-control-bar {
     &:not(.no-interaction) {

@@ -701,4 +701,3 @@
     t.exports = i;
   },
 ]);
-//# sourceMappingURL=gif.worker.js.map
