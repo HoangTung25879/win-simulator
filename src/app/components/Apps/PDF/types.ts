@@ -1,5 +1,5 @@
 //* https://www.npmjs.com/package/pdfjs-dist?activeTab=code
-
+// @ts-nocheck
 export type WaitOnEventOrTimeoutParameters = {
   /**
    * - The event target, can for example be:
