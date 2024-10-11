@@ -6,7 +6,6 @@
     "commentsForBuildScript": "https://github.com/aws-amplify/amplify-hosting/issues/3872#issuecomment-1980806305",
     "dev": "env-cmd -f env/.env-dev next dev -p 3002",
     "clean": "rm -rf public/.index/",
-    "clean:window": "rmdir /s /q pulic/.index/",
     "build": "env-cmd --verbose -f env/.env-production next build",
     "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "build:prebuild": "node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && npm run build:fs",
@@ -18,8 +17,6 @@
   },
   "dependencies": {
     "@next/bundle-analyzer": "^14.2.15",
-    "@types/gif.js": "^0.2.5",
-    "@types/video.js": "^7.3.58",
     "@uiw/color-convert": "^2.3.2",
     "@uiw/react-color-sketch": "^2.3.2",
     "browserfs": "^1.4.3",
@@ -49,11 +46,13 @@
     "worker-timers": "^8.0.2"
   },
   "devDependencies": {
+    "@types/gif.js": "^0.2.5",
     "@types/ini": "^4.1.1",
     "@types/lunr": "^2.3.7",
     "@types/node": "^20.16.10",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/video.js": "^7.3.58",
     "@types/wicg-file-system-access": "^2023.10.5",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",

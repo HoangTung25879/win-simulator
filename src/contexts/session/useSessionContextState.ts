@@ -62,19 +62,19 @@ const useSessionContextState = (): SessionContextState => {
   const loadingDebounceRef = useRef(0);
 
   useEffect(() => {
-    console.log("useSessionContextState", {
-      sessionLoaded,
-      foregroundId,
-      stackOrder,
-      cursor,
-      windowStates,
-      sortOrders,
-      iconPositions,
-      runHistory,
-      recentFiles,
-      wallpaperFit,
-      wallpaperImage,
-    });
+    // console.log("useSessionContextState", {
+    //   sessionLoaded,
+    //   foregroundId,
+    //   stackOrder,
+    //   cursor,
+    //   windowStates,
+    //   sortOrders,
+    //   iconPositions,
+    //   runHistory,
+    //   recentFiles,
+    //   wallpaperFit,
+    //   wallpaperImage,
+    // });
   }, [
     sessionLoaded,
     foregroundId,

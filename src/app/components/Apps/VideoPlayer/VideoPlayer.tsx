@@ -42,7 +42,6 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
   const { readFile } = useFileSystem();
   const { updateWindowSize } = useWindowSize(id);
   const { prependFileToTitle } = useTitle(id);
-  const [srcError, setSrcError] = useState(false);
   const [player, setPlayer] = useState<VideoJsPlayer>();
   const [ytPlayer, setYtPlayer] = useState<YouTubePlayer>();
   const [loading, setLoading] = useState(true);
@@ -168,8 +167,9 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
       });
     });
 
-    videoPlayer.on("error", () => {
-      setSrcError(true);
+    videoPlayer.on("error", (event) => {
+      console.log("ZODAY", event);
+      containerRef.current?.classList.add("drop");
     });
   }, [
     argument,
@@ -195,7 +195,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
   const loadVideo = useCallback(async () => {
     if (player && url) {
       try {
-        setSrcError(false);
+        containerRef.current?.classList.remove("drop");
         const source = await getSource();
         initializedUrlRef.current = false;
         player.src(source);
@@ -234,7 +234,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
       {loading && <Loading />}
       <div
         ref={containerRef}
-        className={clsx("video-player", srcError && "--error")}
+        className={clsx("video-player", "drop")}
         style={{
           contain: "strict",
           visibility: loading ? "hidden" : "visible",

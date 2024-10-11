@@ -23,7 +23,7 @@ const nextConfig = {
   },
   compiler: {
     reactRemoveProperties: isProduction,
-    removeConsole: isProduction ? { exclude: ["error"] } : false,
+    removeConsole: isProduction,
   },
   devIndicators: {
     buildActivityPosition: "top-right",

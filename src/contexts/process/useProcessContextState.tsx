@@ -14,8 +14,6 @@ import {
 import { TRANSITIONS_IN_MS } from "@/lib/constants";
 import { AllProcess } from "./directory";
 import { useNotification } from "../notification";
-import WindowsIcon from "@/app/components/Taskbar/StartButton/Icons";
-import CustomNotification from "@/app/components/Common/Notification/CustomNotification";
 
 type ProcessContextState = {
   argument: (
@@ -51,7 +49,7 @@ const useProcessContextState = (): ProcessContextState => {
   );
 
   useEffect(() => {
-    console.log("useProcessContextState", processes);
+    // console.log("useProcessContextState", processes);
   }, [processes]);
 
   const argument = useCallback(
@@ -86,15 +84,11 @@ const useProcessContextState = (): ProcessContextState => {
   const open = useCallback(
     (id: string, processArguments?: ProcessArguments, initialIcon?: string) => {
       if (!id || id === AllProcess.OpenWith) {
-        showNotification((notification) => (
-          <CustomNotification
-            notification={notification}
-            processIcon={<WindowsIcon />}
-            processTitle="System"
-            title="Cannot open file"
-            content="The file format is not supported yet."
-          />
-        ));
+        showNotification({
+          processTitle: "System",
+          title: "Cannot open file",
+          content: "The file format is not supported yet.",
+        });
         return;
       }
       if (id === "ExternalURL") {

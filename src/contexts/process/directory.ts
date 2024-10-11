@@ -111,12 +111,8 @@ const directory: Processes = {
     Component: dynamic(
       () => import("@/app/components/Apps/VideoPlayer/VideoPlayer"),
     ),
-    autoSizing: true,
     backgroundColor: "#000",
-    defaultSize: {
-      height: 390,
-      width: 640,
-    },
+    autoSizing: true,
     maximized: true,
     icon: "/System/Icons/vlc.png",
     libs: [
@@ -125,6 +121,14 @@ const directory: Processes = {
       "/System/Video.js/Youtube.min.js",
     ],
     title: "Video Player",
+  },
+  PDF: {
+    Component: dynamic(() => import("@/app/components/Apps/PDF/PDF")),
+    backgroundColor: "#525659",
+    icon: "/System/Icons/pdf.png",
+    title: "PDF Viewer",
+    maximized: true,
+    autoSizing: true,
   },
 };
 
