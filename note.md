@@ -7,4 +7,4 @@ https://www.npmjs.com/package/image-in-browser#documentation
 
 -Todo (necessary):
 Update github linkedin
-Make pdf viewer
+Add loading UI for directory app (dynamic import loading)

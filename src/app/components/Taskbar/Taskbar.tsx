@@ -2,7 +2,6 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import StartButton from "./StartButton/StartButton";
-import Clock from "./Clock/Clock";
 import { AnimatePresence } from "framer-motion";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import Tabs from "./Tabs/Tabs";
@@ -19,6 +18,10 @@ const SearchMenu = dynamic(
 const StartMenu = dynamic(
   () => import("@/app/components/Taskbar/StartMenu/StartMenu"),
 );
+
+const Clock = dynamic(() => import("@/app/components/Taskbar/Clock/Clock"), {
+  ssr: false,
+});
 
 export const IDS_MENU = {
   startMenu: "startMenu",

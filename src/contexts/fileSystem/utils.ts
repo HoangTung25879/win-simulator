@@ -18,7 +18,7 @@ import {
 } from "./core";
 import { basename, dirname, extname, join } from "path";
 import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
-import ini from "ini";
+import { parse } from "ini";
 import shortcutCache from "public/.index/shortcutCache.json";
 import {
   MOUNTABLE_EXTENSIONS,
@@ -194,7 +194,7 @@ export const getShortcutInfo = (
     } = {},
   } = shortcutData
     ? { InternetShortcut: shortcutData }
-    : ((ini.parse(contents?.toString() || "") || {}) as {
+    : ((parse(contents?.toString() || "") || {}) as {
         InternetShortcut: InternetShortcut;
       });
 

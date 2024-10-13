@@ -741,3 +741,40 @@ export const uniqueId = (prefix: string = "") => {
   const id = ++idCounter;
   return String(prefix) + id;
 };
+
+const wrapPromise = (promise: Promise<any>) => {
+  let status = "pending";
+  let result: any;
+  let suspender = promise.then(
+    (r) => {
+      status = "success";
+      result = r;
+    },
+    (e) => {
+      status = "error";
+      result = e;
+    },
+  );
+  return {
+    read() {
+      if (status === "pending") {
+        throw suspender;
+      } else if (status === "error") {
+        throw result;
+      } else if (status === "success") {
+        return result;
+      }
+    },
+  };
+};
+
+export const fetchFakeData = () => {
+  let userPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        name: "John Doe",
+      });
+    }, 50);
+  });
+  return wrapPromise(userPromise);
+};

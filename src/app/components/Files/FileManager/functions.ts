@@ -52,7 +52,7 @@ import {
 import { FSModule } from "browserfs/dist/node/core/FS";
 import Stats from "browserfs/dist/node/core/node_fs_stats";
 import { basename, dirname, extname, join } from "path";
-import ini from "ini";
+import { parse, encode } from "ini";
 import extensions from "../extensions";
 import processDirectory from "@/contexts/process/directory";
 import { SortBy } from "../FileEntry/useSortBy";
@@ -217,7 +217,7 @@ export const getIconFromIni = (
           else {
             const {
               ShellClassInfo: { IconFile = "" },
-            } = ini.parse(contents.toString()) as ShellClassInfo;
+            } = parse(contents.toString()) as ShellClassInfo;
 
             resolve(IconFile);
           }
@@ -944,12 +944,10 @@ export const removeInvalidFilenameCharacters = (name = ""): string =>
   name.replace(/["*/:<>?\\|]/g, "");
 
 export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
-  ini
-    .encode(shortcut, {
-      section: "InternetShortcut",
-      whitespace: false,
-    })
-    .replace(/"/g, "");
+  encode(shortcut, {
+    section: "InternetShortcut",
+    whitespace: false,
+  }).replace(/"/g, "");
 
 export const getParentDirectories = (directory: string): string[] => {
   if (directory === "/") return [];
