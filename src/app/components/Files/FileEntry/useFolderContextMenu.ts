@@ -261,7 +261,7 @@ const useFolderContextMenu = (
         action: () => {
           open(AllProcess.Settings, { settingType: "background" });
         },
-        icon: "/System/Icons/personalized.png",
+        icon: "/System/Icons/personalized.webp",
       };
       const CAPTURE_SCREEN: MenuItem = {
         action: captureScreen,

@@ -185,7 +185,7 @@ export const imageSrc = (
   ratio: number,
   extension: string,
 ): string => {
-  const imageName = basename(imagePath, ".png");
+  const imageName = basename(imagePath, ".webp");
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
   const imageSize = Math.min(
@@ -236,7 +236,7 @@ export const createFallbackSrcSet = (
             .replace(`${ICON_PATH}/`, "")
             .replace(`${USER_ICON_PATH}/`, "")
             .replace(`/${fileName}.png`, "")
-            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.webp`, "")
             .split("x")[0],
         );
       }),
