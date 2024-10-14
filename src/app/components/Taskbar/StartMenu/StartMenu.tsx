@@ -49,7 +49,7 @@ const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
       {...FOCUSABLE_ELEMENT}
     >
       <div className="blur-background" />
-      <Sidebar />
+      <Sidebar toggleStartMenu={toggleStartMenu} />
       <FileManager
         url={START_MENU_PATH}
         view="list"
