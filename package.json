@@ -8,13 +8,12 @@
     "start": "next start",
     "clean": "rm -rf public/.index/",
     "build": "env-cmd --verbose -f env/.env-production next build",
-    "build:fs": "node scripts/fs2json.js --exclude .index --exclude IconsPng --out public/.index/fs.9p.json ./public",
+    "build:fs": "node scripts/fs2json.js --exclude .index --out public/.index/fs.9p.json ./public",
     "build:prebuild": "node scripts/searchIndex.js && node scripts/preloadIcons.js && node scripts/cacheShortcuts.js && npm run build:fs",
     "build:analyze": "env-cmd --verbose -f env/.env-analyze next build",
     "prettier": "prettier . --write",
     "lint": "next lint",
-    "find-deadcode": "ts-prune --error",
-    "convertImages": "node scripts/convertPng2Webp.js"
+    "find-deadcode": "ts-prune --error"
   },
   "dependencies": {
     "@uiw/color-convert": "^2.3.2",

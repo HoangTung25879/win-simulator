@@ -185,7 +185,7 @@ export const imageSrc = (
   ratio: number,
   extension: string,
 ): string => {
-  const imageName = basename(imagePath, ".webp");
+  const imageName = basename(imagePath, ".png");
   const [expectedSize, maxIconSize] = MAX_RES_ICON_OVERRIDE[imageName] || [];
   const ratioSize = size * ratio;
   const imageSize = Math.min(

@@ -58,17 +58,17 @@ export const CLIPBOARD_FILE_EXTENSIONS = new Set([".jpeg", ".jpg", ".png"]);
 
 export const SYSTEM_SHORTCUT_DIRECTORIES = new Set([DESKTOP_PATH]);
 
-export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.webp`;
+export const MOUNTED_FOLDER_ICON = `${ICON_PATH}/mounted.png`;
 
-export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.webp`;
+export const NEW_FOLDER_ICON = `${ICON_PATH}/new_folder.png`;
 
-export const FOLDER_ICON = `${ICON_PATH}/folder.webp`;
+export const FOLDER_ICON = `${ICON_PATH}/folder.png`;
 
-export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.webp`;
+export const FOLDER_BACK_ICON = `${ICON_PATH}/folder_back.png`;
 
-export const FOLDER_FRONT_ICON = `${ICON_PATH}/folder_front.webp`;
+export const FOLDER_FRONT_ICON = `${ICON_PATH}/folder_front.png`;
 
-export const UNKNOWN_ICON_PATH = `${ICON_PATH}/unknown.webp`;
+export const UNKNOWN_ICON_PATH = `${ICON_PATH}/unknown.png`;
 
 export const SHORTCUT_EXTENSION = ".url";
 
@@ -151,9 +151,9 @@ export const VIDEO_FILE_EXTENSIONS = new Set([
   ".webm",
 ]);
 
-export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.webp`;
+export const SHORTCUT_ICON = `${ICON_PATH}/shortcut.png`;
 
-export const PHOTO_ICON = `${ICON_PATH}/photo.webp`;
+export const PHOTO_ICON = `${ICON_PATH}/photo.png`;
 
 export const DYNAMIC_PREFIX = ["nostr:"];
 
@@ -299,7 +299,7 @@ export const SAVE_TITLE_CHAR = "\u25CF";
 
 export const FAVICON_BASE_PATH = "/favicon.ico";
 
-export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.webp`;
+export const COMPRESSED_FOLDER_ICON = `${ICON_PATH}/compressed.png`;
 
 export const TIMESTAMP_DATE_FORMAT: Intl.DateTimeFormatOptions = {
   day: "2-digit",

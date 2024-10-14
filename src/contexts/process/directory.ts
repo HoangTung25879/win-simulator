@@ -73,7 +73,7 @@ const directory: Processes = {
       width: 600,
     },
     hideTitlebarIcon: true,
-    icon: "/System/Icons/photos.webp",
+    icon: "/System/Icons/photos.png",
     title: "Photos",
   },
   Settings: {
@@ -84,7 +84,7 @@ const directory: Processes = {
     },
     hideTitlebarIcon: true,
     singleton: true,
-    icon: "/System/Icons/settings.webp",
+    icon: "/System/Icons/settings.png",
     title: "Settings",
     textColor: "rgb(0,0,0)",
     backgroundColor: "rgb(255, 255, 255)",
@@ -104,7 +104,7 @@ const directory: Processes = {
       width: 400,
     },
     dialogProcess: true,
-    icon: "/System/Icons/copying.webp",
+    icon: "/System/Icons/copying.png",
     title: "",
   },
   VideoPlayer: {
@@ -114,7 +114,7 @@ const directory: Processes = {
     backgroundColor: "#000",
     autoSizing: true,
     maximized: true,
-    icon: "/System/Icons/vlc.webp",
+    icon: "/System/Icons/vlc.png",
     libs: [
       "/System/Video.js/video-js.min.css",
       "/System/Video.js/video.min.js",
@@ -125,7 +125,7 @@ const directory: Processes = {
   PDF: {
     Component: dynamic(() => import("@/app/components/Apps/PDF/PDF")),
     backgroundColor: "#525659",
-    icon: "/System/Icons/pdf.webp",
+    icon: "/System/Icons/pdf.png",
     title: "PDF Viewer",
     maximized: true,
     autoSizing: true,

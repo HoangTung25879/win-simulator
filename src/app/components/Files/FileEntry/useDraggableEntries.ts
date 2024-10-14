@@ -199,8 +199,10 @@ const useDraggableEntries = (
           const trimmedCapture = elementsHavePositions
             ? trimCanvasToTopLeft(capturedFileManager)
             : capturedFileManager;
-
-          dragImageRef.current.src = trimmedCapture.toDataURL();
+          trimmedCapture.toBlob((blob) => {
+            dragImageRef.current!.src = URL.createObjectURL(blob as Blob);
+          });
+          // dragImageRef.current.src = trimmedCapture.toDataURL();
           capturedImageOffset.current = {
             x: capturedFileManager.width - trimmedCapture.width,
             y: capturedFileManager.height - trimmedCapture.height,
