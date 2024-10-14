@@ -97,6 +97,11 @@ const focusing: string[] = [];
 
 const cacheQueue: (() => Promise<void>)[] = [];
 
+const nextQueueItem = (): Promise<void> => {
+  cacheQueue.shift();
+  return cacheQueue[0]?.();
+};
+
 const FileEntry = ({
   id,
   fileActions,
@@ -274,6 +279,76 @@ const FileEntry = ({
     urlExt,
   ]);
 
+  const cacheIcon = useCallback(
+    async (
+      cachedIconPath: string,
+      retryCanvasDraw?: boolean,
+    ): Promise<void> => {
+      if (!(iconRef.current instanceof HTMLImageElement)) return;
+      let generatedIcon = "";
+      if (iconRef.current.currentSrc.startsWith("data:image/gif;base64,")) {
+        generatedIcon = iconRef.current.currentSrc;
+      } else {
+        const { clientHeight, clientWidth, naturalHeight, naturalWidth } =
+          iconRef.current;
+        const naturalAspectRatio = naturalWidth / naturalHeight;
+        const clientAspectRatio = clientWidth / clientHeight;
+        let height: number | undefined;
+        let width: number | undefined;
+        if (naturalAspectRatio !== clientAspectRatio) {
+          if (naturalWidth > naturalHeight) {
+            height = clientHeight / naturalAspectRatio;
+          } else {
+            width = clientWidth * naturalAspectRatio;
+          }
+        }
+        let iconCanvas: HTMLCanvasElement | undefined;
+        try {
+          iconCanvas = await toCanvas(iconRef.current, {
+            height,
+            skipAutoScale: true,
+            style: {
+              objectPosition: height ? "top" : width ? "left" : undefined,
+            },
+            width,
+            //* Fix nextjs image issue https://github.com/bubkoo/html-to-image/issues/377
+            includeQueryParams: true,
+          });
+        } catch (error) {
+          // Ignore failure to capture
+          console.error(error);
+        }
+        if (iconCanvas && retryCanvasDraw) {
+          generatedIcon = iconCanvas.toDataURL("image/png");
+        } else {
+          setTimeout(
+            () => cacheIcon(cachedIconPath, true),
+            TRANSITIONS_IN_MS.WINDOW,
+          );
+        }
+      }
+      if (generatedIcon) {
+        cacheQueue.push(async () => {
+          const baseCachedPath = dirname(cachedIconPath);
+          await mkdirRecursive(baseCachedPath);
+          const cachedIcon = Buffer.from(
+            generatedIcon.replace(/data:.*;base64,/, ""),
+            "base64",
+          );
+          await writeFile(cachedIconPath, cachedIcon, true);
+          setInfo((info) => ({
+            ...info,
+            icon: bufferToUrl(cachedIcon),
+          }));
+          updateFolder(baseCachedPath, basename(cachedIconPath));
+          return nextQueueItem();
+        });
+      }
+      if (cacheQueue.length === 1) await cacheQueue[0]();
+    },
+    [mkdirRecursive, writeFile],
+  );
+
   useEffect(() => {
     if (!isLoadingFileManager && isVisible && !isIconCached.current && fs) {
       const updateIcon = async (): Promise<void> => {
@@ -291,88 +366,12 @@ const FileEntry = ({
             !(await exists(cachedIconPath)) &&
             iconRef.current instanceof HTMLImageElement
           ) {
-            const cacheIcon = async (
-              retryCanvasDraw?: boolean,
-            ): Promise<void> => {
-              if (!(iconRef.current instanceof HTMLImageElement)) return;
-              const nextQueueItem = (): Promise<void> => {
-                cacheQueue.shift();
-                return cacheQueue[0]?.();
-              };
-              let generatedIcon = "";
-              if (
-                iconRef.current.currentSrc.startsWith("data:image/gif;base64,")
-              ) {
-                generatedIcon = iconRef.current.currentSrc;
-              } else {
-                const {
-                  clientHeight,
-                  clientWidth,
-                  naturalHeight,
-                  naturalWidth,
-                } = iconRef.current;
-                const naturalAspectRatio = naturalWidth / naturalHeight;
-                const clientAspectRatio = clientWidth / clientHeight;
-                let height: number | undefined;
-                let width: number | undefined;
-                if (naturalAspectRatio !== clientAspectRatio) {
-                  if (naturalWidth > naturalHeight) {
-                    height = clientHeight / naturalAspectRatio;
-                  } else {
-                    width = clientWidth * naturalAspectRatio;
-                  }
-                }
-                let iconCanvas: HTMLCanvasElement | undefined;
-                try {
-                  iconCanvas = await toCanvas(iconRef.current, {
-                    height,
-                    skipAutoScale: true,
-                    style: {
-                      objectPosition: height
-                        ? "top"
-                        : width
-                          ? "left"
-                          : undefined,
-                    },
-                    width,
-                    //* Fix nextjs image issue https://github.com/bubkoo/html-to-image/issues/377
-                    includeQueryParams: true,
-                  });
-                } catch (error) {
-                  // Ignore failure to capture
-                  console.error(error);
-                }
-                if (iconCanvas && retryCanvasDraw) {
-                  generatedIcon = iconCanvas.toDataURL("image/png");
-                } else {
-                  setTimeout(() => cacheIcon(true), TRANSITIONS_IN_MS.WINDOW);
-                }
-              }
-              if (generatedIcon) {
-                cacheQueue.push(async () => {
-                  const baseCachedPath = dirname(cachedIconPath);
-                  await mkdirRecursive(baseCachedPath);
-                  const cachedIcon = Buffer.from(
-                    generatedIcon.replace(/data:.*;base64,/, ""),
-                    "base64",
-                  );
-                  await writeFile(cachedIconPath, cachedIcon, true);
-                  setInfo((info) => ({
-                    ...info,
-                    icon: bufferToUrl(cachedIcon),
-                  }));
-                  updateFolder(baseCachedPath, basename(cachedIconPath));
-                  return nextQueueItem();
-                });
-              }
-              if (cacheQueue.length === 1) await cacheQueue[0]();
-            };
             if (iconRef.current.complete) {
-              cacheIcon();
+              cacheIcon(cachedIconPath);
             } else {
               iconRef.current.addEventListener(
                 "load",
-                () => cacheIcon(),
+                () => cacheIcon(cachedIconPath),
                 ONE_TIME_PASSIVE_EVENT,
               );
             }
@@ -384,7 +383,6 @@ const FileEntry = ({
             setInfo((info) => ({ ...info, icon: cachedIconUrl }));
           } else if (
             !isDynamicIconLoaded.current &&
-            buttonRef.current &&
             typeof getIcon === "function"
           ) {
             getIconAbortController.current = new AbortController();

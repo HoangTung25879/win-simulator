@@ -168,7 +168,6 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
     });
 
     videoPlayer.on("error", (event) => {
-      console.log("ZODAY", event);
       containerRef.current?.classList.add("drop");
     });
   }, [
@@ -234,7 +233,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
       {loading && <Loading />}
       <div
         ref={containerRef}
-        className={clsx("video-player", "drop")}
+        className={clsx("video-player", "drop", isYT ? "youtube-view" : "")}
         style={{
           contain: "strict",
           visibility: loading ? "hidden" : "visible",

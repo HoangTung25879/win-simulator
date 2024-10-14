@@ -379,22 +379,20 @@ export const getInfoWithExtension = (
       subIcons,
       url: path,
     });
-  // const decodeImage = (): void =>
-  //   getInfoByFileExtension(PHOTO_ICON, (signal) =>
-  //     fs.readFile(path, async (error, contents = Buffer.from("")) => {
-  //       if (!error && contents.length > 0 && !signal.aborted) {
-  //         const { decodeImageToBuffer } = await import("utils/imageDecoder");
-
-  //         if (!signal.aborted) {
-  //           const image = await decodeImageToBuffer(extension, contents);
-
-  //           if (image && !signal.aborted) {
-  //             getInfoByFileExtension(imageToBufferUrl(extension, image));
-  //           }
-  //         }
-  //       }
-  //     }),
-  //   );
+  const decodeImage = (): void =>
+    getInfoByFileExtension(PHOTO_ICON, (signal) =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        // if (!error && contents.length > 0 && !signal.aborted) {
+        //   const { decodeImageToBuffer } = await import("utils/imageDecoder");
+        //   if (!signal.aborted) {
+        //     const image = await decodeImageToBuffer(extension, contents);
+        //     if (image && !signal.aborted) {
+        //       getInfoByFileExtension(imageToBufferUrl(extension, image));
+        //     }
+        //   }
+        // }
+      }),
+    );
 
   switch (extension) {
     case SHORTCUT_EXTENSION:

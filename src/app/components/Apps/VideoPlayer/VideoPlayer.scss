@@ -4,12 +4,6 @@
   display: flex;
   height: 100%;
   width: 100%;
-  &.drop {
-    @include message("Drop video here", #fff, 15%);
-    .vjs-big-play-button {
-      opacity: 0;
-    }
-  }
   .vjs-control-bar {
     &:not(.no-interaction) {
       display: flex !important;
@@ -34,5 +28,19 @@
     background-position: center calc(50% - 15px);
     background-repeat: no-repeat;
     padding-bottom: 30px;
+  }
+  &.drop {
+    @include message("Drop video here", #fff, 15%);
+    .vjs-big-play-button {
+      opacity: 0;
+    }
+  }
+  &.youtube-view {
+    .vjs-poster {
+      visibility: hidden !important;
+    }
+    .vjs-big-play-button {
+      visibility: hidden !important;
+    }
   }
 }

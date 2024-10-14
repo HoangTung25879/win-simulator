@@ -5,7 +5,8 @@ import "../styles/globals.scss";
 
 export const metadata: Metadata = {
   title: "Tung Web Desktop",
-  description: "Pham Khac Hoang Tung",
+  description:
+    "A web app that replicates the appearance and functionality of Windows OS",
 };
 
 // dayjs.extend(CustomParseFormat);

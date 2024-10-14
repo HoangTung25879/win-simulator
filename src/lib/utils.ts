@@ -778,3 +778,13 @@ export const fetchFakeData = () => {
   });
   return wrapPromise(userPromise);
 };
+
+export const getYouTubeUrlId = (url: string) => {
+  try {
+    const { pathname, searchParams } = new URL(url);
+    return searchParams.get("v") || pathname.split("/").pop() || "";
+  } catch {
+    // URL parsing failed
+  }
+  return "";
+};
