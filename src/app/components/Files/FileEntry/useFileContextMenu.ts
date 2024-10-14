@@ -153,39 +153,39 @@ const useFileContextMenu = (
         menuItems.unshift(MENU_SEPERATOR);
       }
       const hasBackgroundVideoExtension =
-        VIDEO_FILE_EXTENSIONS.has(pathExtension);
+        VIDEO_FILE_EXTENSIONS.has(urlExtension);
       if (
         hasBackgroundVideoExtension ||
-        (IMAGE_FILE_EXTENSIONS.has(pathExtension) &&
-          !CURSOR_FILE_EXTENSIONS.has(pathExtension) &&
-          pathExtension !== ".svg")
+        (IMAGE_FILE_EXTENSIONS.has(urlExtension) &&
+          !CURSOR_FILE_EXTENSIONS.has(urlExtension) &&
+          urlExtension !== ".svg")
       ) {
         menuItems.unshift({
           label: "Set as background",
           ...(hasBackgroundVideoExtension
             ? {
-                action: () => setWallpaper(path),
+                action: () => setWallpaper(url),
               }
             : {
                 menu: [
                   {
-                    action: () => setWallpaper(path, "fill"),
+                    action: () => setWallpaper(url, "fill"),
                     label: "Fill",
                   },
                   {
-                    action: () => setWallpaper(path, "fit"),
+                    action: () => setWallpaper(url, "fit"),
                     label: "Fit",
                   },
                   {
-                    action: () => setWallpaper(path, "stretch"),
+                    action: () => setWallpaper(url, "stretch"),
                     label: "Stretch",
                   },
                   {
-                    action: () => setWallpaper(path, "tile"),
+                    action: () => setWallpaper(url, "tile"),
                     label: "Tile",
                   },
                   {
-                    action: () => setWallpaper(path, "center"),
+                    action: () => setWallpaper(url, "center"),
                     label: "Center",
                   },
                 ],

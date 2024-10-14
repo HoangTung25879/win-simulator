@@ -236,7 +236,7 @@ export const createFallbackSrcSet = (
             .replace(`${ICON_PATH}/`, "")
             .replace(`${USER_ICON_PATH}/`, "")
             .replace(`/${fileName}.png`, "")
-            .replace(`/${fileName}.png`, "")
+            .replace(`/${fileName}.webp`, "")
             .split("x")[0],
         );
       }),
@@ -740,4 +740,51 @@ let idCounter = 0;
 export const uniqueId = (prefix: string = "") => {
   const id = ++idCounter;
   return String(prefix) + id;
+};
+
+const wrapPromise = (promise: Promise<any>) => {
+  let status = "pending";
+  let result: any;
+  let suspender = promise.then(
+    (r) => {
+      status = "success";
+      result = r;
+    },
+    (e) => {
+      status = "error";
+      result = e;
+    },
+  );
+  return {
+    read() {
+      if (status === "pending") {
+        throw suspender;
+      } else if (status === "error") {
+        throw result;
+      } else if (status === "success") {
+        return result;
+      }
+    },
+  };
+};
+
+export const fetchFakeData = () => {
+  let userPromise = new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        name: "John Doe",
+      });
+    }, 50);
+  });
+  return wrapPromise(userPromise);
+};
+
+export const getYouTubeUrlId = (url: string) => {
+  try {
+    const { pathname, searchParams } = new URL(url);
+    return searchParams.get("v") || pathname.split("/").pop() || "";
+  } catch {
+    // URL parsing failed
+  }
+  return "";
 };

@@ -1,7 +1,14 @@
 "use client";
 import React from "react";
 import { useRef, useState } from "react";
-import { Documents, Pictures, Power, Settings, SideMenu } from "./Icons";
+import {
+  Documents,
+  Pictures,
+  Power,
+  Settings,
+  SideMenu,
+  Videos,
+} from "./Icons";
 import clsx from "clsx";
 import "./Sidebar.scss";
 import { haltEvent } from "@/lib/utils";
@@ -9,8 +16,13 @@ import { spotlightEffect } from "@/lib/spotlightEffect";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useSession } from "@/contexts/session";
 import { resetStorage } from "@/contexts/fileSystem/utils";
+import { useProcesses } from "@/contexts/process";
+import { HOME } from "@/lib/constants";
+import { AllProcess } from "@/contexts/process/directory";
 
-type SidebarProps = {};
+type SidebarProps = {
+  toggleStartMenu: (showMenu?: boolean) => void;
+};
 
 type SidebarButton = {
   name: string;
@@ -32,6 +44,10 @@ const buttons: SidebarButton[] = [
     icon: <Pictures width={16} height={16} />,
   },
   {
+    name: "Videos",
+    icon: <Videos width={16} height={16} />,
+  },
+  {
     name: "Settings",
     icon: <Settings width={16} height={16} />,
   },
@@ -42,8 +58,9 @@ const buttons: SidebarButton[] = [
   },
 ];
 
-const Sidebar = ({}: SidebarProps) => {
+const Sidebar = ({ toggleStartMenu }: SidebarProps) => {
   const { rootFs } = useFileSystem();
+  const { open } = useProcesses();
   const { setHaltSession } = useSession();
   const [expanded, setExpanded] = useState(false);
   const expandTimer = useRef<number>();
@@ -60,12 +77,39 @@ const Sidebar = ({}: SidebarProps) => {
 
   const handleClickButton = (button: SidebarButton) => {
     clearTimer();
-    if (button.name === "Start") {
-      setExpanded((expanded) => !expanded);
-    }
-    if (button.name === "Power") {
-      setHaltSession(true);
-      resetStorage(rootFs).finally(() => window.location.reload());
+    switch (button.name) {
+      case "Start": {
+        setExpanded((expanded) => !expanded);
+        break;
+      }
+      case "Documents": {
+        open(AllProcess.FileExplorer, { url: `${HOME}/Documents` });
+        toggleStartMenu(false);
+        break;
+      }
+      case "Pictures": {
+        open(AllProcess.FileExplorer, { url: `${HOME}/Pictures` });
+        toggleStartMenu(false);
+        break;
+      }
+      case "Videos": {
+        open(AllProcess.FileExplorer, { url: `${HOME}/Videos` });
+        toggleStartMenu(false);
+        break;
+      }
+      case "Settings": {
+        open(AllProcess.Settings, { settingType: "background" });
+        toggleStartMenu(false);
+        break;
+      }
+      case "Power": {
+        setHaltSession(true);
+        resetStorage(rootFs).finally(() => window.location.reload());
+        break;
+      }
+      default: {
+        break;
+      }
     }
   };
 

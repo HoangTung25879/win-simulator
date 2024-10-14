@@ -74,7 +74,7 @@ const Tab = ({ icon, id, title }: TabProps) => {
       {...tabContextMenu}
     >
       <AnimatePresence initial={false} presenceAffectsLayout={false}>
-        {isPeekVisible && <PeekWindow id={id} />}
+        {true && <PeekWindow id={id} />}
       </AnimatePresence>
       <button
         id={generateTaskbarElementId(id)}

@@ -21,6 +21,14 @@ const nextConfig = {
     // Important: return the modified config
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
+      },
+    ],
+  },
   compiler: {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,

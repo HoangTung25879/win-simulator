@@ -10,9 +10,11 @@ import { useSession } from "@/contexts/session";
 import { WallpaperFit, WallpaperImage } from "@/contexts/session/types";
 import { startCase } from "es-toolkit";
 import { useWallpaper } from "@/contexts/wallpaper";
-import { haltEvent } from "@/lib/utils";
+import { getExtension, haltEvent } from "@/lib/utils";
 import { hsvaToRgbaString, rgbaStringToHsva } from "@uiw/color-convert";
 import Sketch from "@uiw/react-color-sketch";
+import { BASE_VIDEO_SELECTOR } from "@/contexts/wallpaper/useWallpaperContextState";
+import { VIDEO_FILE_EXTENSIONS } from "@/lib/constants";
 
 type SettingsProps = {} & ComponentProcessProps;
 
@@ -164,7 +166,7 @@ const Settings = ({ id }: SettingsProps) => {
     setWallpaper(wallpaperImage, item.value);
   };
 
-  const copyFrame = (
+  const copyCanvasFrame = (
     sourceCanvas: HTMLCanvasElement,
     destinationCanvas: HTMLCanvasElement,
     destinationCtx: CanvasRenderingContext2D | null,
@@ -188,12 +190,51 @@ const Settings = ({ id }: SettingsProps) => {
       canvasPreview.current?.height || 0,
     );
     window.requestAnimationFrame(() =>
-      copyFrame(sourceCanvas, destinationCanvas, destinationCtx),
+      copyCanvasFrame(sourceCanvas, destinationCanvas, destinationCtx),
+    );
+  };
+
+  const copyVideoFrame = (
+    videoElement: HTMLVideoElement,
+    destinationCanvas: HTMLCanvasElement,
+    destinationCtx: CanvasRenderingContext2D | null,
+  ) => {
+    if (!animated.current || !desktopRef.current) return;
+    destinationCanvas.width = videoElement.videoWidth;
+    destinationCanvas.height = videoElement.videoHeight;
+    destinationCtx?.drawImage(
+      videoElement,
+      0,
+      0,
+      destinationCanvas.width,
+      destinationCanvas.height,
+    );
+    window.requestAnimationFrame(() =>
+      copyVideoFrame(videoElement, destinationCanvas, destinationCtx),
     );
   };
 
   useEffect(() => {
     if (isPicture) {
+      if (VIDEO_FILE_EXTENSIONS.has(getExtension(wallpaperImage))) {
+        const handlePreviewBackground = () => {
+          const videoElement = desktopRef.current?.querySelector(
+            BASE_VIDEO_SELECTOR,
+          ) as HTMLVideoElement;
+          if (videoElement && canvasPreview.current) {
+            if (!contextCanvas.current) {
+              contextCanvas.current = canvasPreview.current.getContext("2d");
+            }
+            animated.current = true;
+            copyVideoFrame(
+              videoElement,
+              canvasPreview.current,
+              contextCanvas.current,
+            );
+          }
+        };
+        setTimeout(handlePreviewBackground, 100);
+      }
     } else if (wallpaperImage === "SOLID COLOR") {
       const ctx = canvasPreview.current?.getContext("2d");
       if (ctx) {
@@ -212,7 +253,7 @@ const Settings = ({ id }: SettingsProps) => {
             contextCanvas.current = canvasPreview.current.getContext("2d");
           }
           animated.current = true;
-          copyFrame(
+          copyCanvasFrame(
             canvasRef.current,
             canvasPreview.current,
             contextCanvas.current,

@@ -1,7 +1,7 @@
 "use client";
 
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { clearInterval, setInterval } from "worker-timers";
 
 type TimeCounterProps = {
@@ -14,6 +14,7 @@ interface Time {
   minutes: number;
   seconds: number;
   meridiem: Meridiem;
+  fullDateString: string;
 }
 
 const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
@@ -22,8 +23,9 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
     minutes: new Date().getMinutes(),
     seconds: new Date().getSeconds(),
     meridiem: "AM",
+    fullDateString: dayjs().format("dddd, MMMM D, YYYY"),
   });
-  useEffect(() => {
+  useLayoutEffect(() => {
     const timerCount = () => {
       const date = new Date();
       let hours = date.getHours();
@@ -40,6 +42,7 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
         minutes: date.getMinutes(),
         seconds: date.getSeconds(),
         meridiem,
+        fullDateString: dayjs().format("dddd, MMMM D, YYYY"),
       });
     };
     timerCount();
@@ -64,7 +67,7 @@ const TimeCounter = ({ onClickToday }: TimeCounterProps) => {
         className="mt-3 w-fit text-sm text-[#a1ccef] hover:text-[#7d7d7d]"
         onClick={onClickToday}
       >
-        {dayjs().format("dddd, MMMM D, YYYY")}
+        {timeObj.fullDateString}
       </button>
     </div>
   );

@@ -22,6 +22,7 @@ const renderFrame = async (
   try {
     const spacing =
       previewElement.tagName === "VIDEO" ? { margin: "0", padding: "0" } : {};
+    console.time("toCanvas");
     dataCanvas = await toCanvas(previewElement, {
       filter: (element) => !(element instanceof HTMLSourceElement),
       skipAutoScale: true,
@@ -40,6 +41,7 @@ const renderFrame = async (
       //* Fix nextjs image issue https://github.com/bubkoo/html-to-image/issues/377
       includeQueryParams: true,
     });
+    console.timeEnd("toCanvas");
   } catch (error) {
     // Ignore failure to capture
     console.error(error);

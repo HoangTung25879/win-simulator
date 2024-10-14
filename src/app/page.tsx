@@ -11,7 +11,7 @@ import { FullScreenProvider } from "@/contexts/fullScreen";
 import { WallpaperProvider } from "@/contexts/wallpaper";
 import "simplebar-react/dist/simplebar.min.css";
 import { NotificationProvider } from "@/contexts/notification";
-
+import { Suspense } from "react";
 import localFont from "next/font/local";
 
 const SegoeUIFont = localFont({
@@ -62,7 +62,9 @@ export default function Page() {
               <SessionProvider>
                 <MenuProvider>
                   <WallpaperProvider>
-                    <ChildrenComponent />
+                    <Suspense fallback={"Loading..."}>
+                      <ChildrenComponent />
+                    </Suspense>
                   </WallpaperProvider>
                 </MenuProvider>
               </SessionProvider>

@@ -18,8 +18,6 @@ import {
   TransformWrapper,
   TransformComponent,
   ReactZoomPanPinchContentRef,
-  useTransformEffect,
-  getMatrixTransformStyles,
 } from "react-zoom-pan-pinch";
 import { getExtension, haltEvent, imageToBufferUrl } from "@/lib/utils";
 import useFileDrop from "../../Files/FileEntry/useFileDrop";
@@ -29,29 +27,11 @@ import { useFullScreen } from "@/contexts/fullScreen";
 import { IMAGE_FILE_EXTENSIONS } from "@/lib/constants";
 import "./Photos.scss";
 import useResizeObserver from "@/hooks/useResizeObserver";
-import { throttle } from "es-toolkit";
 
 type PhotosProps = {} & ComponentProcessProps;
 
 const MAX_SCALE = 7;
 const ROTATE_STEP = 90;
-
-const GetScale = ({
-  setScale,
-}: {
-  setScale: React.Dispatch<React.SetStateAction<number>>;
-}) => {
-  const throttleSetScale = throttle((scale: number) => {
-    setScale(scale);
-  }, 100);
-  useTransformEffect(({ state }) => {
-    throttleSetScale(Number(state.scale.toFixed(2)));
-    return () => {
-      // unmount
-    };
-  });
-  return null;
-};
 
 const Photos = ({ id }: PhotosProps) => {
   const { processes: { [id]: process } = {}, url: setUrl } = useProcesses();
@@ -64,7 +44,7 @@ const Photos = ({ id }: PhotosProps) => {
   const [brokenImage, setBrokenImage] = useState(false);
   const [imageScale, setImageScale] = useState<number>(0);
   const [scale, setScale] = useState<number>(0);
-  const [hasInitTransform, setHasInitTransform] = useState(true);
+  const [showImage, setShowImage] = useState(true);
   const [rotateDegree, setRotateDegree] = useState<number>(0);
   const [imageContainerSize, setImageContainerSize] = useState<{
     width: number;
@@ -79,8 +59,48 @@ const Photos = ({ id }: PhotosProps) => {
   const controlRef = useRef<ReactZoomPanPinchContentRef>(
     Object.create({}) as ReactZoomPanPinchContentRef,
   );
-  const transformTimeout = useRef<number | undefined>(undefined);
   const urlBaseName = basename(url);
+  const resizeTimeout = useRef<number | undefined>(undefined);
+
+  const calculateImageScale = (image: HTMLImageElement | null, rotate = 0) => {
+    if (!image) return;
+    controlRef.current?.resetTransform?.(0);
+    const isVertical = rotate % 180 !== 0;
+    const imageWidth = isVertical ? image.naturalHeight : image.naturalWidth;
+    const imageHeight = isVertical ? image.naturalWidth : image.naturalHeight;
+    image.style.width = `${imageWidth}px`;
+    image.style.height = `${imageHeight}px`;
+    const rect = imageContainerRef.current?.getBoundingClientRect() || {
+      width: 0,
+      height: 0,
+    };
+    let scale: number;
+    if (imageWidth < rect.width || imageHeight < rect.height) {
+      scale = 1;
+    } else {
+      scale = Number(
+        Math.min(rect.width / imageWidth, rect.height / imageHeight).toFixed(2),
+      );
+    }
+    setBrokenImage(false);
+    setImageContainerSize({ width: rect.width, height: rect.height });
+    setImageScale(scale);
+    setScale(scale);
+    setRotateDegree(rotate);
+  };
+
+  const endOfResize = () => {
+    setShowImage(true);
+    calculateImageScale(imageRef.current);
+  };
+
+  const handleResize = useCallback(() => {
+    setShowImage(false);
+    clearTimeout(resizeTimeout.current);
+    resizeTimeout.current = window.setTimeout(endOfResize, 100);
+  }, []);
+
+  useResizeObserver(componentWindow, handleResize, false);
 
   const loadSrc = useCallback(async (): Promise<void> => {
     const fileContents = await readFile(url);
@@ -111,7 +131,7 @@ const Photos = ({ id }: PhotosProps) => {
             const nextUrl = directory[nextIndex];
 
             if (IMAGE_FILE_EXTENSIONS.has(getExtension(nextUrl))) {
-              setHasInitTransform(false);
+              setShowImage(false);
               setUrl(id, join(dirname(url), nextUrl));
             } else {
               nextPhoto(nextIndex, next);
@@ -124,33 +144,6 @@ const Photos = ({ id }: PhotosProps) => {
     },
     [id, readdir, setUrl, url],
   );
-
-  const calculateImageScale = (image: HTMLImageElement | null, rotate = 0) => {
-    if (!image) return;
-    controlRef.current?.resetTransform?.(0);
-    const isVertical = rotate % 180 !== 0;
-    const imageWidth = isVertical ? image.naturalHeight : image.naturalWidth;
-    const imageHeight = isVertical ? image.naturalWidth : image.naturalHeight;
-    image.style.width = `${imageWidth}px`;
-    image.style.height = `${imageHeight}px`;
-    const rect = imageContainerRef.current?.getBoundingClientRect() || {
-      width: 0,
-      height: 0,
-    };
-    const scale = Number(
-      Math.min(rect.width / imageWidth, rect.height / imageHeight).toFixed(2),
-    );
-    setBrokenImage(false);
-    setHasInitTransform(false);
-    setImageContainerSize({ width: rect.width, height: rect.height });
-    setImageScale(scale);
-    setScale(scale);
-    setRotateDegree(rotate);
-  };
-
-  const handleResize = useCallback(() => {
-    calculateImageScale(imageRef.current);
-  }, []);
 
   const handleZoomToActualSize = () => {
     if (controlRef.current) {
@@ -194,25 +187,9 @@ const Photos = ({ id }: PhotosProps) => {
   }, [src, url]);
 
   useEffect(() => {
-    if (!hasInitTransform) {
-      transformTimeout.current = window.setTimeout(() => {
-        setHasInitTransform(true);
-      }, 200);
-    }
-    return () => {
-      if (transformTimeout.current) {
-        clearTimeout(transformTimeout.current);
-        transformTimeout.current = undefined;
-      }
-    };
-  }, [hasInitTransform]);
-
-  useEffect(() => {
     componentWindow?.addEventListener("keydown", onKeyDown);
     return () => componentWindow?.removeEventListener("keydown", onKeyDown);
   }, [componentWindow, onKeyDown]);
-
-  useResizeObserver(componentWindow, handleResize);
 
   return (
     <div
@@ -256,10 +233,11 @@ const Photos = ({ id }: PhotosProps) => {
               mode: scale === imageScale ? "zoomIn" : "reset",
               animationTime: 0,
             }}
-            customTransform={getMatrixTransformStyles}
-            onInit={() => setHasInitTransform(true)}
+            onTransformed={(ref, state) => {
+              setScale(Number(state.scale.toFixed(2)));
+              setShowImage(true);
+            }}
           >
-            <GetScale setScale={setScale} />
             <TransformComponent
               wrapperStyle={{
                 width: "100%",
@@ -274,7 +252,7 @@ const Photos = ({ id }: PhotosProps) => {
                 ref={imageRef}
                 className={clsx(
                   "photos-image",
-                  Boolean(src[url] && !brokenImage && hasInitTransform)
+                  Boolean(src[url] && !brokenImage && showImage)
                     ? ""
                     : "!invisible",
                 )}

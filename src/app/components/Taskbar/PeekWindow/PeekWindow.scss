@@ -12,7 +12,6 @@
   position: fixed;
 
   .title {
-    width: 100%;
     display: flex;
     padding-left: 8px;
     justify-content: space-between;
@@ -22,6 +21,12 @@
     .title-text {
       display: flex;
       gap: 0.25rem;
+      .text {
+        width: 156px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     }
     .close {
       display: flex;

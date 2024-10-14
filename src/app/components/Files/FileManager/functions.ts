@@ -52,7 +52,7 @@ import {
 import { FSModule } from "browserfs/dist/node/core/FS";
 import Stats from "browserfs/dist/node/core/node_fs_stats";
 import { basename, dirname, extname, join } from "path";
-import ini from "ini";
+import { parse, encode } from "ini";
 import extensions from "../extensions";
 import processDirectory from "@/contexts/process/directory";
 import { SortBy } from "../FileEntry/useSortBy";
@@ -217,7 +217,7 @@ export const getIconFromIni = (
           else {
             const {
               ShellClassInfo: { IconFile = "" },
-            } = ini.parse(contents.toString()) as ShellClassInfo;
+            } = parse(contents.toString()) as ShellClassInfo;
 
             resolve(IconFile);
           }
@@ -379,22 +379,20 @@ export const getInfoWithExtension = (
       subIcons,
       url: path,
     });
-  // const decodeImage = (): void =>
-  //   getInfoByFileExtension(PHOTO_ICON, (signal) =>
-  //     fs.readFile(path, async (error, contents = Buffer.from("")) => {
-  //       if (!error && contents.length > 0 && !signal.aborted) {
-  //         const { decodeImageToBuffer } = await import("utils/imageDecoder");
-
-  //         if (!signal.aborted) {
-  //           const image = await decodeImageToBuffer(extension, contents);
-
-  //           if (image && !signal.aborted) {
-  //             getInfoByFileExtension(imageToBufferUrl(extension, image));
-  //           }
-  //         }
-  //       }
-  //     }),
-  //   );
+  const decodeImage = (): void =>
+    getInfoByFileExtension(PHOTO_ICON, (signal) =>
+      fs.readFile(path, async (error, contents = Buffer.from("")) => {
+        // if (!error && contents.length > 0 && !signal.aborted) {
+        //   const { decodeImageToBuffer } = await import("utils/imageDecoder");
+        //   if (!signal.aborted) {
+        //     const image = await decodeImageToBuffer(extension, contents);
+        //     if (image && !signal.aborted) {
+        //       getInfoByFileExtension(imageToBufferUrl(extension, image));
+        //     }
+        //   }
+        // }
+      }),
+    );
 
   switch (extension) {
     case SHORTCUT_EXTENSION:
@@ -708,7 +706,7 @@ export const getInfoWithExtension = (
                   if (!context || !canvas.width || !canvas.height) return;
                   context.drawImage(video, 0, 0, canvas.width, canvas.height);
                   if (isCanvasDrawn(canvas)) {
-                    getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                    getInfoByFileExtension(canvas.toDataURL("image/webp"));
                   } else {
                     getThumbnailFrame(split - 2);
                   }
@@ -753,7 +751,7 @@ export const getInfoWithExtension = (
                   //     const firstFrame = index === 0;
                   //     await getFrame(frame, firstFrame);
                   //     if (firstFrame && frame === capturePoint) {
-                  //       getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                  //       getInfoByFileExtension(canvas.toDataURL("image/webp"));
                   //     }
                   //   }
                   // });
@@ -944,12 +942,10 @@ export const removeInvalidFilenameCharacters = (name = ""): string =>
   name.replace(/["*/:<>?\\|]/g, "");
 
 export const createShortcut = (shortcut: Partial<InternetShortcut>): string =>
-  ini
-    .encode(shortcut, {
-      section: "InternetShortcut",
-      whitespace: false,
-    })
-    .replace(/"/g, "");
+  encode(shortcut, {
+    section: "InternetShortcut",
+    whitespace: false,
+  }).replace(/"/g, "");
 
 export const getParentDirectories = (directory: string): string[] => {
   if (directory === "/") return [];
