@@ -240,7 +240,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
         }}
         {...useFileDrop({ id })}
       >
-        <video ref={videoRef} className="video-js" />
+        <video ref={videoRef} className="video-js" loop />
       </div>
     </>
   );
