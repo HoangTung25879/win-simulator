@@ -177,8 +177,10 @@ const useDraggableEntries = (
       ];
 
       if (focusedElements.length > 1) {
-        if (dragImageRef.current) dragImageRef.current.src = "";
-        else dragImageRef.current = new Image();
+        if (dragImageRef.current) {
+          URL.revokeObjectURL(dragImageRef.current.src);
+          dragImageRef.current.src = "";
+        } else dragImageRef.current = new Image();
 
         try {
           const elementsHavePositions = focusedElements.every(
@@ -202,7 +204,6 @@ const useDraggableEntries = (
           trimmedCapture.toBlob((blob) => {
             dragImageRef.current!.src = URL.createObjectURL(blob as Blob);
           });
-          // dragImageRef.current.src = trimmedCapture.toDataURL();
           capturedImageOffset.current = {
             x: capturedFileManager.width - trimmedCapture.width,
             y: capturedFileManager.height - trimmedCapture.height,

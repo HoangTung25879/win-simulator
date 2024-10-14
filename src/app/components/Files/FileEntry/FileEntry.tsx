@@ -319,7 +319,7 @@ const FileEntry = ({
           console.error(error);
         }
         if (iconCanvas && retryCanvasDraw) {
-          generatedIcon = iconCanvas.toDataURL("image/png");
+          generatedIcon = iconCanvas.toDataURL("image/webp");
         } else {
           setTimeout(
             () => cacheIcon(cachedIconPath, true),

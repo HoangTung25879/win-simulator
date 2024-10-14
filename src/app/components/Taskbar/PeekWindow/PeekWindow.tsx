@@ -81,7 +81,7 @@ const PeekWindow = ({ id }: PeekWindowProps) => {
         <div className="title">
           <div className="title-text">
             {!hideTitlebarIcon && <Icon alt={title} imgSize={16} src={icon} />}
-            {title}
+            <div className="text">{title}</div>
           </div>
           <button
             className={clsx("close", !isVisibleClose && "!invisible")}

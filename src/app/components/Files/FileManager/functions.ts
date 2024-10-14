@@ -706,7 +706,7 @@ export const getInfoWithExtension = (
                   if (!context || !canvas.width || !canvas.height) return;
                   context.drawImage(video, 0, 0, canvas.width, canvas.height);
                   if (isCanvasDrawn(canvas)) {
-                    getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                    getInfoByFileExtension(canvas.toDataURL("image/webp"));
                   } else {
                     getThumbnailFrame(split - 2);
                   }
@@ -751,7 +751,7 @@ export const getInfoWithExtension = (
                   //     const firstFrame = index === 0;
                   //     await getFrame(frame, firstFrame);
                   //     if (firstFrame && frame === capturePoint) {
-                  //       getInfoByFileExtension(canvas.toDataURL("image/jpeg"));
+                  //       getInfoByFileExtension(canvas.toDataURL("image/webp"));
                   //     }
                   //   }
                   // });
