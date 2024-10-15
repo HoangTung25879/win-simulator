@@ -8,5 +8,6 @@ https://www.npmjs.com/package/image-in-browser#documentation
 -Todo (necessary):
 PWA
 Update github linkedin
+Update cv
 Add loading UI for directory app (dynamic import loading)
 Run code after deploy
