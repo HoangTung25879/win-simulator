@@ -18,6 +18,7 @@ WinSimulator is a web app that replicates the appearance and functionality of Wi
   <img src="doc/screenshot2.png"/>
   <img src="doc/screenshot3.png"/>
   <img src="doc/screenshot4.png"/>
+  <img src="doc/screenshot5.png"/>
   </div>
 
 ## Techs
@@ -76,6 +77,11 @@ $ npm install
 $ npm run build:prebuild
 $ npm run dev
 ```
+
+### Credits
+
+WinSimulator is a fork of [daedalOS](https://github.com/DustinBrett/daedalOS). Custom for personal use.
+Inspired by [awesome-os](https://github.com/zriyansh/awesome-os).
 
 ## License
 
