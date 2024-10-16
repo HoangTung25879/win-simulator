@@ -35,6 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-note.md
-doc.md
-idea.md
+doc/note.md
+doc/doc.md
+doc/idea.md
