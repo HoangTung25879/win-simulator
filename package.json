@@ -2,6 +2,9 @@
   "name": "windows-os-web",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=16.0.0"
+  },
   "scripts": {
     "commentsForBuildScript": "https://github.com/aws-amplify/amplify-hosting/issues/3872#issuecomment-1980806305",
     "dev": "env-cmd -f env/.env-dev next dev -p 3002",
