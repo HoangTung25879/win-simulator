@@ -4,9 +4,10 @@ import "../styles/globals.scss";
 // import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 
 export const metadata: Metadata = {
-  title: "Tung Web Desktop",
+  title: "Windows Simulator",
   description:
     "A web app that replicates the appearance and functionality of Windows OS",
+  keywords: ["Next.js", "React", "JavaScript"],
 };
 
 // dayjs.extend(CustomParseFormat);

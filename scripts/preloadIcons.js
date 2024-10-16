@@ -113,18 +113,19 @@ const getIniIcons = () => {
 if (!existsSync(join(PUBLIC_DIR, ".index"))) {
   mkdirSync(join(PUBLIC_DIR, ".index"));
 }
+//* Dont need cache for now (Next image does it)
 
-writeFileSync(
-  "./public/.index/desktopIcons.json",
-  JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)]),
-);
+// writeFileSync(
+//   "./public/.index/desktopIcons.json",
+//   JSON.stringify([SHORTCUT_ICON, ...getPublicDirectoryIcons(DESKTOP_PATH)]),
+// );
 
-writeFileSync(
-  "./public/.index/startMenuIcons.json",
-  JSON.stringify([
-    NEW_FOLDER_ICON,
-    ...getPublicDirectoryIcons(START_MENU_PATH),
-  ]),
-);
+// writeFileSync(
+//   "./public/.index/startMenuIcons.json",
+//   JSON.stringify([
+//     NEW_FOLDER_ICON,
+//     ...getPublicDirectoryIcons(START_MENU_PATH),
+//   ]),
+// );
 
 writeFileSync("./public/.index/iniIcons.json", JSON.stringify(getIniIcons()));
