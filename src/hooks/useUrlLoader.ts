@@ -2,13 +2,8 @@ import { getProcessByFileExtension } from "@/app/components/Files/FileManager/fu
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useProcesses } from "@/contexts/process";
 import directory from "@/contexts/process/directory";
-import { getExtension } from "@/lib/utils";
+import { getExtension, isBrowserUrl } from "@/lib/utils";
 import { useEffect, useRef } from "react";
-
-const isBrowserUrl = (url: string): boolean =>
-  url.startsWith("http://") ||
-  url.startsWith("https://") ||
-  url.startsWith("chrome://");
 
 const getSearchParam = (param: string): string =>
   new URLSearchParams(window.location.search).get(param) || "";
