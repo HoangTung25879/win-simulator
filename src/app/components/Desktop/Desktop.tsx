@@ -6,10 +6,19 @@ import { useWallpaper } from "@/contexts/wallpaper";
 import { useEffect } from "react";
 import useUrlLoader from "@/hooks/useUrlLoader";
 import useLocalStorageLoader from "@/hooks/useLocalStorageLoader";
+import packageData from "package.json";
 
 type DesktopProps = {
   children: React.ReactNode;
 };
+
+if (typeof window !== "undefined") {
+  const localVersion = localStorage?.getItem("version");
+  if (localVersion !== packageData.version) {
+    localStorage.clear();
+    localStorage.setItem("version", packageData.version);
+  }
+}
 
 const Desktop = ({ children }: DesktopProps) => {
   const { desktopRef, setTriggerAfterHotReload } = useWallpaper();
