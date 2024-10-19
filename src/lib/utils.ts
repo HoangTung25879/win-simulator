@@ -788,3 +788,8 @@ export const getYouTubeUrlId = (url: string) => {
   }
   return "";
 };
+
+export const isBrowserUrl = (url: string): boolean =>
+  url.startsWith("http://") ||
+  url.startsWith("https://") ||
+  url.startsWith("chrome://");

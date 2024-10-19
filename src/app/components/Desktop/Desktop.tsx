@@ -5,6 +5,7 @@ import FileManager from "../Files/FileManager/FileManager";
 import { useWallpaper } from "@/contexts/wallpaper";
 import { useEffect } from "react";
 import useUrlLoader from "@/hooks/useUrlLoader";
+import useLocalStorageLoader from "@/hooks/useLocalStorageLoader";
 
 type DesktopProps = {
   children: React.ReactNode;
@@ -13,6 +14,7 @@ type DesktopProps = {
 const Desktop = ({ children }: DesktopProps) => {
   const { desktopRef, setTriggerAfterHotReload } = useWallpaper();
   useUrlLoader();
+  useLocalStorageLoader();
 
   useEffect(() => {
     setTriggerAfterHotReload((currrentValue) => currrentValue + 1);

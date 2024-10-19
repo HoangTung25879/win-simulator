@@ -32,7 +32,7 @@ import { ApiError } from "browserfs/dist/node/core/api_error";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;
 const KEEP_RECENT_FILES_LIST_COUNT = 10;
-export const DEFAULT_WALLPAPER: WallpaperImage = "SYNTHWAVE";
+export const DEFAULT_WALLPAPER: WallpaperImage = "AMBIENT COALESCE";
 
 const useSessionContextState = (): SessionContextState => {
   const { deletePath, readdir, readFile, rootFs, writeFile, lstat } =
