@@ -12,13 +12,13 @@ type DesktopProps = {
   children: React.ReactNode;
 };
 
-if (typeof window !== "undefined") {
-  const localVersion = localStorage?.getItem("version");
-  if (localVersion !== packageData.version) {
-    localStorage.clear();
-    localStorage.setItem("version", packageData.version);
-  }
-}
+// if (typeof window !== "undefined") {
+//   const localVersion = localStorage?.getItem("version");
+//   if (localVersion !== packageData.version) {
+//     localStorage.clear();
+//     localStorage.setItem("version", packageData.version);
+//   }
+// }
 
 const Desktop = ({ children }: DesktopProps) => {
   const { desktopRef, setTriggerAfterHotReload } = useWallpaper();
