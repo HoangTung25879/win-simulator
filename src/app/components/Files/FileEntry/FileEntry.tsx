@@ -311,6 +311,7 @@ const FileEntry = ({
               objectPosition: height ? "top" : width ? "left" : undefined,
             },
             width,
+            skipFonts: true,
             //* Fix nextjs image issue https://github.com/bubkoo/html-to-image/issues/377
             includeQueryParams: true,
           });
