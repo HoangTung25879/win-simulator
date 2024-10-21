@@ -212,21 +212,18 @@ const useSessionContextState = (): SessionContextState => {
   useEffect(() => {
     if (!loadingDebounceRef.current && sessionLoaded && !haltSession) {
       const updateSessionFile = (): void => {
-        writeFile(
-          SESSION_FILE,
-          JSON.stringify({
-            cursor,
-            iconPositions,
-            recentFiles,
-            runHistory,
-            sortOrders,
-            windowStates,
-            wallpaperFit,
-            wallpaperImage,
-            wallpaperColor,
-          }),
-          true,
-        );
+        const jsonSession = JSON.stringify({
+          cursor,
+          iconPositions,
+          recentFiles,
+          runHistory,
+          sortOrders,
+          windowStates,
+          wallpaperFit,
+          wallpaperImage,
+          wallpaperColor,
+        });
+        writeFile(SESSION_FILE, jsonSession, true);
       };
       if (
         "requestIdleCallback" in window &&

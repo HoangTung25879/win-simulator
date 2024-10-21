@@ -1,1 +1,64 @@
-{}
+{
+  "cursor": "",
+  "iconPositions": {
+    "/Users/Public/Desktop/My PC.url": {
+      "gridColumnStart": 1,
+      "gridRowStart": 1
+    },
+    "/Users/Public/Desktop/Public.url": {
+      "gridColumnStart": 1,
+      "gridRowStart": 2
+    },
+    "/Users/Public/Desktop/Cat.mov - Shortcut.url": {
+      "gridColumnStart": 1,
+      "gridRowStart": 3
+    },
+    "/Users/Public/Desktop/Github.url": {
+      "gridColumnStart": 2,
+      "gridRowStart": 1
+    },
+    "/Users/Public/Desktop/Hire Me.url": {
+      "gridColumnStart": 2,
+      "gridRowStart": 4
+    },
+    "/Users/Public/Desktop/LinkedIn.url": {
+      "gridColumnStart": 2,
+      "gridRowStart": 2
+    },
+    "/Users/Public/Desktop/Resume-PhamKhacHoangTung-FE.pdf": {
+      "gridColumnStart": 2,
+      "gridRowStart": 3
+    },
+    "/Users/Public/Desktop/Singapore.mov - Shortcut.url": {
+      "gridColumnStart": 1,
+      "gridRowStart": 4
+    },
+    "/Users/Public/Desktop/wallpaper.jpg - Shortcut.url": {
+      "gridColumnStart": 1,
+      "gridRowStart": 5
+    }
+  },
+  "recentFiles": [],
+  "runHistory": [],
+  "sortOrders": {
+    "/Users/Public/Desktop": [
+      [
+        "My PC.url",
+        "Public.url",
+        "Cat.mov - Shortcut.url",
+        "Github.url",
+        "Hire Me.url",
+        "LinkedIn.url",
+        "Resume-PhamKhacHoangTung-FE.pdf",
+        "Singapore.mov - Shortcut.url",
+        "wallpaper.jpg - Shortcut.url"
+      ],
+      null,
+      true
+    ]
+  },
+  "windowStates": {},
+  "wallpaperFit": "fit",
+  "wallpaperImage": "AMBIENT COALESCE",
+  "wallpaperColor": "rgba(255, 140, 0)"
+}
