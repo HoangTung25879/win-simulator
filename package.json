@@ -19,6 +19,7 @@
     "find-deadcode": "ts-prune --error"
   },
   "dependencies": {
+    "@next/third-parties": "^15.0.2",
     "@uiw/color-convert": "^2.3.2",
     "@uiw/react-color-sketch": "^2.3.2",
     "browserfs": "^1.4.3",
