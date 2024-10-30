@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.scss";
+import { GoogleAnalytics } from "@next/third-parties/google";
 // import dayjs from "dayjs";
 // import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -20,6 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>{children}</body>
+      <GoogleAnalytics gaId="G-CG0E9P877D" />
     </html>
   );
 }
