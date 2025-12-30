@@ -4,7 +4,7 @@ import { useProcesses } from "@/contexts/process";
 import { getExtension, isBrowserUrl } from "@/lib/utils";
 import { useEffect, useRef } from "react";
 
-const resumePath = "/Users/Public/Desktop/Resume-PhamKhacHoangTung-FE.pdf";
+const resumePath = "/Users/Public/Desktop/CV_PhamKhacHoangTung.pdf";
 
 const useLocalStorageLoader = (): void => {
   const { exists, fs } = useFileSystem();
