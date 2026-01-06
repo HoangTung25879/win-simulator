@@ -1,6 +1,11 @@
-import dynamic from "next/dynamic";
 import { Processes } from "./types";
 import { FOLDER_ICON } from "@/lib/constants";
+import Photos from "@/components/Apps/Photos/Photos";
+import FileExplorer from "@/components/FileExplorer/FileExplorer";
+import Settings from "@/components/Settings/Settings";
+import Transfer from "@/components/Dialogs/Transfer/Transfer";
+import VideoPlayer from "@/components/Apps/VideoPlayer/VideoPlayer";
+import PDF from "@/components/Apps/PDF/PDF";
 
 export enum AllProcess {
   BoxedWine = "BoxedWine",
@@ -46,9 +51,10 @@ const defaultProcessStyle = {
 
 const directory: Processes = {
   FileExplorer: {
-    Component: dynamic(
-      () => import("@/components/FileExplorer/FileExplorer"),
-    ),
+    // Component: dynamic(
+    //   () => import("@/components/FileExplorer/FileExplorer"),
+    // ),
+    Component: FileExplorer,
     defaultSize: {
       height: 450,
       width: 600,
@@ -66,7 +72,8 @@ const directory: Processes = {
     ...defaultProcessStyle,
   },
   Photos: {
-    Component: dynamic(() => import("@/components/Apps/Photos/Photos")),
+    // Component: dynamic(() => import("@/components/Apps/Photos/Photos")),
+    Component: Photos,
     backgroundColor: "rgb(39, 39, 39)",
     defaultSize: {
       height: 450,
@@ -77,7 +84,8 @@ const directory: Processes = {
     title: "Photos",
   },
   Settings: {
-    Component: dynamic(() => import("@/components/Settings/Settings")),
+    // Component: dynamic(() => import("@/components/Settings/Settings")),
+    Component: Settings,
     defaultSize: {
       height: 450,
       width: 600,
@@ -94,9 +102,10 @@ const directory: Processes = {
     titlebarBorderColor: "rgb(230, 230, 230)",
   },
   Transfer: {
-    Component: dynamic(
-      () => import("@/components/Dialogs/Transfer/Transfer"),
-    ),
+    // Component: dynamic(
+    //   () => import("@/components/Dialogs/Transfer/Transfer"),
+    // ),
+    Component: Transfer,
     allowResizing: false,
     backgroundColor: "#FFF",
     defaultSize: {
@@ -108,9 +117,10 @@ const directory: Processes = {
     title: "",
   },
   VideoPlayer: {
-    Component: dynamic(
-      () => import("@/components/Apps/VideoPlayer/VideoPlayer"),
-    ),
+    // Component: dynamic(
+    //   () => import("@/components/Apps/VideoPlayer/VideoPlayer"),
+    // ),
+    Component: VideoPlayer,
     backgroundColor: "#000",
     autoSizing: true,
     maximized: true,
@@ -123,7 +133,8 @@ const directory: Processes = {
     title: "Video Player",
   },
   PDF: {
-    Component: dynamic(() => import("@/components/Apps/PDF/PDF")),
+    // Component: dynamic(() => import("@/components/Apps/PDF/PDF")),
+    Component: PDF,
     backgroundColor: "#525659",
     icon: "/System/Icons/pdf.png",
     title: "PDF Viewer",

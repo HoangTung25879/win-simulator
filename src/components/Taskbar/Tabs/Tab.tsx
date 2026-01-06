@@ -10,12 +10,8 @@ import useTitlebarContextMenu from "../../Window/Titlebar/useTitlebarContextMenu
 import { AnimatePresence, motion } from "motion/react";
 import Icon from "../../Common/Icon/Icon";
 import colors from "@/lib/colors";
-import dynamic from "next/dynamic";
 import { generateTaskbarElementId, getTaskbarElement } from "@/lib/utils";
-
-const PeekWindow = dynamic(
-  () => import("@/components/Taskbar/PeekWindow/PeekWindow"),
-);
+import PeekWindow from "@/components/Taskbar/PeekWindow/PeekWindow";
 
 type TabProps = { icon: string; id: string; title: string };
 

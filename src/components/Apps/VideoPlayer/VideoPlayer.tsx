@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ComponentProcessProps } from "../RenderComponent";
-import Loading from "../../Common/Loading/Loading";
+import WorkingOnItLoading from "@/components/Common/Loading/WorkingOnItLoading";
 import { useProcesses } from "@/contexts/process";
 import useFileDrop from "../../Files/FileEntry/useFileDrop";
 import { useFileSystem } from "@/contexts/fileSystem";
@@ -230,7 +230,7 @@ const VideoPlayer = ({ id }: VideoPlayerProps) => {
 
   return (
     <>
-      {loading && <Loading />}
+      {loading && <WorkingOnItLoading />}
       <div
         ref={containerRef}
         className={clsx("video-player", "drop", isYT ? "youtube-view" : "")}

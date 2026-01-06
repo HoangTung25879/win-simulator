@@ -1,12 +1,8 @@
 "use client";
 
+import RenderComponent from "@/components/Apps/RenderComponent";
 import { useProcesses } from "@/contexts/process";
 import { AnimatePresence } from "motion/react";
-import dynamic from "next/dynamic";
-
-const RenderComponent = dynamic(
-  () => import("@/components/Apps/RenderComponent"),
-);
 
 type AppsLoaderProps = {};
 

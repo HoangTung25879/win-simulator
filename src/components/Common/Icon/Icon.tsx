@@ -28,12 +28,17 @@ const Icon = forwardRef<
     };
   }, [displaySize, imgSize]);
   const { height, offset, width } = dimensionProps;
-  useEffect(
-    () => () => {
-      if (loaded && typeof src === "string" && src.startsWith("blob:")) cleanUpBufferUrl(src);
-    },
+  useEffect(() =>{
+    console.log(alt,{loaded, src});
+    return () =>{
+      if (loaded && typeof src === "string" && src.startsWith("blob:")) {
+        cleanUpBufferUrl(src)
+      };
+    }
+  },
     [loaded, src],
   );
+
 
   return (
     src && (

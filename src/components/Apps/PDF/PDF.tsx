@@ -5,7 +5,7 @@ import { ComponentProcessProps } from "../RenderComponent";
 import { useProcesses } from "@/contexts/process";
 import useFileDrop from "../../Files/FileEntry/useFileDrop";
 import clsx from "clsx";
-import Loading from "../../Common/Loading/Loading";
+import WorkingOnItLoading from "@/components/Common/Loading/WorkingOnItLoading";
 import { useFileSystem } from "@/contexts/fileSystem";
 import useTitle from "../../Window/useTitle";
 import { basename } from "path";
@@ -159,7 +159,7 @@ const PDF = ({ id }: PDFProps) => {
 
   return (
     <>
-      {loading && <Loading />}
+      {loading && <WorkingOnItLoading />}
       <div
         ref={containerRef}
         className={clsx("pdfjs-wrapper")}
