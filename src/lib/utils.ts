@@ -150,7 +150,7 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
   });
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
-  new Blob([buffer], type ? { type } : undefined);
+  new Blob([new Uint8Array(buffer)], type ? { type } : undefined);
 
 export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
   mimeType

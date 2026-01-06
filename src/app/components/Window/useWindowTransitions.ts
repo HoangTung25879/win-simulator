@@ -100,7 +100,7 @@ const useWindowTransitions = (
         setMaximize((currentMaximize: Variant) => ({
           ...currentMaximize,
           ...getMaxDimensions(),
-        }));
+        } as Variant));
       }
     };
     window.addEventListener("resize", monitorViewportResize, { passive: true });
