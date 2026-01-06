@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import useNotificationTransition from "./useNotificationTransition";
 import { CloseIcon } from "../../Window/Titlebar/Icons";
 import { useNotification } from "@/contexts/notification";

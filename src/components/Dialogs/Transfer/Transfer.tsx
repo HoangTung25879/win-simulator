@@ -28,7 +28,7 @@ const Transfer = ({ id }: TransferProps) => {
   const [currentTransfer, setCurrentTransfer] = useState<[string, File]>();
   const [cd = "", { name = "" } = {}] = currentTransfer || [];
   const [progress, setProgress] = useState<number>(0);
-  const currentOperation = useRef<Operation | undefined>();
+  const currentOperation = useRef<Operation | undefined>(undefined);
   const processing = useRef(false);
 
   const actionName = useMemo(() => {

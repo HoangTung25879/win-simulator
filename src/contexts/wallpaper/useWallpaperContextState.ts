@@ -63,7 +63,7 @@ const useWallpaperContextState = (): WallpaperContextState => {
     wallpaperFit,
     wallpaperColor,
   } = useSession();
-  const wallpaperTimerRef = useRef<number>();
+  // const wallpaperTimerRef = useRef<number>();
   const failedOffscreenContext = useRef(false);
   const wallpaperWorker = useWorker<void>(
     WALLPAPER_PATHS_WORKERS[wallpaperImage],

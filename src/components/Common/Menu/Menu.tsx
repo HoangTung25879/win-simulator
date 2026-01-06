@@ -7,7 +7,7 @@ import {
   ONE_TIME_PASSIVE_EVENT,
   PREVENT_SCROLL,
 } from "@/lib/constants";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Position } from "react-rnd";
 import "./Menu.scss";
@@ -15,14 +15,9 @@ import clsx from "clsx";
 import { haltEvent } from "@/lib/utils";
 import MenuItem from "./MenuItem";
 
-type MenuProps = {
-  subMenu?: MenuState;
-};
+type MenuProps = { subMenu?: MenuState };
 
-export const topLeftPosition = (): Position => ({
-  x: 0,
-  y: 0,
-});
+export const topLeftPosition = (): Position => ({ x: 0, y: 0 });
 
 const Menu = ({ subMenu }: MenuProps) => {
   const { menu, setMenu } = useMenu();
@@ -149,7 +144,6 @@ const Menu = ({ subMenu }: MenuProps) => {
 
   return items ? (
     <motion.div
-      role="menu"
       ref={menuCallbackRef}
       className={clsx("context-menu")}
       style={{

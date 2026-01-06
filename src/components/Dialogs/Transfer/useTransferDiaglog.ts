@@ -34,7 +34,7 @@ const useTransferDialog = (): Dialog => {
   const processesRef = useProcessesRef();
   const { readFile } = useFileSystem();
   const getTransferIdCallbackRef =
-    useRef<(url: string) => string | undefined>();
+    useRef<(url: string) => string | undefined>(undefined);
 
   useEffect(() => {
     getTransferIdCallbackRef.current = (url: string) =>

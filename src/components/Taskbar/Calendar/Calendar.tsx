@@ -13,7 +13,7 @@ import TimeCounter from "./TimeCounter/TimeCounter";
 import CalendarGrid from "./CalendarGrid";
 import { DownIcon, UpIcon } from "./Icons";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import "./Calendar.scss";
 import sizes from "@/lib/sizes";

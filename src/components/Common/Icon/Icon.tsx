@@ -30,7 +30,7 @@ const Icon = forwardRef<
   const { height, offset, width } = dimensionProps;
   useEffect(
     () => () => {
-      if (loaded && src?.startsWith("blob:")) cleanUpBufferUrl(src);
+      if (loaded && typeof src === "string" && src.startsWith("blob:")) cleanUpBufferUrl(src);
     },
     [loaded, src],
   );
@@ -70,7 +70,7 @@ const Icon = forwardRef<
           }
         }}
         onLoad={() => setLoaded(true)}
-        src={src}
+        src={src as string}
         alt={alt || ""}
       />
     )

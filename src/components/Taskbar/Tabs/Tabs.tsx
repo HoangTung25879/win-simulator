@@ -2,7 +2,7 @@
 
 import { useProcesses } from "@/contexts/process";
 import "./Tabs.scss";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import dynamic from "next/dynamic";
 
 const Tab = dynamic(() => import("@/components/Taskbar/Tabs/Tab"));

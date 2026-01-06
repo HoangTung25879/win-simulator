@@ -47,7 +47,7 @@ const useNotificationContextState = (): NotificationContextState => {
     }: ShowNotificationOptions) => {
       canPlayAudio.current && audioRef.current?.play();
       toast(
-        (notification) => (
+        (notification: Toast) => (
           <CustomNotification
             notification={notification}
             processIcon={<WindowsIcon />}

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import "./FileEntry.scss";
 import {
   FileStat,
@@ -169,7 +169,7 @@ const FileEntry = ({
   const iconRef = useRef<HTMLImageElement | null>(null);
   const isIconCached = useRef(false);
   const isDynamicIconLoaded = useRef(false);
-  const getIconAbortController = useRef<AbortController>();
+  const getIconAbortController = useRef<AbortController>(null);
   const fileName = basename(path);
   const urlExt = getExtension(url);
   const isYTUrl = useMemo(() => isYouTubeUrl(url), [url]);

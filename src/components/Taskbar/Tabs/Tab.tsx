@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import useTaskbarTabTransition from "../useTaskbarTabTransition";
 import useTitlebarContextMenu from "../../Window/Titlebar/useTitlebarContextMenu";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Icon from "../../Common/Icon/Icon";
 import colors from "@/lib/colors";
 import dynamic from "next/dynamic";

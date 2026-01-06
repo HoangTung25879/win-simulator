@@ -33,12 +33,8 @@ const nextConfig = {
     reactRemoveProperties: isProduction,
     removeConsole: isProduction,
   },
-  devIndicators: {
-    buildActivityPosition: "top-right",
-  },
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
-  swcMinify: true,
 };
 
 export default withBundleAnalyzer(nextConfig);

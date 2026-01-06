@@ -63,7 +63,7 @@ const useWindowPeek = (id: string): string => {
   } = useProcesses();
   const { peekElement, componentWindow, staticPeekImage } = process || {};
   const [imageSrc, setImageSrc] = useState("");
-  const previewTimer = useRef<number>();
+  const previewTimer = useRef<number>(null);
   const animate = useRef(true);
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const useWindowPeek = (id: string): string => {
     return () => {
       if (previewTimer.current) {
         clearTimeout(previewTimer.current);
-        previewTimer.current = undefined;
+        previewTimer.current = null;
       }
       animate.current = false;
     };

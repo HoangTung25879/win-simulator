@@ -793,3 +793,11 @@ export const isBrowserUrl = (url: string): boolean =>
   url.startsWith("http://") ||
   url.startsWith("https://") ||
   url.startsWith("chrome://");
+
+export const isBlob = (value: any): boolean => {
+	if (typeof Blob === 'undefined') {
+		return false;
+	}
+
+	return value instanceof Blob || Object.prototype.toString.call(value) === '[object Blob]';
+}

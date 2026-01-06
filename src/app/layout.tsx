@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "../styles/globals.scss";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 // import dayjs from "dayjs";
 // import CustomParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -22,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>{children}</body>
       <GoogleAnalytics gaId="G-CG0E9P877D" />
+      <SpeedInsights />
     </html>
   );
 }

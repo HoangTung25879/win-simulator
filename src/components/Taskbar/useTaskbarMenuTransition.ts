@@ -1,6 +1,6 @@
 import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 import sizes from "@/lib/sizes";
-import { MotionProps } from "framer-motion";
+import { MotionProps } from "motion/react";
 
 const useTaskbarMenuTransition = (
   maxHeight: number,
@@ -25,10 +25,7 @@ const useTaskbarMenuTransition = (
       ease: "circOut",
     },
     variants: {
-      active: {
-        height: `${height}px`,
-        paddingTop: 0,
-      },
+      active: { height: `${height}px`, paddingTop: 0 },
       initial: {
         height: `${height * heightOffset}px`,
         paddingTop: dynamicPadding ? `${height * paddingOffset}px` : 0,

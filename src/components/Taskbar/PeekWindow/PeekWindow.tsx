@@ -5,7 +5,7 @@ import { useSession } from "@/contexts/session";
 import useWindowActions from "../../Window/useWindowActions";
 import { useEffect, useMemo, useRef, useState } from "react";
 import usePeekWindowTransition from "../usePeekWindowTransition";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import "./PeekWindow.scss";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import { CloseIcon } from "../../Window/Titlebar/Icons";
@@ -15,9 +15,7 @@ import clsx from "clsx";
 import { PauseIcon, PlayIcon } from "./Icons";
 import { haltEvent } from "@/lib/utils";
 
-type PeekWindowProps = {
-  id: string;
-};
+type PeekWindowProps = { id: string };
 
 const PeekWindow = ({ id }: PeekWindowProps) => {
   const {

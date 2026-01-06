@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import StartButton from "./StartButton/StartButton";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import Tabs from "./Tabs/Tabs";
 import SearchBar from "./Search/SearchBar";

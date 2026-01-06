@@ -43,7 +43,7 @@ const useDraggableEntries = (
   const { exists } = useFileSystem();
   const { iconPositions, sortOrders, setIconPositions, setSortOrder } =
     useSession();
-  const dragImageRef = useRef<HTMLImageElement | null>();
+  const dragImageRef = useRef<HTMLImageElement | null>(null);
   const adjustedCaptureOffsetRef = useRef(false);
   const capturedImageOffset = useRef({ x: 0, y: 0 });
   const dragPositionRef = useRef<DragPosition>(

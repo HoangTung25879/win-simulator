@@ -1,4 +1,4 @@
-import { MotionProps } from "framer-motion";
+import { MotionProps } from "motion/react";
 import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 
 const useCalendarGridTransition = (): MotionProps => {

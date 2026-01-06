@@ -1,7 +1,7 @@
 import { useProcesses } from "@/contexts/process";
 import { TRANSITIONS_IN_SECONDS } from "@/lib/constants";
 import sizes from "@/lib/sizes";
-import { MotionProps, Variant } from "framer-motion";
+import { MotionProps, Variant } from "motion/react";
 import { useEffect, useLayoutEffect, useState } from "react";
 
 const active = {

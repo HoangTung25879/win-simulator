@@ -20,9 +20,7 @@ import { useProcesses } from "@/contexts/process";
 import { HOME } from "@/lib/constants";
 import { AllProcess } from "@/contexts/process/directory";
 
-type SidebarProps = {
-  toggleStartMenu: (showMenu?: boolean) => void;
-};
+type SidebarProps = { toggleStartMenu: (showMenu?: boolean) => void };
 
 type SidebarButton = {
   name: string;
@@ -31,26 +29,11 @@ type SidebarButton = {
 };
 
 const buttons: SidebarButton[] = [
-  {
-    name: "Start",
-    icon: <SideMenu width={16} height={16} />,
-  },
-  {
-    name: "Documents",
-    icon: <Documents width={16} height={16} />,
-  },
-  {
-    name: "Pictures",
-    icon: <Pictures width={16} height={16} />,
-  },
-  {
-    name: "Videos",
-    icon: <Videos width={16} height={16} />,
-  },
-  {
-    name: "Settings",
-    icon: <Settings width={16} height={16} />,
-  },
+  { name: "Start", icon: <SideMenu width={16} height={16} /> },
+  { name: "Documents", icon: <Documents width={16} height={16} /> },
+  { name: "Pictures", icon: <Pictures width={16} height={16} /> },
+  { name: "Videos", icon: <Videos width={16} height={16} /> },
+  { name: "Settings", icon: <Settings width={16} height={16} /> },
   {
     name: "Power",
     icon: <Power width={16} height={16} />,
@@ -63,7 +46,7 @@ const Sidebar = ({ toggleStartMenu }: SidebarProps) => {
   const { open } = useProcesses();
   const { setHaltSession } = useSession();
   const [expanded, setExpanded] = useState(false);
-  const expandTimer = useRef<number>();
+  const expandTimer = useRef<number>(null);
   const clearTimer = (): void => {
     if (expandTimer.current) clearTimeout(expandTimer.current);
   };

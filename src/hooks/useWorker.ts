@@ -5,7 +5,7 @@ const useWorker = <T>(
   onMessage?: (message: MessageEvent<T>) => void,
   workerInfo?: string,
 ): React.MutableRefObject<Worker | undefined> => {
-  const worker = useRef<Worker>();
+  const worker = useRef<Worker>(undefined);
 
   useEffect(() => {
     if (workerInit && !worker.current) {

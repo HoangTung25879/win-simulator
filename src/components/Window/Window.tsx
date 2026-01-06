@@ -6,7 +6,7 @@ import { useSession } from "@/contexts/session";
 import useFocusable from "./useFocusable";
 import RndWrapper from "./RndWrapper";
 import colors from "@/lib/colors";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import useWindowTransitions from "./useWindowTransitions";
 import { useCallback, useEffect } from "react";
 import Titlebar from "./Titlebar/Titlebar";
@@ -19,9 +19,7 @@ import {
   getWindowElement,
 } from "@/lib/utils";
 
-type WindowProps = ComponentProcessProps & {
-  children: React.ReactNode;
-};
+type WindowProps = ComponentProcessProps & { children: React.ReactNode };
 
 const Window = ({ children, id }: WindowProps) => {
   const {

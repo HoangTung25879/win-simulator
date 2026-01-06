@@ -64,7 +64,7 @@ const Result = ({
     ? url === info.url && extname(url) === SHORTCUT_EXTENSION
     : false;
   const elementRef = useRef<HTMLLIElement | null>(null);
-  const abortController = useRef<AbortController>();
+  const abortController = useRef<AbortController>(null);
   const isVisible = useIsVisible(elementRef, `.${SEARCH_PARENT_CLASS}`);
 
   useEffect(() => {
@@ -73,14 +73,14 @@ const Result = ({
     if (abortController.current) {
       if (!isVisible) {
         abortController.current.abort();
-        abortController.current = undefined;
+        abortController.current = null;
       }
     } else if ((activeEntry || isVisible) && info === INITIAL_INFO) {
       abortController.current = new AbortController();
       getResultInfo(fs, url, abortController.current.signal).then(
         (resultsInfo) => {
           if (resultsInfo) setInfo(resultsInfo);
-          abortController.current = undefined;
+          abortController.current = null;
         },
       );
     }

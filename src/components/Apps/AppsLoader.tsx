@@ -1,7 +1,7 @@
 "use client";
 
 import { useProcesses } from "@/contexts/process";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 import dynamic from "next/dynamic";
 
 const RenderComponent = dynamic(

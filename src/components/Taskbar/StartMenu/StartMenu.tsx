@@ -8,16 +8,14 @@ import {
 import Sidebar from "./Sidebar/Sidebar";
 import "./StartMenu.scss";
 import { useCallback, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import useTaskbarMenuTransition from "../useTaskbarMenuTransition";
 import sizes from "@/lib/sizes";
 import { useSearchInput } from "@/contexts/search";
 import { IDS_MENU } from "../Taskbar";
 import FileManager from "../../Files/FileManager/FileManager";
 
-type StartMenuProps = {
-  toggleStartMenu: (showMenu?: boolean) => void;
-};
+type StartMenuProps = { toggleStartMenu: (showMenu?: boolean) => void };
 
 const StartMenu = ({ toggleStartMenu }: StartMenuProps) => {
   const menuRef = useRef<HTMLDivElement | null>(null);
