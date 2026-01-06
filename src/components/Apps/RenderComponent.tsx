@@ -1,7 +1,5 @@
 "use client";
-import dynamic from "next/dynamic";
-
-const Window = dynamic(() => import("@/components/Window/Window"));
+import Window from "@/components/Window/Window";
 
 export type ComponentProcessProps = { id: string };
 

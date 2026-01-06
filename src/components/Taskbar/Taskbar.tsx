@@ -7,21 +7,10 @@ import { FOCUSABLE_ELEMENT } from "@/lib/constants";
 import Tabs from "./Tabs/Tabs";
 import SearchBar from "./Search/SearchBar";
 import useTaskbarContextMenu from "./useTaskbarContextMenu";
-import dynamic from "next/dynamic";
-
-const Calendar = dynamic(
-  () => import("@/components/Taskbar/Calendar/Calendar"),
-);
-const SearchMenu = dynamic(
-  () => import("@/components/Taskbar/Search/SearchMenu"),
-);
-const StartMenu = dynamic(
-  () => import("@/components/Taskbar/StartMenu/StartMenu"),
-);
-
-const Clock = dynamic(() => import("@/components/Taskbar/Clock/Clock"), {
-  ssr: false,
-});
+import Calendar from "@/components/Taskbar/Calendar/Calendar";
+import SearchMenu from "@/components/Taskbar/Search/SearchMenu";
+import StartMenu from "@/components/Taskbar/StartMenu/StartMenu";
+import Clock from "@/components/Taskbar/Clock/Clock";
 
 export const IDS_MENU = {
   startMenu: "startMenu",

@@ -63,11 +63,8 @@ import { toCanvas } from "html-to-image";
 import colors from "@/lib/colors";
 import { FileEntryIconSize } from "./constants";
 import SubIcons from "../../Common/Icon/SubIcons";
-import dynamic from "next/dynamic";
+import RenameBox from "@/components/Files/FileEntry/RenameBox";
 
-const RenameBox = dynamic(
-  () => import("@/components/Files/FileEntry/RenameBox"),
-);
 
 type FileEntryProps = {
   id?: string;

@@ -26,17 +26,10 @@ import { requestPermission } from "@/contexts/fileSystem/utils";
 import { getExtension, haltEvent } from "@/lib/utils";
 import useFileDrop from "../FileEntry/useFileDrop";
 import { useSession } from "@/contexts/session";
-import dynamic from "next/dynamic";
+import WorkingOnItLoading from "@/components/Common/Loading/WorkingOnItLoading";
+import Empty from "@/components/Files/FileManager/Empty";
+import StatusBar from "@/components/Files/FileManager/StatusBar";
 
-const StatusBar = dynamic(
-  () => import("@/components/Files/FileManager/StatusBar"),
-);
-
-const Empty = dynamic(() => import("@/components/Files/FileManager/Empty"));
-
-const Loading = dynamic(
-  () => import("@/components/Common/Loading/Loading"),
-);
 
 type FileManagerProps = {
   allowMovingDraggableEntries?: boolean;
@@ -201,7 +194,7 @@ const FileManager = ({
   return (
     <>
       {loading ? (
-        <Loading className={isFileExplorer ? "file-explorer-loading" : ""} />
+        <WorkingOnItLoading className={isFileExplorer ? "file-explorer-loading" : ""} />
       ) : (
         <>
           {isEmptyFolder && <Empty />}
