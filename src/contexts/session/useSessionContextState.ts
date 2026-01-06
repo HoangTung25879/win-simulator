@@ -27,7 +27,7 @@ import {
 import defaultSession from "public/session.json";
 import { dirname, extname } from "path";
 import { updateIconPositionsIfEmpty } from "@/lib/utils";
-import { SortBy } from "@/app/components/Files/FileEntry/useSortBy";
+import { SortBy } from "@/components/Files/FileEntry/useSortBy";
 import { ApiError } from "browserfs/dist/node/core/api_error";
 
 const DEFAULT_SESSION = (defaultSession || {}) as unknown as SessionData;

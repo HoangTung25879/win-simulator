@@ -1,4 +1,4 @@
-import { WallpaperConfig } from "@/app/components/Wallpaper/types";
+import { WallpaperConfig } from "@/components/Wallpaper/types";
 
 export type OffscreenRenderProps = {
   canvas: OffscreenCanvas;
@@ -14,3 +14,8 @@ export type SVGComponentProps = {
 export type Prettify<T> = {
   [K in keyof T]: T[K];
 } & {};
+
+export enum EAppEnv {
+  DEVELOPMENT = 'development',
+  PRODUCTION = 'production',
+}

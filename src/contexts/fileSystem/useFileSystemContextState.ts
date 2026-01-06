@@ -19,19 +19,19 @@ import type IZipFS from "browserfs/dist/node/backend/ZipFS";
 import type IIsoFS from "browserfs/dist/node/backend/IsoFS";
 import type * as IBrowserFS from "browserfs";
 import { FSModule } from "browserfs/dist/node/core/FS";
-import { NewPath } from "@/app/components/Files/FileEntry/useFolder";
+import { NewPath } from "@/components/Files/FileEntry/useFolder";
 import { getFileSystemHandles } from "./core";
 import { basename, dirname, isAbsolute, join } from "path";
 import { BFSCallback, FileSystem } from "browserfs/dist/node/core/file_system";
 import { useProcesses } from "../process";
-import useTransferDialog from "@/app/components/Dialogs/Transfer/useTransferDiaglog";
+import useTransferDialog from "@/components/Dialogs/Transfer/useTransferDiaglog";
 import {
   getEventData,
   handleFileInputEvent,
   InputChangeEvent,
   iterateFileName,
   removeInvalidFilenameCharacters,
-} from "@/app/components/Files/FileManager/functions";
+} from "@/components/Files/FileManager/functions";
 import { ApiError } from "browserfs/dist/node/core/api_error";
 import { Prettify } from "@/lib/types";
 

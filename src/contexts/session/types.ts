@@ -1,4 +1,4 @@
-import { SortBy } from "@/app/components/Files/FileEntry/useSortBy";
+import { SortBy } from "@/components/Files/FileEntry/useSortBy";
 import { Prettify } from "@/lib/types";
 import { Position, Props } from "react-rnd";
 

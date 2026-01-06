@@ -66,7 +66,7 @@ import SubIcons from "../../Common/Icon/SubIcons";
 import dynamic from "next/dynamic";
 
 const RenameBox = dynamic(
-  () => import("@/app/components/Files/FileEntry/RenameBox"),
+  () => import("@/components/Files/FileEntry/RenameBox"),
 );
 
 type FileEntryProps = {

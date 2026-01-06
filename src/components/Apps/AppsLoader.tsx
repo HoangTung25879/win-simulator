@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
 const RenderComponent = dynamic(
-  () => import("@/app/components/Apps/RenderComponent"),
+  () => import("@/components/Apps/RenderComponent"),
 );
 
 type AppsLoaderProps = {};

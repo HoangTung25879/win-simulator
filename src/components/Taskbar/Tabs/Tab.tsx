@@ -14,14 +14,10 @@ import dynamic from "next/dynamic";
 import { generateTaskbarElementId, getTaskbarElement } from "@/lib/utils";
 
 const PeekWindow = dynamic(
-  () => import("@/app/components/Taskbar/PeekWindow/PeekWindow"),
+  () => import("@/components/Taskbar/PeekWindow/PeekWindow"),
 );
 
-type TabProps = {
-  icon: string;
-  id: string;
-  title: string;
-};
+type TabProps = { icon: string; id: string; title: string };
 
 const Tab = ({ icon, id, title }: TabProps) => {
   const nextFocusableId = useNextFocusable(id);

@@ -10,9 +10,9 @@ import {
   WALLPAPER_CONFIG,
   WALLPAPER_PATHS,
   WALLPAPER_PATHS_WORKERS,
-} from "@/app/components/Wallpaper/constants";
-import { WallpaperConfig } from "@/app/components/Wallpaper/types";
-import { VantaObject } from "@/app/components/Wallpaper/vanta/types";
+} from "@/components/Wallpaper/constants";
+import { WallpaperConfig } from "@/components/Wallpaper/types";
+import { VantaObject } from "@/components/Wallpaper/vanta/types";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useSession } from "@/contexts/session";
 import { throttle } from "es-toolkit";

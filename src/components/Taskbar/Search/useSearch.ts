@@ -5,7 +5,7 @@ import IndexedDBFileSystem from "browserfs/dist/node/backend/IndexedDB";
 import OverlayFS from "browserfs/dist/node/backend/OverlayFS";
 import { Index, Builder } from "lunr";
 import { useEffect, useState } from "react";
-import SEARCH_EXTENSIONS from "../../../../../scripts/searchExtensions.json";
+import SEARCH_EXTENSIONS from "@scripts/searchExtensions.json";
 import { basename, extname } from "path";
 
 export const FILE_INDEX = "/.index/search.lunr.json";

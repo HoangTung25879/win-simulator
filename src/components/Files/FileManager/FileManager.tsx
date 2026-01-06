@@ -29,13 +29,13 @@ import { useSession } from "@/contexts/session";
 import dynamic from "next/dynamic";
 
 const StatusBar = dynamic(
-  () => import("@/app/components/Files/FileManager/StatusBar"),
+  () => import("@/components/Files/FileManager/StatusBar"),
 );
 
-const Empty = dynamic(() => import("@/app/components/Files/FileManager/Empty"));
+const Empty = dynamic(() => import("@/components/Files/FileManager/Empty"));
 
 const Loading = dynamic(
-  () => import("@/app/components/Common/Loading/Loading"),
+  () => import("@/components/Common/Loading/Loading"),
 );
 
 type FileManagerProps = {

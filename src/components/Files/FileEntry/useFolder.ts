@@ -1,4 +1,4 @@
-import { FocusEntryFunctions } from "@/app/components/Files/FileEntry/useFocusableEntries";
+import { FocusEntryFunctions } from "@/components/Files/FileEntry/useFocusableEntries";
 import {
   createShortcut,
   FileStat,
@@ -7,7 +7,7 @@ import {
   sortByDate,
   sortBySize,
   sortContents,
-} from "@/app/components/Files/FileManager/functions";
+} from "@/components/Files/FileManager/functions";
 import { useFileSystem } from "@/contexts/fileSystem";
 import {
   filterSystemFiles,

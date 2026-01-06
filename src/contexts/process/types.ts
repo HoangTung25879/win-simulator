@@ -1,9 +1,9 @@
-import { ComponentProcessProps } from "@/app/components/Apps/RenderComponent";
+import { ComponentProcessProps } from "@/components/Apps/RenderComponent";
 import { Size } from "../session/types";
 import {
   FileReaders,
   ObjectReaders,
-} from "@/app/components/Dialogs/Transfer/useTransferDiaglog";
+} from "@/components/Dialogs/Transfer/useTransferDiaglog";
 import { Prettify } from "@/lib/types";
 
 export type ProcessElements = {
@@ -52,9 +52,7 @@ type DialogProcessArguments = {
   shortcutPath?: string;
 };
 
-type SettingProcessArguments = {
-  settingType?: "background";
-};
+type SettingProcessArguments = { settingType?: "background" };
 
 type MediaPlayerProcessArguments = {
   pause?: () => void;

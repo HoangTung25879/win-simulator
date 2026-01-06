@@ -1,11 +1,9 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const Window = dynamic(() => import("@/app/components/Window/Window"));
+const Window = dynamic(() => import("@/components/Window/Window"));
 
-export type ComponentProcessProps = {
-  id: string;
-};
+export type ComponentProcessProps = { id: string };
 
 type RenderComponentProps = {
   Component: React.ComponentType<ComponentProcessProps>;

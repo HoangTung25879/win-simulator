@@ -62,8 +62,7 @@ const PDF = ({ id }: PDFProps) => {
         });
         return;
       }
-      const arrayBuffer = new Uint8Array(fileData).buffer;
-      pdfViewerRef.current?.open({ data: arrayBuffer, url: url });
+      pdfViewerRef.current?.open({ data: fileData as unknown as ArrayBuffer, url: url });
     } else {
       containerRef.current?.classList.add("drop");
       prependFileToTitle("");

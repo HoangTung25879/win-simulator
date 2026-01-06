@@ -17,7 +17,7 @@ import {
   IconPositions,
   SortOrders,
 } from "@/contexts/session/types";
-import { DragPosition } from "@/app/components/Files/FileEntry/useDraggableEntries";
+import { DragPosition } from "@/components/Files/FileEntry/useDraggableEntries";
 import dayjs from "dayjs";
 import { Position } from "react-rnd";
 import sizes from "./sizes";
@@ -150,7 +150,7 @@ export const blobToBase64 = (blob: Blob): Promise<string> =>
   });
 
 export const bufferToBlob = (buffer: Buffer, type?: string): Blob =>
-  new Blob([new Uint8Array(buffer)], type ? { type } : undefined);
+  new Blob([buffer as unknown as ArrayBuffer], type ? { type } : undefined);
 
 export const bufferToUrl = (buffer: Buffer, mimeType?: string): string =>
   mimeType

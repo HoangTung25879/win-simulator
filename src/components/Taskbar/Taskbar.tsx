@@ -10,16 +10,16 @@ import useTaskbarContextMenu from "./useTaskbarContextMenu";
 import dynamic from "next/dynamic";
 
 const Calendar = dynamic(
-  () => import("@/app/components/Taskbar/Calendar/Calendar"),
+  () => import("@/components/Taskbar/Calendar/Calendar"),
 );
 const SearchMenu = dynamic(
-  () => import("@/app/components/Taskbar/Search/SearchMenu"),
+  () => import("@/components/Taskbar/Search/SearchMenu"),
 );
 const StartMenu = dynamic(
-  () => import("@/app/components/Taskbar/StartMenu/StartMenu"),
+  () => import("@/components/Taskbar/StartMenu/StartMenu"),
 );
 
-const Clock = dynamic(() => import("@/app/components/Taskbar/Clock/Clock"), {
+const Clock = dynamic(() => import("@/components/Taskbar/Clock/Clock"), {
   ssr: false,
 });
 

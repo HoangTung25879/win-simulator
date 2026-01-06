@@ -1,7 +1,7 @@
 import {
   getInfoWithExtension,
   getInfoWithoutExtension,
-} from "@/app/components/Files/FileManager/functions";
+} from "@/components/Files/FileManager/functions";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { isMountedFolder } from "@/contexts/fileSystem/utils";
 import { MOUNTABLE_EXTENSIONS } from "@/lib/constants";

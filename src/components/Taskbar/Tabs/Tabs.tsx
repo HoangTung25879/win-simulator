@@ -5,7 +5,7 @@ import "./Tabs.scss";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const Tab = dynamic(() => import("@/app/components/Taskbar/Tabs/Tab"));
+const Tab = dynamic(() => import("@/components/Taskbar/Tabs/Tab"));
 
 type TabsProps = {};
 
