@@ -6,7 +6,7 @@ export const useDoubleClick = (
   click?: React.MouseEventHandler,
   timeout = TRANSITIONS_IN_MS.DOUBLE_CLICK,
 ): React.MouseEventHandler => {
-  const clickTimeout = useRef<number | undefined>();
+  const clickTimeout = useRef<number | undefined>(undefined);
 
   const clearClickTimeout = () => {
     if (clickTimeout) {

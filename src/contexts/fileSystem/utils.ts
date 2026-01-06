@@ -17,7 +17,7 @@ import {
   supportsIndexedDB,
 } from "./core";
 import { basename, dirname, extname, join } from "path";
-import { FileInfo } from "@/app/components/Files/FileEntry/useFileInfo";
+import { FileInfo } from "@/components/Files/FileEntry/useFileInfo";
 import { parse } from "ini";
 import shortcutCache from "public/.index/shortcutCache.json";
 import {

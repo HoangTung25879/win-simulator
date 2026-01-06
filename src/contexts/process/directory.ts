@@ -47,7 +47,7 @@ const defaultProcessStyle = {
 const directory: Processes = {
   FileExplorer: {
     Component: dynamic(
-      () => import("@/app/components/FileExplorer/FileExplorer"),
+      () => import("@/components/FileExplorer/FileExplorer"),
     ),
     defaultSize: {
       height: 450,
@@ -66,7 +66,7 @@ const directory: Processes = {
     ...defaultProcessStyle,
   },
   Photos: {
-    Component: dynamic(() => import("@/app/components/Apps/Photos/Photos")),
+    Component: dynamic(() => import("@/components/Apps/Photos/Photos")),
     backgroundColor: "rgb(39, 39, 39)",
     defaultSize: {
       height: 450,
@@ -77,7 +77,7 @@ const directory: Processes = {
     title: "Photos",
   },
   Settings: {
-    Component: dynamic(() => import("@/app/components/Settings/Settings")),
+    Component: dynamic(() => import("@/components/Settings/Settings")),
     defaultSize: {
       height: 450,
       width: 600,
@@ -95,7 +95,7 @@ const directory: Processes = {
   },
   Transfer: {
     Component: dynamic(
-      () => import("@/app/components/Dialogs/Transfer/Transfer"),
+      () => import("@/components/Dialogs/Transfer/Transfer"),
     ),
     allowResizing: false,
     backgroundColor: "#FFF",
@@ -109,7 +109,7 @@ const directory: Processes = {
   },
   VideoPlayer: {
     Component: dynamic(
-      () => import("@/app/components/Apps/VideoPlayer/VideoPlayer"),
+      () => import("@/components/Apps/VideoPlayer/VideoPlayer"),
     ),
     backgroundColor: "#000",
     autoSizing: true,
@@ -123,7 +123,7 @@ const directory: Processes = {
     title: "Video Player",
   },
   PDF: {
-    Component: dynamic(() => import("@/app/components/Apps/PDF/PDF")),
+    Component: dynamic(() => import("@/components/Apps/PDF/PDF")),
     backgroundColor: "#525659",
     icon: "/System/Icons/pdf.png",
     title: "PDF Viewer",

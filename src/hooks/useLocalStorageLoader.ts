@@ -1,4 +1,4 @@
-import { getProcessByFileExtension } from "@/app/components/Files/FileManager/functions";
+import { getProcessByFileExtension } from "@/components/Files/FileManager/functions";
 import { useFileSystem } from "@/contexts/fileSystem";
 import { useProcesses } from "@/contexts/process";
 import { getExtension, isBrowserUrl } from "@/lib/utils";

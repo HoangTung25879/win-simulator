@@ -85,7 +85,7 @@ const runQueuedFsCalls = (fs: FSModule): void => {
 
 const useAsyncFs = (): AsyncFSModule => {
   const [fs, setFs] = useState<FSModule>();
-  const fsRef = useRef<FSModule>();
+  const fsRef = useRef<FSModule>(null);
   const [rootFs, setRootFs] = useState<RootFileSystem>();
   const asyncFs: AsyncFS = useMemo(() => {
     return {

@@ -4,11 +4,11 @@ import toast, {
   Toast,
   ToastOptions,
   useToaster,
-} from "@/app/components/Common/Notification/react-hot-toast";
+} from "@/components/Common/Notification/react-hot-toast";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import NotificationSound from "./notification-sound.mp3";
-import CustomNotification from "@/app/components/Common/Notification/CustomNotification";
-import WindowsIcon from "@/app/components/Taskbar/StartButton/Icons";
+import CustomNotification from "@/components/Common/Notification/CustomNotification";
+import WindowsIcon from "@/components/Taskbar/StartButton/Icons";
 
 type ShowNotificationOptions = {
   processTitle?: string;
@@ -22,6 +22,7 @@ type NotificationContextState = {
   endPause: () => void;
   showNotification: (options: ShowNotificationOptions) => void;
   dismissNotification: (id?: string) => void;
+  showErrorNotification: (message: string) => void;
 };
 
 export type Notification = Toast;
@@ -46,7 +47,7 @@ const useNotificationContextState = (): NotificationContextState => {
     }: ShowNotificationOptions) => {
       canPlayAudio.current && audioRef.current?.play();
       toast(
-        (notification) => (
+        (notification: Toast) => (
           <CustomNotification
             notification={notification}
             processIcon={<WindowsIcon />}
@@ -60,6 +61,10 @@ const useNotificationContextState = (): NotificationContextState => {
     },
     [],
   );
+
+  const showErrorNotification = useCallback((message: string) => {
+    toast.error(message);
+  }, []);
 
   const dismissNotification = useCallback((id?: string) => {
     toast.dismiss(id);
@@ -85,6 +90,7 @@ const useNotificationContextState = (): NotificationContextState => {
     endPause,
     showNotification,
     dismissNotification,
+    showErrorNotification,
   };
 };
 
